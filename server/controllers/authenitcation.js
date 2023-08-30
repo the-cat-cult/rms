@@ -2,6 +2,7 @@ import User from "../models/user.js";
 import Tenant from "../models/tenant.js";
 import Otp from "../models/otp.js";
 import mongoose from "mongoose";
+import unirest from 'unirest'
 
 //TODO: Add modules: userSignUp -> anyone can signup, tenantSignUp -> auth token type admin is required
 //TODO: Add modules: login -> two flows, user and admin
@@ -13,7 +14,7 @@ export async function userSignUp(req, res) {
     const otp = req.body.otp;
     const mobileNumber = req.body.mno;
 
-    const otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
+    const otpRecord = await Otp.findOne({ mobileNumber: mobileNumber });
 
     if (!otpRecord) {
         return res.status(400).json({
@@ -40,7 +41,7 @@ export async function userSignUp(req, res) {
         const newUser = await user
             .save();
 
-        await Otp.deleteOne({mobileNumber: mobileNumber});
+        await Otp.deleteOne({ mobileNumber: mobileNumber });
         return res.status(201).json({
             success: true,
             message: 'New user successfully added',
@@ -62,6 +63,24 @@ export async function generateOTP(req, res) {
     const code = Math.floor(1000 + Math.random() * 9000);
 
     //TODO: Generate OTP
+
+    const req = unirest("POST", "https://www.fast2sms.com/dev/bulkV2");
+
+    req.headers({
+        "authorization": "B7YnZprFjHLm4ui1aqJzAW6cOvwS8IkRyPUf9GVKlNEDt35Xbsldg6QCnOY4MbuvjhVq0wx3WSDp9zs2"
+    });
+
+    req.form({
+        "variables_values": code,
+        "route": "otp",
+        "numbers": phone,
+    });
+
+    req.end(function (res) {
+        if (res.error) throw new Error(res.error);
+
+        console.log(res.body);
+    });
 
     const otpRecord = new Otp({
         _id: new mongoose.Types.ObjectId(),
