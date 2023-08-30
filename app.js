@@ -14,8 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/", express.static('public'))
 // set up mongoose
-//mongodb+srv://root:root@cluster0.sagez.mongodb.net/?retryWrites=true&w=majority
-mongoose.connect('mongodb://localhost:27017/rms', { dbName: 'rms' })
+mongoose.connect('mongodb+srv://root:root@cluster0.sagez.mongodb.net/?retryWrites=true&w=majority', { dbName: 'rms' })
     .then(() => {
         console.log('Database connected');
     })
