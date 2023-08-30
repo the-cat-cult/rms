@@ -7,7 +7,6 @@ export async function createUser(req, res) {
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         mobileNumber: req.body.mno,
-        isOTPverified: false,
     })
 
     try {

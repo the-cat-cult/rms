@@ -5,53 +5,6 @@ import mongoose from "mongoose";
 import unirest from 'unirest'
 import jwt from "jsonwebtoken";
 
-export async function userSignUp(req, res) {
-
-    const otp = req.body.otp;
-    const mobileNumber = req.body.mno;
-
-    const otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
-
-    if (!otpRecord) {
-        return res.status(400).json({
-            success: false,
-            message: 'OTP not found'
-        });
-    }
-
-    if (otpRecord.otp !== otp) {
-        return res.status(400).json({
-            success: false,
-            message: 'OTP not matched'
-        });
-    }
-
-    const user = new User({
-        _id: new mongoose.Types.ObjectId(),
-        name: req.body.name,
-        mobileNumber: mobileNumber,
-        isOTPverified: true,
-    })
-
-    try {
-        const newUser = await user
-            .save();
-
-        await Otp.deleteOne({mobileNumber: mobileNumber});
-        return res.status(201).json({
-            success: true,
-            message: 'New user successfully added',
-            User: newUser
-        });
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: 'Error in adding a new user' + error
-        });
-    }
-
-}
-
 export async function tenantSignUp(req, res) {
     const otp = req.body.otp;
     const mobileNumber = req.body.mno;
@@ -72,14 +25,22 @@ export async function tenantSignUp(req, res) {
         });
     }
 
+    //check if user already exists
+    const existingTenant = await Tenant.findOne({mobileNumber: mobileNumber});
+
+    if (existingTenant) {
+        return res.status(400).json({
+            success: false,
+            message: 'Tenant already exists'
+        });
+    }
+
     const tenant = new Tenant({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         mobileNumber: req.body.mno,
         rank: req.body.rank,
-        tenantId: req.body.tid,
         unit: req.body.unit,
-        isOTPverified: true,
         dateOfReporting: req.body.dor,
         dateOfVacation: req.body.dov,
         allocationStatus: req.body.allocStat
@@ -127,7 +88,7 @@ export async function generateOTP(req, res) {
     const phone = req.body.phone;
 
     const code = Math.floor(1000 + Math.random() * 9000);
-    let otpRecord = Otp.findOne({mobileNumber: phone});
+    let otpRecord = await Otp.findOne({mobileNumber: phone});
 
     if (!otpRecord) {
         otpRecord = new Otp({
@@ -146,8 +107,7 @@ export async function generateOTP(req, res) {
             .save();
         return res.status(201).json({
             success: true,
-            message: 'New user successfully added',
-            OTP: code
+            message: 'OTP successfully generated',
         });
     } catch (error) {
         return res.status(500).json({
@@ -186,10 +146,6 @@ export async function login(req, res) {
             role = 'admin';
         } else {
             role = 'owner';
-            if (!user.isOTPverified) {
-                user.isOTPverified = true;
-                await user.save();
-            }
         }
     } else {
         user = await Tenant.findOne({mobileNumber: mobileNumber});
@@ -204,12 +160,6 @@ export async function login(req, res) {
         role = 'tenant';
     }
 
-    if (!user.isOTPverified) {
-        return res.status(400).json({
-            success: false,
-            message: 'OTP not verified'
-        });
-    }
 
     const token = generateJWTToken(user, role);
 
@@ -218,6 +168,10 @@ export async function login(req, res) {
         message: 'Login successful',
         token: token,
     });
+}
+
+export async function createAdmin(req, res) {
+
 
 
 }

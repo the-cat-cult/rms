@@ -2,7 +2,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import twilio from 'twilio';
 import dotenv from 'dotenv';
 
 import router from './server/routes/main.js';
@@ -10,7 +9,6 @@ import router from './server/routes/main.js';
 dotenv.config();
 
 const app = express();
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

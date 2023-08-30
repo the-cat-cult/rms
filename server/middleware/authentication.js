@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/user.js");
-const Tenant = require("../models/tenant.js");
+import jwt from "jsonwebtoken";
+import User from "../models/user.js";
+import Tenant from "../models/tenant.js";
 
-module.exports = function (roles) {
+export default function (roles) {
     return async function (request, response, next) {
 
         const receiveToken = request.header("user-auth-token");

@@ -10,7 +10,6 @@ export function createTenant(req, res) {
         rank: req.body.rank,
         tenantId: req.body.tid,
         unit: req.body.unit,
-        isOTPverified: false,
         dateOfReporting: req.body.dor,
         dateOfVacation: req.body.dov,
         allocationStatus: req.body.allocStat
