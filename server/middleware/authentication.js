@@ -19,16 +19,23 @@ module.exports = function (roles) {
             if (!userRole) {
                 return response.status(403).send("You are not authorised to perform this action");
             } else if (roles.includes(userRole)) {
-                const user = await User.findById(id);
-                const tenant = await Tenant.findById(id);
-                if (user) {
-                    request.user = user;
-                    next();
-                } else if (tenant) {
-                    request.user = tenant;
-                    next();
-                } else {
-                    return response.status(412).send("You are not authorised to perform this action");
+
+                if (userRole === "admin" || userRole === "owner") {
+                    const user = await User.findById(id);
+                    if (user) {
+                        request.user = user;
+                        next();
+                    } else {
+                        return response.status(412).send("You are not authorised to perform this action");
+                    }
+                } else if (userRole === "tenant") {
+                    const tenant = await Tenant.findById(id);
+                    if (tenant) {
+                        request.user = tenant;
+                        next();
+                    } else {
+                        return response.status(412).send("You are not authorised to perform this action");
+                    }
                 }
 
             } else {
