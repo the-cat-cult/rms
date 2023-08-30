@@ -7,7 +7,10 @@ const tenantSchema = new mongoose.Schema({
     rank: String,
     tenantId: String,
     unit: String,
-    isOTPverified: Boolean,
+    isOTPverified: {
+        type: Boolean,
+        default: false
+    },
     password: String,
     dateOfReporting: Date,
     dateOfVacation: Date,
