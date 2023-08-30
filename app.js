@@ -1,0 +1,39 @@
+
+import express from 'express';
+import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
+import twilio from 'twilio';
+import dotenv from 'dotenv';
+
+import router from './server/routes/main.js';
+
+dotenv.config();
+
+const app = express();
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use("/", express.static('public'))
+// set up mongoose
+mongoose.connect('mongodb+srv://root:root@cluster0.sagez.mongodb.net/?retryWrites=true&w=majority', { dbName: 'rms' })
+    .then(() => {
+        console.log('Database connected');
+    })
+    .catch((error) => {
+        console.log('Error connecting to database');
+    });
+// set up port
+const port = process.env.PORT || 8080;
+// set up route
+app.get('/', (req, res) => {
+    res.status(200).json({
+        message: "Welcome to the API"
+    });
+});
+
+app.use('/api/', router);
+
+app.listen(port, () => {
+    console.log(`Our server is running on port ${port}`);
+});
