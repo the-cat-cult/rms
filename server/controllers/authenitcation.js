@@ -170,12 +170,6 @@ export async function login(req, res) {
     });
 }
 
-export async function createAdmin(req, res) {
-
-
-
-}
-
 function generateJWTToken(user, role) {
     return jwt.sign({_id: user._id, role: role}, process.env.JWT_SECRET_KEY);
 }
