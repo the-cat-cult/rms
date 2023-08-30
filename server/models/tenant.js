@@ -11,7 +11,6 @@ const tenantSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    password: String,
     dateOfReporting: Date,
     dateOfVacation: Date,
     allocationStatus: String
