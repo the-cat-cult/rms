@@ -11,4 +11,4 @@ const tenantSchema = new mongoose.Schema({
     dateOfVacation: Date,
     allocationStatus: String
 }, {collection: "tenants"});
-export default mongoose.model('Owner', tenantSchema);
+export default mongoose.model('Tenant', tenantSchema);

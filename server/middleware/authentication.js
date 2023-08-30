@@ -19,7 +19,6 @@ export default function (roles) {
             if (!userRole) {
                 return response.status(403).send("You are not authorised to perform this action");
             } else if (roles.includes(userRole)) {
-
                 if (userRole === "admin" || userRole === "owner") {
                     const user = await User.findById(id);
                     if (user) {

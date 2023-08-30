@@ -5,6 +5,6 @@ const optSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     mobileNumber: Number,
     otp: Number,
-}, { collection: "users" });
+}, { collection: "otp" });
 
 export default mongoose.model('OTP', optSchema);

@@ -160,7 +160,6 @@ export async function login(req, res) {
         role = 'tenant';
     }
 
-
     const token = generateJWTToken(user, role);
 
     return res.status(200).json({
