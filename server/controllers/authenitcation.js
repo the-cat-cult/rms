@@ -10,7 +10,22 @@ export async function ownerSignUp(req, res) {
     const mobileNumber = req.body.phone;
     const name = req.body.name;
 
-    console.log(req.body)
+    const existingOwner = await User.findOne({mobileNumber: mobileNumber});
+
+    if (existingOwner) {
+        return res.status(400).json({
+            success: false,
+            message: 'Owner already exists'
+        });
+    } else {
+        const existingTenant = await Tenant.findOne({mobileNumber: mobileNumber});
+        if (existingTenant) {
+            return res.status(400).json({
+                success: false,
+                message: 'Tenant already exists'
+            });
+        }
+    }
 
     const otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
 
@@ -34,28 +49,10 @@ export async function ownerSignUp(req, res) {
         });
     }
 
-    const existingOwner = await User.findOne({mobileNumber: mobileNumber});
-
-    if (existingOwner) {
-        return res.status(400).json({
-            success: false,
-            message: 'Owner already exists'
-        });
-    } else {
-        const existingTenant = await Tenant.findOne({mobileNumber: mobileNumber});
-        if (existingTenant) {
-            return res.status(400).json({
-                success: false,
-                message: 'Tenant already exists'
-            });
-        }
-    }
-
     const user = new User({
         _id: new mongoose.Types.ObjectId(),
         name: name,
-        mobileNumber: mobileNumber,
-        isAdmin: req.body.isAdmin
+        mobileNumber: mobileNumber
     })
 
     try {
@@ -141,26 +138,6 @@ export async function login(req, res) {
     let otp = req.body.otp;
     const mobileNumber = req.body.phone;
 
-    const otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
-
-    if (!otpRecord) {
-        return res.status(400).json({
-            success: false,
-            message: 'OTP not found'
-        });
-    }
-
-    //parse both values to number
-    otpRecord.otp = parseInt(otpRecord.otp);
-    otp = parseInt(otp);
-
-    if (otpRecord.otp !== otp) {
-        return res.status(400).json({
-            success: false,
-            message: 'OTP not matched'
-        });
-    }
-
     let user = await User.findOne({mobileNumber: mobileNumber});
     let role = 'owner';
 
@@ -181,6 +158,26 @@ export async function login(req, res) {
         }
 
         role = 'tenant';
+    }
+
+    const otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
+
+    if (!otpRecord) {
+        return res.status(400).json({
+            success: false,
+            message: 'OTP not found'
+        });
+    }
+
+    //parse both values to number
+    otpRecord.otp = parseInt(otpRecord.otp);
+    otp = parseInt(otp);
+
+    if (otpRecord.otp !== otp) {
+        return res.status(400).json({
+            success: false,
+            message: 'OTP not matched'
+        });
     }
 
     const token = generateJWTToken(user, role);
