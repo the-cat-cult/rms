@@ -34,7 +34,7 @@ router.post("/addUser", authentication(["admin"]), createUser);
 
 //get single entity
 router.post('/getUser', authentication(["admin", "owner"]), getOneUser)
-router.post('/getTenant', authentication(["admin", "owner"]), getOneTenant)
+router.post('/getTenant', authentication(["admin", "tenant"]), getOneTenant)
 router.post('/getProperty', authentication(["admin", "owner", "tenant"]), getOneProperty)
 router.post('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
 
@@ -46,7 +46,7 @@ router.get('/listAllBookings', authentication(["admin", "tenant"]), getAllBookin
 
 //update entity
 router.patch('/updateUser', authentication(["admin", "owner"]), updateUser)
-router.patch('/updateTenant', authentication(["admin", "owner"]), updateTenant)
+router.patch('/updateTenant', authentication(["admin", "tenant"]), updateTenant)
 router.patch('/updateProperty', authentication(["admin", "owner"]), updateProperty)
 router.patch('/updateBooking', authentication(["admin"]), updateBooking)
 
