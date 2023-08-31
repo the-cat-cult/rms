@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <!-- Import css -->
     <link rel="stylesheet" href="../style.css">
@@ -17,6 +16,8 @@
     <script src="../script.js"></script>
 
 </head>
+
+<body>
 
 <div class="container mt-5">
     <h1>Hi!</h1>
@@ -39,7 +40,7 @@
 <script>
     function redirect() {
         // Receive the phone number from the form
-        var phoneNumber = document.getElementById("phoneNumber").value;
+        const phoneNumber = document.getElementById("phoneNumber").value;
 
         // Check if it is all numbers
         if (isNaN(phoneNumber)) {
@@ -61,16 +62,18 @@
         return false;
     }
 
-    // Don't allow the user to enter alphabets and more than 10 digits
-    function isNumberKey(evt) {
-        var charCode = (evt.which) ? evt.which : event.keyCode
-        if (charCode > 31 && (charCode < 48 || charCode > 57) || evt.target.value.length > 9)
+    // Only allow numbers to be entered
+
+    element = document.getElementById('phoneNumber');
+    element.onkeypress = function(e) {
+        if (isNaN(this.value + String.fromCharCode(e.charCode)))
             return false;
 
-        return true;
-    }
+        // Only allow 10 digits to be entered
+        if ((this.value + String.fromCharCode(e.charCode)).length > 10)
+            return false;
 
-    isNumberKey();
+    }
 </script>
 
 <!-- Include Bootstrap JS and jQuery -->
