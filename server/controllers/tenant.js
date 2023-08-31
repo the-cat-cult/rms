@@ -3,16 +3,54 @@ import Tenant from "../models/tenant.js";
 
 export function createTenant(req, res) {
 
+    const {name, mno, rank, unit, pnum, dor, dov} = req.body;
+
+    //validate data
+    if (!(name && mno && rank && unit && pnum && dor && dov)) {
+        return res.status(400).json({
+            success: false,
+            message: 'All fields are required'
+        });
+    }
+
+    if(mno.length !== 10){
+        return res.status(400).json({
+            success: false,
+            message: 'Mobile number should be of 10 digits'
+        });
+    }
+
+    if(!pnum.match(/\d+-[A-Z]/)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Invalid personal number'
+        });
+    }
+
+    if(!dor.match(/\d{4}-\d{2}-\d{2}/)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Invalid date of reporting'
+        });
+    }
+
+    if(!dov.match(/\d{4}-\d{2}-\d{2}/)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Invalid date of vacation'
+        });
+    }
+
     const tenant = new Tenant({
         _id: new mongoose.Types.ObjectId(),
-        name: req.body.name,
-        mobileNumber: req.body.mno,
-        rank: req.body.rank,
-        tenantId: req.body.tid,
-        unit: req.body.unit,
-        dateOfReporting: req.body.dor,
-        dateOfVacation: req.body.dov,
-        allocationStatus: req.body.allocStat
+
+        name: name,
+        mobileNumber: mno,
+        rank: rank,
+        unit: unit,
+        pnum: pnum,
+        dateOfReporting: dor,
+        dateOfVacation: dov,
     })
 
     return tenant

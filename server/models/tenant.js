@@ -7,8 +7,13 @@ const tenantSchema = new mongoose.Schema({
     mobileNumber: Number,
     rank: String,
     unit: String,
+    pnum: String,
     dateOfReporting: Date,
     dateOfVacation: Date,
-    allocationStatus: String
+    allocationStatus: {
+        type: String,
+        enum: ['no', 'yes'],
+        default: 'no'
+    }
 }, {collection: "tenants"});
 export default mongoose.model('Tenant', tenantSchema);
