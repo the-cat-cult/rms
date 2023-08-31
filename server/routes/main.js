@@ -34,10 +34,10 @@ router.post("/addTenant", authentication(["admin"]), createTenant);
 router.post("/addUser", authentication(["admin"]), createUser);
 
 //get single entity
-router.post('/getUser', authentication(["admin"]), getOneUser)
-router.post('/getTenant', authentication(["admin"]), getOneTenant)
-router.post('/getProperty', authentication(["admin", "owner", "tenant"]), getOneProperty)
-router.post('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
+router.get('/getUser', authentication(["admin"]), getOneUser)
+router.get('/getTenant', authentication(["admin"]), getOneTenant)
+router.get('/getProperty', authentication(["admin", "owner", "tenant"]), getOneProperty)
+router.get('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
 
 //get list of entities
 router.get('/listAllUsers', authentication(["admin"]), getAllUsers)
