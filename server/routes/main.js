@@ -10,14 +10,14 @@ import {
 } from '../controllers/properties.js'
 import {createTenant, getAllTenants, getOneTenant, updateTenant, deleteTenant} from '../controllers/tenant.js'
 import {createUser, getAllUsers, getOneUser, updateUser, deleteUser} from '../controllers/user.js'
-import {tenantSignUp, generateOTP, login} from '../controllers/authenitcation.js'
+import {ownerSignUp, generateOTP, login} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
 
 const router = express.Router();
 
 //authentication
 router.post('/login', login)
-router.post('/tenantSignUp', tenantSignUp)
+router.post('/ownerSignUp', ownerSignUp)
 router.post('/generateOTP', generateOTP)
 
 //create entity routes

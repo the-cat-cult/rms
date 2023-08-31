@@ -32,6 +32,10 @@ app.get('/', (req, res) => {
 
 app.use('/api/', router);
 
+app.get('*', function(req, res){
+    res.status(404).redirect('/pages/page_404.html');
+});
+
 app.listen(port, () => {
     console.log(`Our server is running on port ${port}`);
 });

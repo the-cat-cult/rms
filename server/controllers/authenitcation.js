@@ -5,9 +5,10 @@ import mongoose from "mongoose";
 import unirest from 'unirest'
 import jwt from "jsonwebtoken";
 
-export async function tenantSignUp(req, res) {
+export async function ownerSignUp(req, res) {
     const otp = req.body.otp;
     const mobileNumber = req.body.mno;
+    const name = req.body.name;
 
     const otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
 
@@ -26,35 +27,31 @@ export async function tenantSignUp(req, res) {
     }
 
     //check if user already exists
-    const existingTenant = await Tenant.findOne({mobileNumber: mobileNumber});
+    const existingOwner = await User.findOne({mobileNumber: mobileNumber});
 
-    if (existingTenant) {
+    if (existingOwner) {
         return res.status(400).json({
             success: false,
-            message: 'Tenant already exists'
+            message: 'Owner already exists'
         });
     }
 
-    const tenant = new Tenant({
+    const user = new User({
         _id: new mongoose.Types.ObjectId(),
-        name: req.body.name,
-        mobileNumber: req.body.mno,
-        rank: req.body.rank,
-        unit: req.body.unit,
-        dateOfReporting: req.body.dor,
-        dateOfVacation: req.body.dov,
-        allocationStatus: req.body.allocStat
+        name: name,
+        mobileNumber: mobileNumber,
+        isAdmin: req.body.isAdmin
     })
 
     try {
-        const newTenant = await tenant
+        const newUser = await user
             .save();
 
         await Otp.deleteOne({mobileNumber: mobileNumber});
         return res.status(201).json({
             success: true,
             message: 'New user successfully added',
-            User: newTenant
+            token: generateJWTToken(newUser, "owner"),
         });
     } catch (error) {
         return res.status(500).json({
