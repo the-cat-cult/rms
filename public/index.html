@@ -21,7 +21,8 @@
 
 <body>
 <header>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm p-3">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="30">
@@ -46,10 +47,18 @@
         </div>
     </nav>
 </header>
-<div style="display: flex; align-items: center; justify-content: center; height: 90vh">
-    <!--    center hero banner sating "START"-->
-    <div class="text-center">
-        <p class="lead" style="margin-top: 30px">Accommodation on HRA for Naval Personnel</p>
+<div class="container-fluid d-flex justify-content-center align-items-center" style="height: 90vh">
+    <div class="text-center text-body-tertiary">
+        <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="100" class="mb-5">
+        <p class="display-6 text-secondary mt-5" style="font-weight: 400">Accommodation on HRA for Naval Personnel</p>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-primary me-2 w-50 p-2 rounded-3"
+                    onclick="location.href='/pages/phone_number.html'">Login
+            </button>
+            <button type="button" class="btn btn-outline-success me-2 w-50 p-2 rounded-3"
+                    onclick="location.href='mailto:shivaanianandakrishnan@gmail.com'">Reach out to us
+            </button>
+        </div>
     </div>
 </div>
 
@@ -57,8 +66,6 @@
 
 
 <!-- Include Bootstrap JS and jQuery -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js "></script>
-<script src="https://cdn.misdeliver.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js "></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js "></script>
 
 
