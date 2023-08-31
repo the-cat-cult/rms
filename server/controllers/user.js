@@ -78,14 +78,9 @@ export function getAllUsers(req, res) {
 }
 
 export function getOneUser(req, res) {
-    if (!req.user.isAdmin && req.user.mobileNumber !== req.body.mno) {
-        return res.status(400).json({
-            success: false,
-            message: 'You can only view your account'
-        });
-    }
+    let mobileNumber = req.user.mobileNumber;
 
-    User.findOne({mobileNumber: req.body.mno})
+    User.findOne({mobileNumber: mobileNumber})
         .then((oneUser) => {
             return res.status(200).json({
                 success: true,
@@ -103,15 +98,10 @@ export function getOneUser(req, res) {
 }
 
 export async function updateUser(req, res) {
-    if (!req.user.isAdmin && req.user.mobileNumber !== req.body.mno) {
-        return res.status(400).json({
-            success: false,
-            message: 'You can only update your account'
-        });
-    }
+    let mobileNumber = req.user.mobileNumber;
 
     const updateObject = req.body
-    User.findOneAndUpdate({mobileNumber: req.body.mno}, {$set: updateObject})
+    User.findOneAndUpdate({mobileNumber: mobileNumber}, {$set: updateObject})
         .then((updatedUser) => {
             return res.status(200).json({
                 success: true,
@@ -128,14 +118,9 @@ export async function updateUser(req, res) {
 }
 
 export function deleteUser(req, res) {
-    if (!req.user.isAdmin && req.user.mobileNumber !== req.body.mno) {
-        return res.status(400).json({
-            success: false,
-            message: 'You can only delete your account'
-        });
-    }
+    let mobileNumber = req.user.mobileNumber;
 
-    User.findOneAndDelete({mobileNumber: req.body.mno})
+    User.findOneAndDelete({mobileNumber: mobileNumber})
         .then((oneUser) => {
             return res.status(200).json({
                 success: true,

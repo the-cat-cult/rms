@@ -5,10 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>START</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <!-- Import css -->
     <link rel="stylesheet" href="../style.css">
@@ -17,6 +20,7 @@
 
 </head>
 
+<body onload="getTenantData()">
 <div class="container mt-5 shadow">
     <form id="newTenantForm" class="mx-5">
         <h2 class="mt-5 mx-1 mb-5"> Edit Tenant &#x1f3e0;</h2>
@@ -80,12 +84,16 @@
 
         </div>
 
-        <button type="button" class="btn btn-outline-secondary mt-3 w-25 mb-5" onclick="validate_form()">Verify Data</button>
-        <button type="button" class="btn btn-primary mt-3 w-25 mb-5" id="submit_new_tenant" data-toggle="modal" data-target="#confirmModal" disabled>Add Tenant</button>
+        <button type="button" class="btn btn-outline-secondary mt-3 w-25 mb-5" onclick="validate_form()">Verify Data
+        </button>
+        <button type="button" class="btn btn-primary mt-3 w-25 mb-5" id="submit_new_tenant" data-toggle="modal"
+                data-target="#confirmModal" disabled>Add Tenant
+        </button>
     </form>
 
 
-    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -106,28 +114,59 @@
 
 </div>
 <script>
-    // Validate all fields
+    let name, unit, phone, pnum, rank, dor, dov;
+
+    function getTenantData() {
+        axios.post('/api/getTenant')
+            .then(function (response) {
+                let tenantData = response.data.Tenant;
+                name = tenantData.name;
+                unit = tenantData.unit;
+                phone = tenantData.mobileNumber;
+                pnum = tenantData.pnum;
+                rank = tenantData.rank;
+                dor = tenantData.dateOfReporting;
+                dov = tenantData.dateOfVacation;
+                dor = dor.split('T')[0];
+                dov = dov.split('T')[0];
+
+
+                console.log(response.data.Tenant)
+
+                document.getElementById('name').value = name || "";
+                document.getElementById('unit').value = unit || "";
+                document.getElementById('phno').value = phone || "";
+                document.getElementById('pnum').value = pnum || "";
+                document.getElementById('rank').value = rank || "";
+                document.getElementById('dor').value = dor || "";
+                document.getElementById('dov').value = dov || "";
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert("Error adding tenant");
+            });
+    }
+
     function validate_form() {
         name = document.getElementById('name').value;
         unit = document.getElementById('unit').value;
-        phnumber = document.getElementById('phno').value;
+        phone = document.getElementById('phno').value;
         pnum = document.getElementById('pnum').value;
         rank = document.getElementById('rank').value;
         dor = document.getElementById('dor').value;
         dov = document.getElementById('dov').value;
 
 
-
         console.log(name, unit, pnum, rank, dor, dov);
 
         // Verify that all fields are filled
-        if (name == "" || unit == "" || pnum == "" || rank == "" || dor == "" || dov == "") {
+        if (name === "" || unit === "" || pnum === "" || rank === "" || dor === "" || dov === "") {
             alert("Please fill in all fields");
             return false;
         }
 
         // Verify that the phone number is 10 digits
-        if (phnumber.length != 10) {
+        if (phone.length !== 10) {
             alert("Please enter a valid phone number");
             return false;
         }
@@ -151,24 +190,27 @@
 
 <script>
     // Handle form submission confirmation
-    document.getElementById('confirmButton').addEventListener('click', function() {
-        document.getElementById('newTenantForm').submit();
+    document.getElementById('confirmButton').addEventListener('click', function () {
+        axios.patch('/api/updateTenant', {
+            name: name,
+            mobileNumber: phone,
+            rank: rank,
+            unit: unit,
+            pnum: pnum,
+            dateOfReporting: dor,
+            dateOfVacation: dov
+        })
+            .then(function (response) {
+                console.log(response);
+                alert("Tenant updated successfully");
+                window.location.href = "/"
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert("Error updating tenant");
+            });
     });
 </script>
-
-
-<!-- Fetch from server and set values of each form -->
-<script>
-    // Get the tenant ID from the URL
-    document.getElementById('name').value = "John Doe";
-    document.getElementById('unit').value = "00000";
-    document.getElementById('phno').value = "0000000000";
-    document.getElementById('pnum').value = "123456-Z";
-    document.getElementById('rank').value = "ABCD";
-    document.getElementById('dor').value = "2021-09-01";
-    document.getElementById('dov').value = "2021-09-30";
-</script>
-
 
 <!-- Include Bootstrap JS and jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
