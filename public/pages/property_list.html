@@ -42,6 +42,7 @@
                 <button type="button" class="btn btn-outline-primary"
                         onclick=" window.location.href='/pages/tenant_page_ts.html'">Hi <span id="profile_name"></span>
                 </button>
+                <button type="button" class="btn btn-outline-secondary" onclick="logout()">Logout</button>
             </div>
         </div>
 
@@ -112,6 +113,19 @@
 
 
     <script>
+
+        function logout() {
+            axios.post('/api/logout')
+                .then(function (response) {
+                    console.log(response);
+                    localStorage.clear();
+                    alert("Logged Out")
+                    window.location.href = "/";
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
 
         function validateToken() {
             axios.get('/api/isAuthenticated')
