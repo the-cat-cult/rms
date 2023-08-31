@@ -49,5 +49,7 @@ router.delete('/deleteUser', authentication(["admin"]), deleteUser)
 router.delete('/deleteTenant', authentication(["admin"]), deleteTenant)
 router.delete('/deleteProperty', authentication(["admin", "owner"]), deleteProperty)
 router.delete('/deleteBooking', authentication(["admin"]), deleteBooking)
+router.delete('/deleteUserSelf', authentication(["admin", "owner"]), deleteUser)
+router.delete('/deleteTenantSelf', authentication(["tenant"]), deleteTenant)
 
 export default router;

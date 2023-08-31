@@ -159,3 +159,21 @@ export function deleteTenant(req, res) {
             });
         });
 }
+
+export function deleteSelf(req, res) {
+    User.findOneAndDelete({mobileNumber: req.user.mobileNumber})
+        .then((oneUser) => {
+            return res.status(200).json({
+                success: true,
+                message: 'Deleted User',
+                User: oneUser,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error. Please try again.',
+                error: err.message,
+            });
+        });
+}
