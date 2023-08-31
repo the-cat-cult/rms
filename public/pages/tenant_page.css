@@ -1,0 +1,26 @@
+body.tenant_page {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: rgb(238, 238, 238);
+}
+
+header {
+    background-color: #ffffff;
+    padding: 10px;
+    height: 100px;
+    color: rgb(58, 58, 58);
+    text-align: center;
+}
+
+.container {
+    background-color: #ffffff;
+    min-height: 100%;
+}
+
+.tenant_name {
+    font-size: 45px;
+    font-weight: 600;
+    color: rgb(87, 87, 87);
+    margin: 0;
+    padding: 0;
+}

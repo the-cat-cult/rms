@@ -14,9 +14,8 @@ import {
     getOneTenant,
     updateTenant,
     deleteTenant,
-    deleteSelf as deleteSelfTenant
 } from '../controllers/tenant.js'
-import {createUser, getAllUsers, getOneUser, updateUser, deleteUser, deleteSelf as deleteSelfUser} from '../controllers/user.js'
+import {createUser, getAllUsers, getOneUser, updateUser, deleteUser} from '../controllers/user.js'
 import {ownerSignUp, generateOTP, login} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
 
@@ -34,29 +33,27 @@ router.post("/addTenant", authentication(["admin"]), createTenant);
 router.post("/addUser", authentication(["admin"]), createUser);
 
 //get single entity
-router.get('/getUser', authentication(["admin"]), getOneUser)
-router.get('/getTenant', authentication(["admin"]), getOneTenant)
-router.get('/getProperty', authentication(["admin", "owner", "tenant"]), getOneProperty)
-router.get('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
+router.post('/getUser', authentication(["admin", "owner"]), getOneUser)
+router.post('/getTenant', authentication(["admin", "tenant"]), getOneTenant)
+router.post('/getProperty', authentication(["admin", "owner", "tenant"]), getOneProperty)
+router.post('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
 
 //get list of entities
 router.get('/listAllUsers', authentication(["admin"]), getAllUsers)
-router.get('/listAllTenants', authentication(["admin"]), getAllTenants)
+router.get('/listAllTenants', authentication(["admin", "owner"]), getAllTenants)
 router.get('/listAllProperties', authentication(["admin", "owner", "tenant"]), getAllProperties)
 router.get('/listAllBookings', authentication(["admin", "tenant"]), getAllBookings)
 
 //update entity
-router.patch('/updateUser', authentication(["admin"]), updateUser)
-router.patch('/updateTenant', authentication(["admin"]), updateTenant)
+router.patch('/updateUser', authentication(["admin", "owner"]), updateUser)
+router.patch('/updateTenant', authentication(["admin", "tenant"]), updateTenant)
 router.patch('/updateProperty', authentication(["admin", "owner"]), updateProperty)
 router.patch('/updateBooking', authentication(["admin"]), updateBooking)
 
 //delete entity
-router.delete('/deleteUser', authentication(["admin"]), deleteUser)
-router.delete('/deleteTenant', authentication(["admin"]), deleteTenant)
+router.delete('/deleteUser', authentication(["admin", "owner"]), deleteUser)
+router.delete('/deleteTenant', authentication(["admin", "tenant"]), deleteTenant)
 router.delete('/deleteProperty', authentication(["admin", "owner"]), deleteProperty)
 router.delete('/deleteBooking', authentication(["admin"]), deleteBooking)
-router.delete('/deleteUserSelf', authentication(["admin", "owner"]), deleteSelfUser)
-router.delete('/deleteTenantSelf', authentication(["tenant"]), deleteSelfTenant)
 
 export default router;

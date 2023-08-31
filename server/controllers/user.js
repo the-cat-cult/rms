@@ -78,6 +78,13 @@ export function getAllUsers(req, res) {
 }
 
 export function getOneUser(req, res) {
+    if (!req.user.isAdmin && req.user.mobileNumber !== req.body.mno) {
+        return res.status(400).json({
+            success: false,
+            message: 'You can only view your account'
+        });
+    }
+
     User.findOne({mobileNumber: req.body.mno})
         .then((oneUser) => {
             return res.status(200).json({
@@ -96,6 +103,13 @@ export function getOneUser(req, res) {
 }
 
 export async function updateUser(req, res) {
+    if (!req.user.isAdmin && req.user.mobileNumber !== req.body.mno) {
+        return res.status(400).json({
+            success: false,
+            message: 'You can only update your account'
+        });
+    }
+
     const updateObject = req.body
     User.findOneAndUpdate({mobileNumber: req.body.mno}, {$set: updateObject})
         .then((updatedUser) => {
@@ -114,25 +128,14 @@ export async function updateUser(req, res) {
 }
 
 export function deleteUser(req, res) {
-    User.findOneAndDelete({mobileNumber: req.body.mno})
-        .then((oneUser) => {
-            return res.status(200).json({
-                success: true,
-                message: 'Deleted User',
-                User: oneUser,
-            });
-        })
-        .catch((err) => {
-            res.status(500).json({
-                success: false,
-                message: 'Server error. Please try again.',
-                error: err.message,
-            });
+    if (!req.user.isAdmin && req.user.mobileNumber !== req.body.mno) {
+        return res.status(400).json({
+            success: false,
+            message: 'You can only delete your account'
         });
-}
+    }
 
-export function deleteSelf(req, res) {
-    User.findOneAndDelete({mobileNumber: req.user.mobileNumber})
+    User.findOneAndDelete({mobileNumber: req.body.mno})
         .then((oneUser) => {
             return res.status(200).json({
                 success: true,

@@ -107,6 +107,12 @@ export function getAllTenants(req, res) {
 }
 
 export function getOneTenant(req, res) {
+    if (!req.user.isAdmin && req.user.mobileNumber !== req.body.mno) {
+        return res.status(400).json({
+            success: false,
+            message: 'You can only view your account'
+        });
+    }
     Tenant.findOne({mobileNumber: req.body.mno})
         .then((oneTenant) => {
             return res.status(200).json({
@@ -125,6 +131,12 @@ export function getOneTenant(req, res) {
 }
 
 export async function updateTenant(req, res) {
+    if (!req.user.isAdmin && req.user.mobileNumber !== req.body.mno) {
+        return res.status(400).json({
+            success: false,
+            message: 'You can only update your account'
+        });
+    }
     const updateObject = req.body
     Tenant.findOneAndUpdate({mobileNumber: req.body.mno}, {$set: updateObject})
         .then((updatedTenant) => {
@@ -143,30 +155,18 @@ export async function updateTenant(req, res) {
 }
 
 export function deleteTenant(req, res) {
+    if (!req.user.isAdmin && req.user.mobileNumber !== req.body.mno) {
+        return res.status(400).json({
+            success: false,
+            message: 'You can only delete your account'
+        });
+    }
     Tenant.findOneAndDelete({mobileNumber: req.body.mno})
         .then((oneTenant) => {
             return res.status(200).json({
                 success: true,
                 message: 'Deleted Tenant',
                 Tenant: oneTenant,
-            });
-        })
-        .catch((err) => {
-            res.status(500).json({
-                success: false,
-                message: 'Server error. Please try again.',
-                error: err.message,
-            });
-        });
-}
-
-export function deleteSelf(req, res) {
-    User.findOneAndDelete({mobileNumber: req.user.mobileNumber})
-        .then((oneUser) => {
-            return res.status(200).json({
-                success: true,
-                message: 'Deleted User',
-                User: oneUser,
             });
         })
         .catch((err) => {
