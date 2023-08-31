@@ -48,11 +48,20 @@ export async function ownerSignUp(req, res) {
             .save();
 
         await Otp.deleteOne({mobileNumber: mobileNumber});
-        return res.status(201).json({
-            success: true,
-            message: 'New user successfully added',
-            token: generateJWTToken(newUser, "owner"),
-        });
+
+        const token = generateJWTToken(newUser, "owner");
+
+        return res
+            .cookie("user-auth-token", token, {
+                httpOnly: true,
+                secure: false,
+            })
+            .status(200)
+            .json({
+                success: true,
+                message: 'Owner successfully registered',
+            });
+
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -96,7 +105,6 @@ export async function generateOTP(req, res) {
     } else {
         otpRecord.otp = code;
     }
-
 
 
     try {
@@ -164,11 +172,16 @@ export async function login(req, res) {
 
     const token = generateJWTToken(user, role);
 
-    return res.status(200).json({
-        success: true,
-        message: 'Login successful',
-        token: token,
-    });
+    return res
+        .cookie("user-auth-token", token, {
+            httpOnly: true,
+            secure: false,
+        })
+        .status(200)
+        .json({
+            success: true,
+            message: 'Login successful'
+        });
 }
 
 function generateJWTToken(user, role) {

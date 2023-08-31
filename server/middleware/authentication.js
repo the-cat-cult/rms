@@ -5,7 +5,8 @@ import Tenant from "../models/tenant.js";
 export default function (roles) {
     return async function (request, response, next) {
 
-        const receiveToken = request.header("user-auth-token");
+        const receiveToken = request.cookies["user-auth-token"];
+
         if (!receiveToken) {
             return response
                 .status(412)
@@ -15,6 +16,8 @@ export default function (roles) {
             request.user = jwt.verify(receiveToken, process.env.JWT_SECRET_KEY);
             const userRole = request.user.role;
             const id = request.user._id
+
+            console.log(userRole, id)
 
             if (!userRole) {
                 return response.status(403).send("You are not authorised to perform this action");
