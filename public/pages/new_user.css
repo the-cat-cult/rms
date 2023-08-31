@@ -1,0 +1,28 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Poppins', sans-serif;
+}
+
+h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 40px;
+    font-weight: 600;
+    color: #363636;
+    margin-bottom: 20px;
+}
+
+.container {
+    /* Bring to the middle of screen vertically */
+    position: absolute;
+    text-align: center;
+    /* Bring to the middle of screen horizontally */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 40%;
+    margin: 0 auto;
+    width: 60%;
+    padding: 20px;
+    margin-right: auto;
+    margin-left: auto;
+    background-color: #f8f9fa;
+}
