@@ -100,9 +100,10 @@ export async function generateOTP(req, res) {
         otpRecord.otp = code;
     }
 
-    sendSMS(code, phone);
+
 
     try {
+        sendSMS(code, phone);
         await otpRecord
             .save();
         return res.status(201).json({
@@ -119,8 +120,8 @@ export async function generateOTP(req, res) {
 
 export async function login(req, res) {
 
-    const otp = req.body.otp;
-    const mobileNumber = req.body.mno;
+    let otp = req.body.otp;
+    const mobileNumber = req.body.phone;
 
     const otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
 
@@ -130,6 +131,10 @@ export async function login(req, res) {
             message: 'OTP not found'
         });
     }
+
+    //parse both values to number
+    otpRecord.otp = parseInt(otpRecord.otp);
+    otp = parseInt(otp);
 
     if (otpRecord.otp !== otp) {
         return res.status(400).json({

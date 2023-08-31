@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <!-- Import css -->
     <link rel="stylesheet" href="../style.css">
@@ -56,7 +57,7 @@
             return false;
         }
 
-        window.location.href = "otp.html";
+        window.location.href = "otp.html" + "?phoneNumber=" + phoneNumber;
         return false;
     }
 
