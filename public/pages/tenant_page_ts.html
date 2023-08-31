@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <!-- Import css -->
     <link rel="stylesheet" href="/pages/tenant_page.css">
@@ -17,7 +18,7 @@
 
 </head>
 
-<body class="tenant_page">
+<body class="tenant_page" onload="getTenant(); ">
 
     <header class="mb-5">
     </header>
@@ -58,8 +59,27 @@
         </div>
 
         <script>
+
+            function getTenant() {
+                axios.post("/api/getTenant")
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.success) {
+                            console.log(response.data);
+                            document.getElementsByClassName("tenant_name")[0].innerHTML = response.data.Tenant.name;
+                            document.getElementsByClassName("phone_number")[0].innerHTML = response.data.Tenant.mobileNumber;
+                            document.getElementsByClassName("personal_number")[0].innerHTML = response.data.Tenant.pnum;
+                            document.getElementsByClassName("rank")[0].innerHTML = response.data.Tenant.rank;
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+
             preference_list = document.getElementById("iter-elements");
             preferences = null;
+            //TODO: Replace preference
             preferences = {
                 1: {
                     'Priority': 1,
