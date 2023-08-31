@@ -34,6 +34,14 @@ export async function ownerSignUp(req, res) {
             success: false,
             message: 'Owner already exists'
         });
+    } else {
+        const existingTenant = await Tenant.findOne({mobileNumber: mobileNumber});
+        if (existingTenant) {
+            return res.status(400).json({
+                success: false,
+                message: 'Tenant already exists'
+            });
+        }
     }
 
     const user = new User({

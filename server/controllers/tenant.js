@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Tenant from "../models/tenant.js";
+import User from "../models/user.js";
 
 export function createTenant(req, res) {
 
@@ -13,32 +14,49 @@ export function createTenant(req, res) {
         });
     }
 
-    if(mno.length !== 10){
+    if (mno.length !== 10) {
         return res.status(400).json({
             success: false,
             message: 'Mobile number should be of 10 digits'
         });
     }
 
-    if(!pnum.match(/\d+-[A-Z]/)) {
+    if (!pnum.match(/\d+-[A-Z]/)) {
         return res.status(400).json({
             success: false,
             message: 'Invalid personal number'
         });
     }
 
-    if(!dor.match(/\d{4}-\d{2}-\d{2}/)) {
+    if (!dor.match(/\d{4}-\d{2}-\d{2}/)) {
         return res.status(400).json({
             success: false,
             message: 'Invalid date of reporting'
         });
     }
 
-    if(!dov.match(/\d{4}-\d{2}-\d{2}/)) {
+    if (!dov.match(/\d{4}-\d{2}-\d{2}/)) {
         return res.status(400).json({
             success: false,
             message: 'Invalid date of vacation'
         });
+    }
+
+    //check if number in user or tenant
+    const existingTenant = Tenant.findOne({mobileNumber: mno});
+    if (existingTenant) {
+        return res.status(400).json({
+            success: false,
+            message: 'Tenant already exists'
+        });
+    } else {
+        const existingUser = User.find({mobileNumber: mno});
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: 'User already exists'
+            });
+        }
     }
 
     const tenant = new Tenant({
@@ -89,7 +107,7 @@ export function getAllTenants(req, res) {
 }
 
 export function getOneTenant(req, res) {
-    Tenant.findOne({ mobileNumber: req.body.mno })
+    Tenant.findOne({mobileNumber: req.body.mno})
         .then((oneTenant) => {
             return res.status(200).json({
                 success: true,
@@ -108,7 +126,7 @@ export function getOneTenant(req, res) {
 
 export async function updateTenant(req, res) {
     const updateObject = req.body
-    Tenant.findOneAndUpdate({ mobileNumber: req.body.mno }, { $set: updateObject })
+    Tenant.findOneAndUpdate({mobileNumber: req.body.mno}, {$set: updateObject})
         .then((updatedTenant) => {
             return res.status(200).json({
                 success: true,
@@ -125,7 +143,7 @@ export async function updateTenant(req, res) {
 }
 
 export function deleteTenant(req, res) {
-    Tenant.findOneAndDelete({ mobileNumber: req.body.mno })
+    Tenant.findOneAndDelete({mobileNumber: req.body.mno})
         .then((oneTenant) => {
             return res.status(200).json({
                 success: true,

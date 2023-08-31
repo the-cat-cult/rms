@@ -1,7 +1,24 @@
 import mongoose from "mongoose";
 import User from "../models/user.js";
+import Tenant from "../models/tenant.js";
 
 export async function createUser(req, res) {
+
+    const existingUser = User.findOne({mobileNumber: mno});
+    if (existingUser) {
+        return res.status(400).json({
+            success: false,
+            message: 'User already exists'
+        });
+    } else {
+        const existingTenant = Tenant.find({mobileNumber: mno});
+        if (existingTenant) {
+            return res.status(400).json({
+                success: false,
+                message: 'Tenant already exists'
+            });
+        }
+    }
 
     const user = new User({
         _id: new mongoose.Types.ObjectId(),
