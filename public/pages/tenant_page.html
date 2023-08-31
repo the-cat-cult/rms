@@ -29,27 +29,201 @@
                 <div class="col-8">
                     <h1 class="tenant_name mt-5">Tenant Name</h1>
                     <span class="phone_number">Phone Number</span><br>
-                    <span class="pnumber">Personal Number</span><br>
+                    <span class="personal_number">Personal Number</span><br>
                     <span class="rank">Rank</span>
                 </div>
 
                 <div class="col-4 mt-5">
-                    <button type="button" class="btn btn-primary btn-block w-50">Edit Profile</button>
+                    <button type="button" id="edit" class="btn btn-primary btn-block w-50">Edit Profile</button>
                     <div class="mt-3"></div>
-                    <button type="button" class="btn btn-outline-danger btn-block w-50">Delete Profile</button>
+                    <button type="button" id="delete" class="btn btn-outline-danger btn-block w-50">Delete Profile</button>
 
                 </div>
+            </div>
+
+            <!-- Spacer -->
+            <div class="mt-5"></div>
+
+            <div class="container list-group mb-5" id="preference-list">
+
+                <div id="iter-elements">
+
+                </div>
+
+            </div>
+            <!-- <a href="#" class="list-group-item list-group-item-action flex-column align-items-start" id="Preference 1" data-toggle="modal" data-target="#preferenceModal">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Preference 1</h5><small>Priority 1</small>
+                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p><small class="text-muted">Rent: 10000</small><small class="text-muted">Security Deposit: 10000</small></div>
+            </a> -->
+
+            <!-- Allocate button -->
+            <div class="container">
+                <button type="button" class="btn btn-primary btn-block w-25 mb-5" disabled onclick="allocate()" id="allocate">Allocate</button>
+                <!-- Reset selection -->
+                <button type="button" class="btn btn-outline-danger btn-block w-25 mb-5" disabled onclick="reset()" id="reset">Reset Selection</button>
             </div>
         </div>
 
         <script>
+            preference_list = document.getElementById("iter-elements");
+            preferences = null;
+            preferences = {
+                1: {
+                    'Priority': 1,
+                    'Address': 'Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.',
+                    'Rent': 10000,
+                    'Security Deposit': 10000,
+                    'Owner': 'Owner 1',
+                    'Owner Phone Number': '1234567890'
+                },
+
+                2: {
+                    'Priority': 2,
+                    'Address': 'Donec id elit non  metus.  sed diam eget risus varius blandit.',
+                    'Rent': 10000,
+                    'Security Deposit': 10000,
+                    'Owner': 'Owner 2',
+                    'Owner Phone Number': '1234567890'
+                },
+
+                3: {
+                    'Priority': 3,
+                    'Address': 'Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.',
+                    'Rent': 10000,
+                    'Security Deposit': 10000,
+                    'Owner': 'Owner 3',
+                    'Owner Phone Number': '1234567890'
+                }
+            }
+
+            // Add each preference to the list in preference_list
+            if (preferences != null) {
+
+                for (var preference in preferences) {
+                    // Create a new list item
+                    var new_preference = document.createElement("a");
+                    new_preference.setAttribute("href", "#");
+                    new_preference.setAttribute("name", "preference");
+                    new_preference.setAttribute("class", "list-group-item list-group-item-action flex-column align-items-start");
+                    new_preference.setAttribute("id", preference);
+
+                    // Create a new div for the preference
+                    var preference_div = document.createElement("div");
+                    preference_div.setAttribute("class", "d-flex w-100 justify-content-between");
+
+                    // Create a new p for the address
+                    var preference_address = document.createElement("p");
+                    preference_address.setAttribute("class", "mb-1");
+                    address = preferences[preference]['Address'];
+
+                    // If the address is too long, truncate it
+                    if (address.length > 50) {
+                        address = address.substring(0, 50) + "...";
+                    }
+
+                    // If address is too short, add a few spaces to make it look better
+                    if (address.length < 50) {
+                        address = address + " ".repeat(50 - address.length);
+                    }
+                    preference_address.innerHTML = address;
+
+                    // Create a new small for the rent
+                    var preference_rent = document.createElement("small");
+                    preference_rent.setAttribute("class", "text-muted");
+                    preference_rent.innerHTML = "Rent: " + preferences[preference]['Rent'];
+
+                    // Create a new small for the security deposit
+                    var preference_sd = document.createElement("small");
+                    preference_sd.setAttribute("class", "text-muted");
+                    preference_sd.innerHTML = "Security Deposit: " + preferences[preference]['Security Deposit'];
+
+                    // Add the address, rent and security deposit to the div
+                    preference_div.appendChild(preference_address);
+                    preference_div.appendChild(preference_rent);
+                    preference_div.appendChild(preference_sd);
+
+                    // Add the div to the list item
+                    new_preference.appendChild(preference_div);
+
+                    // Add the list item to the list
+                    preference_list.appendChild(new_preference);
+                }
+                // Add a spacer
+                var spacer = document.createElement("div");
+                spacer.setAttribute("class", "mt-5");
+                preference_list.appendChild(spacer);
+            } else {
+                // Display a message saying that there are no preferences to display
+                var no_preferences = document.createElement("h2");
+                no_preferences.setAttribute("class", "text-muted mb-5");
+                no_preferences.innerHTML = "You have no preferences to display.";
+
+                preference_list.appendChild(no_preferences);
+
+            }
+
+            var current_selection = null;
+            // Add event listeners to each preference
+            var preferences = document.getElementsByName("preference");
+            preferences.forEach(function(preference) {
+                preference.addEventListener("click", function() {
+                    // Remove the active class from all preferences
+                    preferences.forEach(function(preference) {
+                        preference.classList.remove("active");
+                    });
+
+                    // Add the active class to the clicked preference
+                    preference.classList.add("active");
+                    current_selection = preference.id;
+
+                    // Enable the allocate button
+                    document.getElementById("allocate").disabled = false;
+
+                    // Enable the reset button
+                    document.getElementById("reset").disabled = false;
+                });
+            });
+
+
+            function allocate() {
+                console.log(current_selection);
+                if (confirm("Are you sure you want to allocate this property?")) {
+                    alert("Property allocated");
+                }
+            }
+
+            function reset() {
+                // Remove the active class from all preferences
+                preferences.forEach(function(preference) {
+                    preference.classList.remove("active");
+                });
+
+                // Disable the allocate button
+                document.getElementById("allocate").disabled = true;
+
+                // Disable the reset button
+                document.getElementById("reset").disabled = true;
+            }
         </script>
     </div>
 
     <footer class="mt-5">
     </footer>
 
-    <!-- Modal for are you sure -->
+    <script>
+        delete_button = document.getElementById("delete");
+        edit_button = document.getElementById("edit");
+
+        // Confirm popup when delete button is clicked
+        delete_button.addEventListener("click", function() {
+            if (confirm("Are you sure you want to delete your profile?")) {
+                // Delete profile
+                alert("Profile deleted");
+
+            }
+        });
+    </script>
 
 
     <!-- Include Bootstrap JS and jQuery -->
