@@ -6,11 +6,18 @@ import unirest from 'unirest'
 import jwt from "jsonwebtoken";
 
 export async function ownerSignUp(req, res) {
-    const otp = req.body.otp;
-    const mobileNumber = req.body.mno;
+    let otp = req.body.otp;
+    const mobileNumber = req.body.phone;
     const name = req.body.name;
 
+    console.log(req.body)
+
     const otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
+
+    console.log(otpRecord)
+
+    otpRecord.otp = parseInt(otpRecord.otp)
+    otp = parseInt(otp)
 
     if (!otpRecord) {
         return res.status(400).json({
@@ -20,6 +27,7 @@ export async function ownerSignUp(req, res) {
     }
 
     if (otpRecord.otp !== otp) {
+        console.log(otpRecord.otp, otp, otpRecord.otp !== otp)
         return res.status(400).json({
             success: false,
             message: 'OTP not matched'

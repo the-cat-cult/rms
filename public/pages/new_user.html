@@ -26,12 +26,12 @@
                 <!-- Full Name floating label -->
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="name" placeholder="John Doe">
-                    <label for="floatingInput">Full Name</label>
+                    <label for="name">Full Name</label>
                 </div>
                 <!-- Phone number floating label -->
                 <div class="form-floating mb-3">
                     <input type="tel" class="form-control" id="phone_number" placeholder="123456789" pattern="[0-9]{5}-[0-9]{5}">
-                    <label for="floatingInput">Phone Number</label>
+                    <label for="phone_number">Phone Number</label>
                 </div>
             </div>
 
@@ -68,17 +68,11 @@
 
         function create() {
             // Get the values from the form
-            var name = document.getElementById("name").value;
-            var phone_number = document.getElementById("phone_number").value;
-
-            // Create a new user
-            var user = {
-                name: name,
-                phone_number: phone_number
-            };
+            const name = document.getElementById("name").value;
+            const phone_number = document.getElementById("phone_number").value;
 
             // Redirect to the success page
-            window.location.href = "/pages/otp.html";
+            window.location.href = "/pages/otp_new_user.html?name=" + name + "&phoneNumber=" + phone_number;
         }
 
         function homepage() {

@@ -69,7 +69,19 @@
         const phone = urlParams.get('phoneNumber');
 
         if (phone == null) {
-            window.location.href = "phone_number.html";
+            window.location.href = "new_user.html";
+        }
+
+        return phone;
+    }
+
+    function getName() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const phone = urlParams.get('name');
+
+        if (phone == null) {
+            window.location.href = "new_user.html";
         }
 
         return phone;
@@ -94,11 +106,12 @@
     function verifyOTP() {
         const data = {
             "phone": getPhoneNumber(),
-            "otp": document.getElementById("digit1").value + document.getElementById("digit2").value + document.getElementById("digit3").value + document.getElementById("digit4").value
+            "otp": document.getElementById("digit1").value + document.getElementById("digit2").value + document.getElementById("digit3").value + document.getElementById("digit4").value,
+            "name": getName()
         };
 
         // /api/verifyOTP -> use axios post
-        axios.post('/api/login', data)
+        axios.post('/api/ownerSignUp', data)
             .then(function (response) {
                 console.log(response);
                 if (response.data.success) {
