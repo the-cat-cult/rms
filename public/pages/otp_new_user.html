@@ -121,7 +121,11 @@
                 }
             })
             .catch(function (error) {
-                console.log(error);
+                let message = error.response.data.message;
+                alert(message);
+                if(message === "Owner already exists") {
+                    window.location.href = "phone_number.html";
+                }
             });
     }
 
