@@ -17,8 +17,6 @@ export default function (roles) {
             const userRole = request.user.role;
             const id = request.user._id
 
-            console.log(userRole, id)
-
             if (!userRole) {
                 return response.status(403).send("You are not authorised to perform this action");
             } else if (roles.includes(userRole)) {

@@ -20,14 +20,14 @@ export async function createUser(req, res) {
         });
     }
 
-    const existingUser = User.findOne({mobileNumber: mno});
+    const existingUser = await User.findOne({mobileNumber: mno});
     if (existingUser) {
         return res.status(400).json({
             success: false,
             message: 'User already exists'
         });
     } else {
-        const existingTenant = Tenant.find({mobileNumber: mno});
+        const existingTenant = await Tenant.findOne({mobileNumber: mno});
         if (existingTenant) {
             return res.status(400).json({
                 success: false,

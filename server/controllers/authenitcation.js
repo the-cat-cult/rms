@@ -26,7 +26,6 @@ export async function ownerSignUp(req, res) {
         });
     }
 
-    //check if user already exists
     const existingOwner = await User.findOne({mobileNumber: mobileNumber});
 
     if (existingOwner) {
@@ -93,8 +92,6 @@ function sendSMS(code, phone) {
 
     req.end(function (res) {
         if (res.error) throw new Error(res.error);
-
-        console.log(res.body);
     });
 }
 

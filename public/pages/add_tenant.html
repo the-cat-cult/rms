@@ -125,8 +125,6 @@
         dor = document.getElementById('dor').value;
         dov = document.getElementById('dov').value;
 
-        console.log(name, unit, pnum, rank, dor, dov);
-
         // Verify that all fields are filled
         if (name === "" || unit === "" || pnum === "" || rank === "" || dor === "" || dov === "") {
             alert("Please fill in all fields");
@@ -175,7 +173,7 @@
             .then(function (response) {
                 console.log(response);
                 alert("Tenant added successfully");
-                window.location.href = "/index.php";
+                window.location.href = "/"
             })
             .catch(function (error) {
                 console.log(error);

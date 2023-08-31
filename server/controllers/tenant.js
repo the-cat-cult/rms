@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import Tenant from "../models/tenant.js";
 import User from "../models/user.js";
 
-export function createTenant(req, res) {
+export async function createTenant(req, res) {
 
     const {name, mno, rank, unit, pnum, dor, dov} = req.body;
 
@@ -43,14 +43,14 @@ export function createTenant(req, res) {
     }
 
     //check if number in user or tenant
-    const existingTenant = Tenant.findOne({mobileNumber: mno});
+    const existingTenant = await Tenant.findOne({mobileNumber: mno});
     if (existingTenant) {
         return res.status(400).json({
             success: false,
             message: 'Tenant already exists'
         });
     } else {
-        const existingUser = User.find({mobileNumber: mno});
+        const existingUser = await User.findOne({mobileNumber: mno});
         if (existingUser) {
             return res.status(400).json({
                 success: false,

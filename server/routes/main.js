@@ -8,8 +8,15 @@ import {
     updateProperty,
     deleteProperty
 } from '../controllers/properties.js'
-import {createTenant, getAllTenants, getOneTenant, updateTenant, deleteTenant} from '../controllers/tenant.js'
-import {createUser, getAllUsers, getOneUser, updateUser, deleteUser} from '../controllers/user.js'
+import {
+    createTenant,
+    getAllTenants,
+    getOneTenant,
+    updateTenant,
+    deleteTenant,
+    deleteSelf as deleteSelfTenant
+} from '../controllers/tenant.js'
+import {createUser, getAllUsers, getOneUser, updateUser, deleteUser, deleteSelf as deleteSelfUser} from '../controllers/user.js'
 import {ownerSignUp, generateOTP, login} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
 
@@ -49,7 +56,7 @@ router.delete('/deleteUser', authentication(["admin"]), deleteUser)
 router.delete('/deleteTenant', authentication(["admin"]), deleteTenant)
 router.delete('/deleteProperty', authentication(["admin", "owner"]), deleteProperty)
 router.delete('/deleteBooking', authentication(["admin"]), deleteBooking)
-router.delete('/deleteUserSelf', authentication(["admin", "owner"]), deleteUser)
-router.delete('/deleteTenantSelf', authentication(["tenant"]), deleteTenant)
+router.delete('/deleteUserSelf', authentication(["admin", "owner"]), deleteSelfUser)
+router.delete('/deleteTenantSelf', authentication(["tenant"]), deleteSelfTenant)
 
 export default router;
