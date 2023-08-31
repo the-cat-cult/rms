@@ -4,6 +4,22 @@ import Tenant from "../models/tenant.js";
 
 export async function createUser(req, res) {
 
+    const {name, mno, isAdmin} = req.body;
+
+    if (!(name && mno)) {
+        return res.status(400).json({
+            success: false,
+            message: 'All fields are required'
+        });
+    }
+
+    if (isNaN(mno) || mno.length !== 10) {
+        return res.status(400).json({
+            success: false,
+            message: 'Mobile number should be of 10 digits'
+        });
+    }
+
     const existingUser = User.findOne({mobileNumber: mno});
     if (existingUser) {
         return res.status(400).json({
@@ -22,9 +38,9 @@ export async function createUser(req, res) {
 
     const user = new User({
         _id: new mongoose.Types.ObjectId(),
-        name: req.body.name,
-        mobileNumber: req.body.mno,
-        isAdmin: req.body.isAdmin
+        name: name,
+        mobileNumber: mno,
+        isAdmin: isAdmin || false
     })
 
     try {
