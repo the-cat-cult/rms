@@ -197,3 +197,13 @@ export async function login(req, res) {
 function generateJWTToken(user, role) {
     return jwt.sign({_id: user._id, role: role}, process.env.JWT_SECRET_KEY);
 }
+
+export function singOut(req, res) {
+    return res
+        .clearCookie("user-auth-token")
+        .status(200)
+        .json({
+            success: true,
+            message: 'Logout successful'
+        });
+}
