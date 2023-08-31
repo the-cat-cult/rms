@@ -102,7 +102,10 @@
             .then(function (response) {
                 console.log(response);
                 if (response.data.success) {
-                    //TODO: Redirect to home page
+                    //get name and role from response.data and store in local storage
+                    localStorage.setItem("name", response.data.name);
+                    localStorage.setItem("role", response.data.role);
+                    window.location.href = "property_list.html";
                 } else {
                     alert("Wrong OTP");
                 }

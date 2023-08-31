@@ -16,7 +16,7 @@ import {
     deleteTenant,
 } from '../controllers/tenant.js'
 import {createUser, getAllUsers, getOneUser, updateUser, deleteUser} from '../controllers/user.js'
-import {ownerSignUp, generateOTP, login, singOut} from '../controllers/authenitcation.js'
+import {ownerSignUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
 
 const router = express.Router();
@@ -26,6 +26,7 @@ router.post('/login', login)
 router.post('/ownerSignUp', ownerSignUp)
 router.post('/generateOTP', generateOTP)
 router.post('/logout', authentication(["admin", "owner", "tenant"]), singOut)
+router.get('/isAuthenticated', authentication(["admin", "owner", "tenant"]), checkAuth)
 
 //create entity routes
 router.post('/addBooking', authentication(["admin", "tenant"]), createBooking);

@@ -71,6 +71,8 @@ export async function ownerSignUp(req, res) {
             .status(200)
             .json({
                 success: true,
+                role: "owner",
+                name: newUser.name,
                 message: 'Owner successfully registered',
             });
 
@@ -190,6 +192,8 @@ export async function login(req, res) {
         .status(200)
         .json({
             success: true,
+            role: "owner",
+            name: user.name,
             message: 'Login successful'
         });
 }
@@ -206,4 +210,13 @@ export function singOut(req, res) {
             success: true,
             message: 'Logout successful'
         });
+}
+
+export function checkAuth(req, res) {
+    return res.status(200).json({
+        success: true,
+        name: req.user.name,
+        role: req.user.role,
+        message: 'User is authenticated'
+    });
 }

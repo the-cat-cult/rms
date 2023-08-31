@@ -52,6 +52,7 @@
 
             <!-- Delete Preference button -->
             <div class="container">
+                <button type="button" class="btn btn-success mb-5" id="choose_prefs" onclick="window.location.href='/pages/property_list.html'">Choose Preferences</button>
                 <button type="button" class="btn btn-danger mb-5" id="delete_btn" disabled>Delete Preference</button>
             </div>
         </div>
@@ -183,8 +184,15 @@
                     document.getElementById(current_selection).remove();
                     // Disable the delete button
                     document.getElementById("delete_btn").disabled = true;
+                    // Enable the choose preferences button
+                    document.getElementById("choose_prefs").disabled = false;
                 }
             });
+
+            // If 3 preferences are selected, disable the choose preferences button
+            if (preferences.length == 3) {
+                document.getElementById("choose_prefs").disabled = true;
+            }
         </script>
     </div>
 
