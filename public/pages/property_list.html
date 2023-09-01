@@ -42,7 +42,7 @@
                 <button type="button" class="btn btn-outline-primary"
                         onclick=" window.location.href='/pages/tenant_page_ts.html'">Hi <span id="profile_name"></span>
                 </button>
-                <button type="button" class="btn btn-outline-secondary" onclick="logout()">Logout</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="sign_out()">Sign Out</button>
             </div>
         </div>
 
@@ -114,12 +114,12 @@
 
     <script>
 
-        function logout() {
-            axios.post('/api/logout')
+        function sign_out() {
+            axios.post('/api/signOut')
                 .then(function (response) {
                     console.log(response);
                     localStorage.clear();
-                    alert("Logged Out")
+                    alert("Signed Out")
                     window.location.href = "/";
                 })
                 .catch(function (error) {

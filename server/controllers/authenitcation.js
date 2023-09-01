@@ -105,6 +105,13 @@ function sendSMS(code, phone) {
 export async function generateOTP(req, res) {
     const phone = req.body.phone;
 
+    if (process.env.NODE_ENV === 'development') {
+        return res.status(201).json({
+            success: true,
+            message: 'OTP successfully generated',
+        });
+    }
+
     const code = Math.floor(1000 + Math.random() * 9000);
     let otpRecord = await Otp.findOne({mobileNumber: phone});
 
@@ -164,6 +171,11 @@ export async function login(req, res) {
 
     const otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
 
+    //if env is def
+    if (process.env.NODE_ENV === 'development') {
+        otpRecord.otp = 1234;
+    }
+
     if (!otpRecord) {
         return res.status(400).json({
             success: false,
@@ -192,7 +204,7 @@ export async function login(req, res) {
         .status(200)
         .json({
             success: true,
-            role: "owner",
+            role: role,
             name: user.name,
             message: 'Login successful'
         });
@@ -208,7 +220,7 @@ export function singOut(req, res) {
         .status(200)
         .json({
             success: true,
-            message: 'Logout successful'
+            message: 'Signout successful'
         });
 }
 

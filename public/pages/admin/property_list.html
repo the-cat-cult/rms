@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>START</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-4" href="/">
+                    <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="30">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    </ul>
+                </div>
+
+
+                <!-- Sign Out button -->
+                <div class="d-flex mx-5">
+                    <button type="button" class="btn btn-outline-primary mx-3" onclick="sign_out()">Sign Out</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <!-- Body -->
+    <div class="container">
+        <div class="filter-section mb-3">
+            <!-- BHK Dropdown -->
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="bhk" class="form-label">House</label>
+                    <select class="form-select" aria-label="BHK Selection" id="BHK">
+                        <option value="1">1 BHK</option>
+                        <option value="2">2 BHK</option>
+                        <option value="3">3 BHK</option>
+                        <option value="4">4 BHK</option>
+                        <option value="5">5 BHK</option>
+                    </select>
+                </div>
+
+                <!-- Rent Range in a double slider-->
+                <div class="col-md-4">
+                    <label for="rent" class="form-label">Rent</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" placeholder="Min" id="min">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" placeholder="Max" id="max">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="col-md-3">
+                    <label for="address" class="form-label">Area</label>
+                    <input type="text" class="form-control" placeholder="Area" id="address">
+                </div>
+                <!-- Search by Property ID -->
+                <div class="col-md-3">
+                    <label for="address" class="form-label">Property ID</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Property ID" id="property_id">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="search_by_property_id(document.getElementById('property_id').value)">Search</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Property List -->
+        <div class="property-list">
+            <div class="list-group" id="prop-list">
+            </div>
+        </div>
+
+        <style>
+            .filter-section {
+                background-color: #F2F2F2;
+                border-radius: 10px;
+                padding: 20px;
+                margin-top: 20px;
+            }
+            
+            .list-group {
+                max-height: 700px;
+                margin-bottom: 10px;
+                overflow-y: scroll;
+                -webkit-overflow-scrolling: touch;
+            }
+        </style>
+
+
+        <script>
+            // current_user = "Jignesh";
+            // document.getElementById("profile_name").innerHTML = current_user;
+
+
+            default_data = {
+                1: {
+                    "name": "Jignesh",
+                    "address": "Lucknow",
+                    "rent": 25000,
+                    "bhk": 2,
+                    "id": "qwer",
+                    "link": "/pages/property_details.html"
+                },
+                2: {
+                    "name": "Harshit",
+                    "address": "Lucknow",
+                    "rent": 25000,
+                    "bhk": 2,
+                    "id": "wert",
+                    "link": "../pages/property_details.html"
+                },
+                3: {
+                    "name": "Rahul",
+                    "address": "Lucknow",
+                    "rent": 25000,
+                    "bhk": 2,
+                    "id": "erty",
+                    "link": "../pages/property_details.html"
+                },
+                4: {
+                    "name": "Rahul",
+                    "address": "Lucknow",
+                    "rent": 25000,
+                    "bhk": 2,
+                    "id": "rtyu",
+                    "link": "../pages/property_details.html"
+                },
+                5: {
+                    "name": "Rahul",
+                    "address": "Lucknow",
+                    "rent": 25000,
+                    "bhk": 2,
+                    "id": "tyui",
+                    "link": "../pages/property_details.html"
+                },
+                6: {
+                    "name": "Rahul",
+                    "address": "Lucknow",
+                    "rent": 25000,
+                    "bhk": 2,
+                    "id": "yuio",
+                    "link": "../pages/property_details.html"
+                },
+                7: {
+                    "name": "Rahul",
+                    "address": "Lucknow",
+                    "rent": 25000,
+                    "bhk": 2,
+                    "id": "uiop",
+                    "link": "../pages/property_details.html"
+                },
+                8: {
+                    "name": "Rahul",
+                    "address": "Lucknow",
+                    "rent": 25000,
+                    "bhk": 2,
+                    "id": "iopa",
+                    "link": "../pages/property_details.html"
+                }
+
+            }
+
+            list = document.getElementById("prop-list");
+
+            data_length = Object.keys(default_data).length;
+            for (var i = 1; i <= data_length; i++) {
+                var item = document.createElement("a");
+                item.setAttribute("href", default_data[i]["link"]);
+                item.setAttribute("class", "list-group-item list-group-item-action");
+                item.setAttribute("aria-current", "true");
+
+                var div1 = document.createElement("div");
+                div1.setAttribute("class", "d-flex w-100 justify-content-between");
+
+                var h5 = document.createElement("h5");
+                h5.setAttribute("class", "mb-1");
+                h5.innerHTML = "₹" + default_data[i]["rent"];
+
+                var small = document.createElement("small");
+                small.innerHTML = default_data[i]["bhk"] + " BHK";;
+
+                div1.appendChild(h5);
+                div1.appendChild(small);
+
+                var p = document.createElement("p");
+                p.setAttribute("class", "mb-1");
+                p.innerHTML = default_data[i]["address"];
+
+                var small2 = document.createElement("small");
+                small2.setAttribute("class", "text-primary");
+                small2.innerHTML = default_data[i]["id"];
+
+                item.appendChild(div1);
+                item.appendChild(p);
+                item.appendChild(small2);
+
+                list.appendChild(item);
+            }
+
+            search_by_property = document.getElementById("property_id");
+            search_by_property.addEventListener("keyup", function(event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    value = search_by_property.value;
+                    search_by_property_id(value);
+                }
+            });
+
+
+            function search_by_property_id(value) {
+                list = document.getElementById("prop-list");
+                list.innerHTML = "";
+                data_length = Object.keys(default_data).length;
+                for (var i = 1; i <= data_length; i++) {
+                    if (default_data[i]["id"].includes(value)) {
+                        var item = document.createElement("a");
+                        item.setAttribute("href", default_data[i]["link"]);
+                        item.setAttribute("class", "list-group-item list-group-item-action");
+                        item.setAttribute("aria-current", "true");
+
+                        var div1 = document.createElement("div");
+                        div1.setAttribute("class", "d-flex w-100 justify-content-between");
+
+                        var h5 = document.createElement("h5");
+                        h5.setAttribute("class", "mb-1");
+                        h5.innerHTML = "₹" + default_data[i]["rent"];
+
+                        var small = document.createElement("small");
+                        small.innerHTML = default_data[i]["bhk"] + " BHK";;
+
+                        div1.appendChild(h5);
+                        div1.appendChild(small);
+
+                        var p = document.createElement("p");
+                        p.setAttribute("class", "mb-1");
+                        p.innerHTML = default_data[i]["address"];
+
+                        var small2 = document.createElement("small");
+                        small2.setAttribute("class", "text-primary");
+                        small2.innerHTML = default_data[i]["id"];
+
+                        item.appendChild(div1);
+                        item.appendChild(p);
+                        item.appendChild(small2);
+
+                        list.appendChild(item);
+                    }
+                }
+            }
+
+            BHK_select = document.getElementById("BHK");
+
+            min = document.getElementById("min");
+
+            max = document.getElementById("max");
+
+            address = document.getElementById("address");
+        </script>
+    </div>
+
+
+</body>

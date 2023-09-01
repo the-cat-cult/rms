@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/pages/error_page.css">
+    <title>404 - Page Not Found</title>
+</head>
+
+<body onload="redirect()">
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="text-center p-4">
+            <h1>Please wait</h1>
+            <p class="lead">We are getting you to the right page</p>
+        </div>
+    </div>
+</body>
+
+<script>
+    function redirect() {
+        let role = localStorage.getItem("role");
+        console.log(role)
+        if(role == "admin") {
+            window.location.href = "/pages/admin/admin_panel.html";
+        } else if (role == "owner") {
+            window.location.href = "owner.html";
+        } else if (role == "tenant") {
+            window.location.href = "tenant_page_ts.html";
+        } else {
+            alert("Invalid role");
+            window.location.href = "/";
+        }
+    }
+</script>
+
+</html>

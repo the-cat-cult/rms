@@ -25,7 +25,7 @@ const router = express.Router();
 router.post('/login', login)
 router.post('/ownerSignUp', ownerSignUp)
 router.post('/generateOTP', generateOTP)
-router.post('/logout', authentication(["admin", "owner", "tenant"]), singOut)
+router.post('/signOut', authentication(["admin", "owner", "tenant"]), singOut)
 router.get('/isAuthenticated', authentication(["admin", "owner", "tenant"]), checkAuth)
 
 //create entity routes

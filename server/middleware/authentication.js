@@ -24,6 +24,7 @@ export default function (roles) {
                     const user = await User.findById(id);
                     if (user) {
                         request.user = user;
+                        request.user.role = user.isAdmin ? "admin" : "owner";
                         next();
                     } else {
                         return response.status(412).send("You are not authorised to perform this action");
@@ -32,6 +33,7 @@ export default function (roles) {
                     const tenant = await Tenant.findById(id);
                     if (tenant) {
                         request.user = tenant;
+                        request.user.role = "tenant";
                         next();
                     } else {
                         return response.status(412).send("You are not authorised to perform this action");

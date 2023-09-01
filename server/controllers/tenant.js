@@ -109,6 +109,10 @@ export function getAllTenants(req, res) {
 export function getOneTenant(req, res) {
     let mobileNumber = req.user.mobileNumber;
 
+    if(req.user.role === 'admin'){
+        mobileNumber = req.body.mobileNumber;
+    }
+
     Tenant.findOne({mobileNumber: mobileNumber})
         .then((oneTenant) => {
             return res.status(200).json({
@@ -129,6 +133,10 @@ export function getOneTenant(req, res) {
 export async function updateTenant(req, res) {
     let mobileNumber = req.user.mobileNumber;
 
+    if(req.user.role === 'admin'){
+        mobileNumber = req.body.mobileNumber;
+    }
+
     const updateObject = req.body
     Tenant.findOneAndUpdate({mobileNumber: mobileNumber}, {$set: updateObject})
         .then((updatedTenant) => {
@@ -148,6 +156,10 @@ export async function updateTenant(req, res) {
 
 export function deleteTenant(req, res) {
     let mobileNumber = req.user.mobileNumber;
+
+    if(req.user.role === 'admin'){
+        mobileNumber = req.body.mobileNumber;
+    }
 
     Tenant.findOneAndDelete({mobileNumber: mobileNumber})
         .then((oneTenant) => {

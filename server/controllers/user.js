@@ -80,6 +80,10 @@ export function getAllUsers(req, res) {
 export function getOneUser(req, res) {
     let mobileNumber = req.user.mobileNumber;
 
+    if(req.user.role === 'admin'){
+        mobileNumber = req.body.mobileNumber;
+    }
+
     User.findOne({mobileNumber: mobileNumber})
         .then((oneUser) => {
             return res.status(200).json({
@@ -100,6 +104,10 @@ export function getOneUser(req, res) {
 export async function updateUser(req, res) {
     let mobileNumber = req.user.mobileNumber;
 
+    if(req.user.role === 'admin'){
+        mobileNumber = req.body.mobileNumber;
+    }
+
     const updateObject = req.body
     User.findOneAndUpdate({mobileNumber: mobileNumber}, {$set: updateObject})
         .then((updatedUser) => {
@@ -119,6 +127,10 @@ export async function updateUser(req, res) {
 
 export function deleteUser(req, res) {
     let mobileNumber = req.user.mobileNumber;
+
+    if(req.user.role === 'admin'){
+        mobileNumber = req.body.mobileNumber;
+    }
 
     User.findOneAndDelete({mobileNumber: mobileNumber})
         .then((oneUser) => {
