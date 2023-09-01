@@ -71,6 +71,39 @@ export function getOneProperty(req, res) {
         });
 }
 
+export function getPropertiesByFilters(req, res) {
+    const {bhk, minRent, maxRent, area} = req.body;
+    let query = {};
+    if (bhk) {
+        query.bhk = bhk;
+    }
+    if (minRent) {
+        query.rent = {$gte: minRent};
+    }
+    if (maxRent) {
+        query.rent = {$lte: maxRent};
+    }
+    if (area) {
+        query.location = area;
+    }
+
+    console.log(query)
+
+    Property.find(query).then((properties) => {
+        return res.status(200).json({
+            success: true,
+            message: 'Result',
+            Property: properties,
+        });
+    }).catch((err) => {
+        res.status(400).json({
+            success: false,
+            message: 'Filters failed',
+            error: err.message,
+        });
+    });
+}
+
 export async function updateProperty(req, res) {
     const updateObject = req.body
     Property.findOneAndUpdate({ propertyId: req.body.pid }, { $set: updateObject })
