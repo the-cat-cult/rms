@@ -169,10 +169,11 @@ export async function login(req, res) {
         role = 'tenant';
     }
 
-    const otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
+    let otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
 
     //if env is def
     if (process.env.NODE_ENV === 'development') {
+        otpRecord = {}
         otpRecord.otp = 1234;
     }
 
@@ -195,6 +196,8 @@ export async function login(req, res) {
     }
 
     const token = generateJWTToken(user, role);
+
+    await Otp.deleteOne({mobileNumber: mobileNumber});
 
     return res
         .cookie("user-auth-token", token, {
