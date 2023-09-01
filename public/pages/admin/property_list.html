@@ -190,7 +190,6 @@
 
             axios.post("/api/listAllPropertiesByFilter", query)
                 .then(function (response) {
-                    console.log(response);
                     if (response.data.success) {
                         for (let i = 0; i < response.data.Property.length; i++) {
                             default_data.push({
@@ -218,7 +217,6 @@
         function generate_list(default_data) {
             list = document.getElementById("prop-list");
 
-            console.log(default_data.length, "DATA")
             for (var i = 0; i < default_data.length; i++) {
                 var item = document.createElement("a");
                 item.setAttribute("href", default_data[i]["link"]);
@@ -231,8 +229,6 @@
                 var h5 = document.createElement("h5");
                 h5.setAttribute("class", "mb-1");
                 h5.innerHTML = "₹" + default_data[i]["rent"]["$numberDecimal"]
-
-                console.log(default_data[i]["rent"])
 
                 var small = document.createElement("small");
                 small.innerHTML = default_data[i]["bhk"];
