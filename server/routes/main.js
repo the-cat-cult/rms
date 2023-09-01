@@ -29,8 +29,8 @@ router.post('/signOut', authentication(["admin", "owner", "tenant"]), singOut)
 router.get('/isAuthenticated', authentication(["admin", "owner", "tenant"]), checkAuth)
 
 //create entity routes
-router.post('/addBooking', authentication(["admin", "tenant"]), createBooking);
-router.post('/addProperty', authentication(["admin", "owner"]), createProperty);
+router.post('/addBooking', authentication(["tenant"]), createBooking);
+router.post('/addProperty', authentication(["owner"]), createProperty);
 router.post("/addTenant", authentication(["admin"]), createTenant);
 router.post("/addUser", authentication(["admin"]), createUser);
 
