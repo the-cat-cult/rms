@@ -191,6 +191,7 @@
             axios.post("/api/listAllPropertiesByFilter", query)
                 .then(function (response) {
                     if (response.data.success) {
+                        default_data = []
                         for (let i = 0; i < response.data.Property.length; i++) {
                             default_data.push({
                                 "name": response.data.Property[i].name,
@@ -216,6 +217,7 @@
 
         function generate_list(default_data) {
             list = document.getElementById("prop-list");
+            list.innerHTML = "";
 
             for (var i = 0; i < default_data.length; i++) {
                 var item = document.createElement("a");
