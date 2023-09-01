@@ -15,7 +15,7 @@ export function createProperty(req, res) {
         securityDeposit: req.body.secdep,
         age: req.body.age,
         vacancyStatus: req.body.vstatus,
-        ownerId: req.body.oid
+        ownerId: req.user._id
     })
 
     return property

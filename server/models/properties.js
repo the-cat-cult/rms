@@ -13,7 +13,7 @@ const propertiesSchema = new mongoose.Schema({
     securityDeposit: mongoose.Schema.Types.Decimal128,
     age: mongoose.Schema.Types.Number,
     vacancyStatus: String,
-    ownerId: Number
+    ownerId: mongoose.Schema.Types.ObjectId
 
 }, { collection: "properties" });
 export default mongoose.model('Property', propertiesSchema);
