@@ -46,7 +46,7 @@ router.get('/listAllUsers', authentication(["admin"]), getAllUsers)
 router.get('/listAllTenants', authentication(["admin", "owner"]), getAllTenants)
 router.get('/listAllProperties', authentication(["admin", "owner", "tenant"]), getAllProperties)
 router.get('/listAllBookings', authentication(["admin", "tenant"]), getAllBookings)
-router.post('/listAllPropertiesByFilter', authentication(["admin", "tenants"]), getPropertiesByFilters)
+router.post('/listAllPropertiesByFilter', authentication(["admin", "tenant"]), getPropertiesByFilters)
 
 //update entity
 router.patch('/updateUser', authentication(["admin", "owner"]), updateUser)

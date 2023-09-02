@@ -111,7 +111,6 @@
                 .then(function (response) {
                     console.log(response);
                     if (response.data.success) {
-                        console.log(response.data);
                         document.getElementsByClassName("tenant_name")[0].innerHTML = response.data.Tenant.name;
                         document.getElementsByClassName("phone_number")[0].innerHTML = response.data.Tenant.mobileNumber;
                         document.getElementsByClassName("personal_number")[0].innerHTML = response.data.Tenant.pnum;
@@ -265,7 +264,7 @@
         }
 
         function delete_tenant() {
-            axios.delete("/api/deleteTenant", {mobileNumber: mobileNumber})
+            axios.delete("/api/deleteTenant")
                 .then(function (response) {
                     console.log(response);
                     if (response.data.success) {
