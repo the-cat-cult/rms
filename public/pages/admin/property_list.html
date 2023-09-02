@@ -199,7 +199,7 @@
                                 "rent": response.data.Property[i].rent,
                                 "propertyType": response.data.Property[i].propertyType,
                                 "bhk": response.data.Property[i].bhk,
-                                "id": response.data.Property[i].id,
+                                "id": response.data.Property[i].propertyId,
                                 "link": "/pages/property_details.html"
                             })
 
@@ -244,7 +244,7 @@
 
                 var small2 = document.createElement("small");
                 small2.setAttribute("class", "text-primary");
-                small2.innerHTML = default_data[i]["propertyType"];
+                small2.innerHTML = default_data[i]["id"];
 
                 item.appendChild(div1);
                 item.appendChild(p);
@@ -267,7 +267,7 @@
         function search_by_property_id(value) {
             list = document.getElementById("prop-list");
             list.innerHTML = "";
-            data_length = Object.keys(default_data).length;
+            data_length = default_data.length;
             for (var i = 1; i <= data_length; i++) {
                 if (default_data[i]["id"].includes(value)) {
                     var item = document.createElement("a");
@@ -280,7 +280,7 @@
 
                     var h5 = document.createElement("h5");
                     h5.setAttribute("class", "mb-1");
-                    h5.innerHTML = "₹" + default_data[i]["rent"];
+                    h5.innerHTML = "₹" + default_data[i]["rent"]["$numberDecimal"]
 
                     var small = document.createElement("small");
                     small.innerHTML = default_data[i]["bhk"] + " BHK";

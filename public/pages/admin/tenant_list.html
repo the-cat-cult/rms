@@ -9,10 +9,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 </head>
 
-<body>
+<body onload="getTenants()">
     <!-- Header -->
     <header>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -57,9 +58,6 @@
                     <label for="personal-number" class="form-label">Personal Number</label>
                     <div class="input-group">
                         <input type="text" class="form-control" id="personal-number">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" onclick="search_by_personal_number(document.getElementById('personal-number').value)">Search</button>
-                        </div>
                     </div>
                 </div>
                 <!-- Search by Phone Number -->
@@ -67,9 +65,6 @@
                     <label for="phone-number" class="form-label">Phone Number</label>
                     <div class="input-group">
                         <input type="text" class="form-control" id="phone-number">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" onclick="search_by_phone_number(document.getElementById('phone-number').value)">Search</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -102,260 +97,119 @@
         <script>
             // current_user = "Jignesh";
             // document.getElementById("profile_name").innerHTML = current_user;
+            let original_list = []
 
-
-            default_data = {
-                1: {
-                    "name": "Jignesh",
-                    "ph_no": "1234567890",
-                    "rank": "Captain",
-                    "personal_no": "1234567-A",
-                    "Unit": "INS Valsura",
-                    "Allocation": true
-                },
-                2: {
-                    "name": "John Doe",
-                    "ph_no": "9876543210",
-                    "rank": "Lieutenant",
-                    "personal_no": "9876543-B",
-                    "Unit": "USS Enterprise",
-                    "Allocation": false
-                },
-                3: {
-                    "name": "Alice Smith",
-                    "ph_no": "5551234567",
-                    "rank": "Sergeant",
-                    "personal_no": "5551234-C",
-                    "Unit": "Fort Bragg",
-                    "Allocation": true
-                },
-                4: {
-                    "name": "Emily Johnson",
-                    "ph_no": "8885559999",
-                    "rank": "Major",
-                    "personal_no": "8885559-D",
-                    "Unit": "Camp Pendleton",
-                    "Allocation": false
-                },
-                5: {
-                    "name": "David Brown",
-                    "ph_no": "7778881234",
-                    "rank": "Lieutenant Colonel",
-                    "personal_no": "7778881-E",
-                    "Unit": "US Naval Academy",
-                    "Allocation": true
-                },
-                6: {
-                    "name": "Sophia Lee",
-                    "ph_no": "3339998888",
-                    "rank": "Captain",
-                    "personal_no": "3339998-F",
-                    "Unit": "HMS Victory",
-                    "Allocation": true
-                },
-                7: {
-                    "name": "Michael Wang",
-                    "ph_no": "1112223333",
-                    "rank": "Colonel",
-                    "personal_no": "1112223-G",
-                    "Unit": "Parris Island",
-                    "Allocation": false
-                },
-                8: {
-                    "name": "Olivia Garcia",
-                    "ph_no": "6667778888",
-                    "rank": "Sergeant Major",
-                    "personal_no": "6667778-H",
-                    "Unit": "Camp Lejeune",
-                    "Allocation": true
-                },
-                9: {
-                    "name": "William Kim",
-                    "ph_no": "4445556666",
-                    "rank": "Captain",
-                    "personal_no": "4445556-I",
-                    "Unit": "USS Nimitz",
-                    "Allocation": false
-                },
-                10: {
-                    "name": "Ava Martinez",
-                    "ph_no": "2223334444",
-                    "rank": "Major General",
-                    "personal_no": "2223334-J",
-                    "Unit": "Fort Hood",
-                    "Allocation": true
-                },
-                11: {
-                    "name": "Ethan Davis",
-                    "ph_no": "9990001111",
-                    "rank": "Commander",
-                    "personal_no": "9990001-K",
-                    "Unit": "HMS Invincible",
-                    "Allocation": false
-                },
-                12: {
-                    "name": "Mia Johnson",
-                    "ph_no": "7778889999",
-                    "rank": "Captain",
-                    "personal_no": "7778889-L",
-                    "Unit": "USS Iowa",
-                    "Allocation": true
-                },
-                13: {
-                    "name": "Daniel White",
-                    "ph_no": "5556667777",
-                    "rank": "Lieutenant Colonel",
-                    "personal_no": "5556667-M",
-                    "Unit": "Camp David",
-                    "Allocation": false
-                },
-                14: {
-                    "name": "Charlotte Brown",
-                    "ph_no": "4445556666",
-                    "rank": "Major",
-                    "personal_no": "4445556-N",
-                    "Unit": "USS Missouri",
-                    "Allocation": true
-                },
-                15: {
-                    "name": "Liam Wilson",
-                    "ph_no": "1112223333",
-                    "rank": "Sergeant",
-                    "personal_no": "1112223-O",
-                    "Unit": "Fort Benning",
-                    "Allocation": true
-                },
-                16: {
-                    "name": "Grace Lee",
-                    "ph_no": "9998887777",
-                    "rank": "General",
-                    "personal_no": "9998887-P",
-                    "Unit": "The Pentagon",
-                    "Allocation": false
-                },
-                17: {
-                    "name": "Benjamin Garcia",
-                    "ph_no": "6667778888",
-                    "rank": "Major General",
-                    "personal_no": "6667778-Q",
-                    "Unit": "Fort Knox",
-                    "Allocation": true
-                },
-                18: {
-                    "name": "Chloe Kim",
-                    "ph_no": "3334445555",
-                    "rank": "Captain",
-                    "personal_no": "3334445-R",
-                    "Unit": "USS Enterprise",
-                    "Allocation": false
-                },
-                19: {
-                    "name": "Alexander Davis",
-                    "ph_no": "8889990000",
-                    "rank": "Colonel",
-                    "personal_no": "8889990-S",
-                    "Unit": "HMS Victory",
-                    "Allocation": true
-                },
-                20: {
-                    "name": "Emma Martinez",
-                    "ph_no": "5554443333",
-                    "rank": "Sergeant Major",
-                    "personal_no": "5554443-T",
-                    "Unit": "USS Nimitz",
-                    "Allocation": true
-                }
+            function getTenants() {
+                axios.get('/api/listAllTenants')
+                    .then(function(response) {
+                        if(response.data.success) {
+                            console.log(response.data)
+                            let default_data = []
+                            let tenants = response.data.Tenant;
+                            for (let i = 0; i < tenants.length; i++) {
+                                let tenant = tenants[i];
+                                let tenant_data = {
+                                    "name": tenant.name,
+                                    "ph_no": tenant.mobileNumber,
+                                    "rank": tenant.rank,
+                                    "personal_no": tenant.pnum,
+                                    "Unit": tenant.unit,
+                                    "Allocation": tenant.allocationStatus,
+                                    "tenantId": tenant._id
+                                }
+                                default_data.push(tenant_data);
+                            }
+                            build_list(default_data);
+                            original_list = default_data;
+                        } else {
+                            console.log(response.data);
+                            alert("Error fetching tenants");
+                        }
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                        alert("Error fetching tenants");
+                    })
             }
 
 
+            function build_list(default_data) {
+                let list = document.getElementById("prop-list");
+                list.innerHTML = "";
 
-            list = document.getElementById("prop-list");
+                for (var i = 0; i < default_data.length; i++) {
+                    var item = document.createElement("a");
+                    item.setAttribute("href", "/pages/tenant_page.html?tenantId=" + default_data[i]["tenantId"]);
+                    item.setAttribute("class", "list-group-item list-group-item-action");
+                    item.setAttribute("aria-current", "true");
 
-            data_length = Object.keys(default_data).length;
-            for (var i = 1; i <= data_length; i++) {
-                var item = document.createElement("a");
-                item.setAttribute("href", "/pages/tenant_page.html");
-                item.setAttribute("class", "list-group-item list-group-item-action");
-                item.setAttribute("aria-current", "true");
+                    var div1 = document.createElement("div");
+                    div1.setAttribute("class", "d-flex w-100 justify-content-between");
 
-                var div1 = document.createElement("div");
-                div1.setAttribute("class", "d-flex w-100 justify-content-between");
+                    var h5 = document.createElement("h5");
+                    h5.setAttribute("class", "mb-1");
+                    h5.innerHTML = default_data[i]["name"];
 
-                var h5 = document.createElement("h5");
-                h5.setAttribute("class", "mb-1");
-                h5.innerHTML = default_data[i]["name"];
+                    var small = document.createElement("small");
+                    small.innerHTML = default_data[i]["rank"];
 
-                var small = document.createElement("small");
-                small.innerHTML = default_data[i]["rank"];
+                    div1.appendChild(h5);
+                    div1.appendChild(small);
 
-                div1.appendChild(h5);
-                div1.appendChild(small);
+                    var p = document.createElement("p");
+                    p.setAttribute("class", "mb-1");
+                    p.innerHTML = default_data[i]["Unit"];
 
-                var p = document.createElement("p");
-                p.setAttribute("class", "mb-1");
-                p.innerHTML = default_data[i]["Unit"];
+                    var small2 = document.createElement("small");
+                    small2.setAttribute("class", "text-primary");
+                    small2.innerHTML = default_data[i]["personal_no"] + " | " + default_data[i]["ph_no"];
 
-                var small2 = document.createElement("small");
-                small2.setAttribute("class", "text-primary");
-                small2.innerHTML = default_data[i]["personal_no"] + " | " + default_data[i]["ph_no"];
+                    item.appendChild(div1);
+                    item.appendChild(p);
+                    item.appendChild(small2);
 
-                item.appendChild(div1);
-                item.appendChild(p);
-                item.appendChild(small2);
-
-                list.appendChild(item);
+                    list.appendChild(item);
+                }
             }
 
-            search_by_property = document.getElementById("property_id");
-            search_by_property.addEventListener("keyup", function(event) {
-                if (event.keyCode === 13) {
-                    event.preventDefault();
-                    value = search_by_property.value;
-                    search_by_property_id(value);
-                }
+            document.getElementById("personal-number").addEventListener("input", function(event) {
+                search_by_personal_number(event.target.value);
+            });
+
+            document.getElementById("phone-number").addEventListener("input", function(event) {
+                search_by_phone_number(event.target.value);
             });
 
 
-            function search_by_property_id(value) {
-                list = document.getElementById("prop-list");
-                list.innerHTML = "";
-                data_length = Object.keys(default_data).length;
-                for (var i = 1; i <= data_length; i++) {
-                    if (default_data[i]["id"].includes(value)) {
-                        var item = document.createElement("a");
-                        item.setAttribute("href", default_data[i]["link"]);
-                        item.setAttribute("class", "list-group-item list-group-item-action");
-                        item.setAttribute("aria-current", "true");
-
-                        var div1 = document.createElement("div");
-                        div1.setAttribute("class", "d-flex w-100 justify-content-between");
-
-                        var h5 = document.createElement("h5");
-                        h5.setAttribute("class", "mb-1");
-                        h5.innerHTML = "₹" + default_data[i]["rent"];
-
-                        var small = document.createElement("small");
-                        small.innerHTML = default_data[i]["bhk"] + " BHK";;
-
-                        div1.appendChild(h5);
-                        div1.appendChild(small);
-
-                        var p = document.createElement("p");
-                        p.setAttribute("class", "mb-1");
-                        p.innerHTML = default_data[i]["address"];
-
-                        var small2 = document.createElement("small");
-                        small2.setAttribute("class", "text-primary");
-                        small2.innerHTML = default_data[i]["id"];
-
-                        item.appendChild(div1);
-                        item.appendChild(p);
-                        item.appendChild(small2);
-
-                        list.appendChild(item);
+            //frontend search, do not change original list
+            function search_by_personal_number(personal_number) {
+                let filtered_list = original_list.filter(function(item) {
+                    if(item["personal_no"] !== undefined) {
+                        return item["personal_no"].includes(personal_number);
                     }
+                });
+
+                if(personal_number == "") {
+                    filtered_list = original_list;
                 }
+
+                build_list(filtered_list);
             }
+
+            function search_by_phone_number(phone_number) {
+                let filtered_list = original_list.filter(function(item) {
+                    if(item["ph_no"] !== undefined) {
+                        return item["ph_no"].toString().includes(phone_number);
+                    }
+                });
+
+                if(phone_number == "") {
+                    filtered_list = original_list;
+                }
+
+                build_list(filtered_list);
+            }
+
         </script>
     </div>
 

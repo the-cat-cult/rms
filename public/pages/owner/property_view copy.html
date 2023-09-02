@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>START</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
+
+
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-4" href="/">
+                    <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="30">
+                </a>
+
+                <!-- Profile Page navigation button on the right side -->
+                <div class="d-flex mx-5">
+                    <!-- Sign out button -->
+                    <button type="button" class="btn btn-outline-primary mx-3" onclick="sign_out()">Sign Out</button>
+                </div>
+            </div>
+        </nav>
+
+    </header>
+
+
+    <div class="container mt-5 masthead h-100">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div class=" mt-3" style="width:260px ;">
+                <p class="fs-5">Full address, of the Location in whatever place</p>
+                <div class="bg-primary text-white p-3 rounded-3 p-0">
+                    <p class="m-0" style="font-size: x-small;">owner</p>
+                    <p class="fs-6 lh-sm m-0">&nbsp;John Doe<br>9125649899</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+</body>
+
+<!-- Include Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    h5 {
+        font-weight: 600;
+        font-size: 36px;
+    }
+</style>
+
+<script>
+    bhk = "3";
+    type = "Apartment";
+    image_links = [
+
+        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/282045997.jpg?k=4d013e07aa9dcc9c0844ba222b108a3f143092f6ea3a67b0f3249f3c3a65af2b&o=&hp=1",
+
+        <
+        src = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/282137886.jpg?k=eb29490f709dc28acf550e7381043903dad87e6641cd6354e4f9545d02d09a86&o=&hp=1"
+        alt = "Third slide" >
+
+        <
+        img class = "d-block w-100"
+        src = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/282045997.jpg?k=4d013e07aa9dcc9c0844ba222b108a3f143092f6ea3a67b0f3249f3c3a65af2b&o=&hp=1"
+        alt = "First slide" >
+
+        <
+        img class = "d-block w-100"
+        src = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/282044469.jpg?k=375853aa78114a991448384eae54128ad0dc46bc2578ad8e48309a41186bcac5&o=&hp=1"
+        alt = "Second slide" >
+
+
+    ];
+
+
+    header = document.getElementById("header");
+    bhk_ref = document.getElementById("bhk");
+    type_ref = document.getElementById("type");
+    header.innerHTML = "₹99,999";
+    bhk_ref.innerHTML = bhk;
+    type_ref.innerHTML = type;
+</script>
+
+</html>
