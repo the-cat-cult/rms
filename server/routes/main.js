@@ -18,6 +18,7 @@ import {
 import {createUser, getAllUsers, getOneUser, updateUser, deleteUser} from '../controllers/user.js'
 import {ownerSignUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
+import {addPreference, deletePreference, getPreference} from "../controllers/preference.js";
 
 const router = express.Router();
 
@@ -33,6 +34,7 @@ router.post('/addBooking', authentication(["tenant"]), createBooking);
 router.post('/addProperty', authentication(["owner"]), createProperty);
 router.post("/addTenant", authentication(["admin"]), createTenant);
 router.post("/addUser", authentication(["admin"]), createUser);
+router.post("/addPreference", authentication(["tenant"]), addPreference);
 
 //get single entity
 router.post('/getUser', authentication(["admin", "owner"]), getOneUser)
@@ -40,6 +42,7 @@ router.post('/getTenant', authentication(["admin", "tenant"]), getOneTenant)
 router.get('/getTenant', authentication(["admin"]), getOneTenantById)
 router.post('/getProperty', authentication(["admin", "owner", "tenant"]), getOneProperty)
 router.post('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
+router.get('/getPreference', authentication(["tenant"]), getPreference)
 
 //get list of entities
 router.get('/listAllUsers', authentication(["admin"]), getAllUsers)
@@ -60,5 +63,6 @@ router.delete('/deleteTenant', authentication(["admin", "tenant"]), deleteTenant
 router.delete('/deleteProperty', authentication(["admin", "owner"]), deleteProperty)
 router.delete('/deleteBooking', authentication(["admin"]), deleteBooking)
 router.get('/deleteTenantById', authentication(["admin"]), deleteTenantById)
+router.delete("/deletePreference", authentication(["tenant"]), deletePreference);
 
 export default router;

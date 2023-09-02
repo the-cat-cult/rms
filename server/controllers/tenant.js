@@ -188,8 +188,6 @@ export function deleteTenant(req, res) {
         mobileNumber = req.body.mobileNumber;
     }
 
-    return;
-
     Tenant.findOneAndDelete({mobileNumber: mobileNumber})
         .then((oneTenant) => {
             return res.status(200).json({
