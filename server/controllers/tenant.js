@@ -109,7 +109,7 @@ export function getAllTenants(req, res) {
 export async function getOneTenantById(req, res) {
     const id = req.query.tenant_id
 
-    if(!id) {
+    if (!id) {
         return res.status(400).json({
             success: false,
             message: 'No id provided'
@@ -136,7 +136,7 @@ export async function getOneTenantById(req, res) {
 export function getOneTenant(req, res) {
     let mobileNumber = req.user.mobileNumber;
 
-    if(req.user.role === 'admin'){
+    if (req.user.role === 'admin') {
         mobileNumber = req.body.mobileNumber;
     }
 
@@ -160,7 +160,7 @@ export function getOneTenant(req, res) {
 export async function updateTenant(req, res) {
     let mobileNumber = req.user.mobileNumber;
 
-    if(req.user.role === 'admin'){
+    if (req.user.role === 'admin') {
         mobileNumber = req.body.mobileNumber;
     }
 
@@ -184,7 +184,7 @@ export async function updateTenant(req, res) {
 export function deleteTenant(req, res) {
     let mobileNumber = req.user.mobileNumber;
 
-    if(req.user.role === 'admin'){
+    if (req.user.role === 'admin') {
         mobileNumber = req.body.mobileNumber;
     }
 
@@ -203,4 +203,30 @@ export function deleteTenant(req, res) {
                 error: err.message,
             });
         });
+}
+
+export function deleteTenantById(req, res) {
+    let id = req.query.tenant_id
+
+    if (!id) {
+        return res.status(400).json({
+            success: false,
+            message: 'No id provided'
+        });
+    }
+
+    Tenant.findOneAndDelete({_id: id})
+        .then((oneTenant) => {
+            return res.status(200).json({
+                success: true,
+                message: 'Deleted Tenant',
+                Tenant: oneTenant,
+            });
+        }).catch((err) => {
+        res.status(500).json({
+            success: false,
+            message: 'Server error. Please try again.',
+            error: err.message,
+        });
+    });
 }

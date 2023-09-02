@@ -68,6 +68,13 @@
 
             </div>
 
+            <div class="col-4 mt-5">
+                <button type="button" id="edit" class="btn btn-primary btn-block w-50" onclick="edit()">Edit Profile</button>
+                <div class="mt-3"></div>
+                <button type="button" id="delete" class="btn btn-outline-danger btn-block w-50" onclick="delete_tenant()">Delete Profile</button>
+
+            </div>
+
         </div>
         <!-- <a href="#" class="list-group-item list-group-item-action flex-column align-items-start" id="Preference 1" data-toggle="modal" data-target="#preferenceModal">
             <div class="d-flex w-100 justify-content-between">
@@ -251,6 +258,24 @@
         // If 3 preferences are selected, disable the choose preferences button
         if (preferences.length == 3) {
             document.getElementById("choose_prefs").disabled = true;
+        }
+
+        function edit() {
+            window.location.href = "/pages/edit_tenant.html";
+        }
+
+        function delete_tenant() {
+            axios.delete("/api/deleteTenant", {mobileNumber: mobileNumber})
+                .then(function (response) {
+                    console.log(response);
+                    if (response.data.success) {
+                        alert("Tenant deleted successfully");
+                        sign_out()
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
         }
     </script>
 </div>

@@ -13,7 +13,7 @@ import {
     getAllTenants,
     getOneTenant,
     updateTenant,
-    deleteTenant, getOneTenantById,
+    deleteTenant, getOneTenantById, deleteTenantById,
 } from '../controllers/tenant.js'
 import {createUser, getAllUsers, getOneUser, updateUser, deleteUser} from '../controllers/user.js'
 import {ownerSignUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
@@ -59,5 +59,6 @@ router.delete('/deleteUser', authentication(["admin", "owner"]), deleteUser)
 router.delete('/deleteTenant', authentication(["admin", "tenant"]), deleteTenant)
 router.delete('/deleteProperty', authentication(["admin", "owner"]), deleteProperty)
 router.delete('/deleteBooking', authentication(["admin"]), deleteBooking)
+router.get('/deleteTenantById', authentication(["admin"]), deleteTenantById)
 
 export default router;

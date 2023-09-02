@@ -203,7 +203,7 @@
             .then(function (response) {
                 console.log(response);
                 alert("Tenant updated successfully");
-                window.location.href = "/"
+                window.location.href = "/pages/tenant_page_ts.html";
             })
             .catch(function (error) {
                 let message = error.response.data.message;
