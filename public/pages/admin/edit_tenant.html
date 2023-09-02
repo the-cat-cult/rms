@@ -14,9 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <!-- Import css -->
-    <link rel="stylesheet" href="../style.css">
-    <!-- Javascript -->
-    <script src="../script.js"></script>
+    <link rel="stylesheet" href="/pages/tenant_page.css">
 
 </head>
 
@@ -98,7 +96,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="confirmModalLabel">Confirm Submission</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
 
                 </div>
                 <div class="modal-body" id="modalContent">
@@ -117,7 +115,8 @@
     let name, unit, phone, pnum, rank, dor, dov;
 
     function getTenantData() {
-        axios.post('/api/getTenant')
+        let tenantId = getTenantIdFromParam()
+        axios.get("/api/getTenant?tenant_id=" + getTenantIdFromParam())
             .then(function (response) {
                 let tenantData = response.data.Tenant;
                 name = tenantData.name;
@@ -189,6 +188,12 @@
 </script>
 
 <script>
+
+    function getTenantIdFromParam() {
+        let url = new URL(window.location.href);
+        return url.searchParams.get("tenant_id");
+    }
+
     // Handle form submission confirmation
     document.getElementById('confirmButton').addEventListener('click', function () {
         axios.patch('/api/updateTenant', {
@@ -203,7 +208,7 @@
             .then(function (response) {
                 console.log(response);
                 alert("Tenant updated successfully");
-                window.location.href = "/"
+                window.location.href = "/pages/admin/tenant_list.html";
             })
             .catch(function (error) {
                 let message = error.response.data.message;

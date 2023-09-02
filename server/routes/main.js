@@ -13,7 +13,7 @@ import {
     getAllTenants,
     getOneTenant,
     updateTenant,
-    deleteTenant,
+    deleteTenant, getOneTenantById,
 } from '../controllers/tenant.js'
 import {createUser, getAllUsers, getOneUser, updateUser, deleteUser} from '../controllers/user.js'
 import {ownerSignUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
@@ -37,6 +37,7 @@ router.post("/addUser", authentication(["admin"]), createUser);
 //get single entity
 router.post('/getUser', authentication(["admin", "owner"]), getOneUser)
 router.post('/getTenant', authentication(["admin", "tenant"]), getOneTenant)
+router.get('/getTenant', authentication(["admin"]), getOneTenantById)
 router.post('/getProperty', authentication(["admin", "owner", "tenant"]), getOneProperty)
 router.post('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
 

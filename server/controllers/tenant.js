@@ -106,6 +106,33 @@ export function getAllTenants(req, res) {
         });
 }
 
+export async function getOneTenantById(req, res) {
+    const id = req.query.tenant_id
+
+    if(!id) {
+        return res.status(400).json({
+            success: false,
+            message: 'No id provided'
+        });
+    }
+
+    Tenant.findOne({_id: id})
+        .then((oneTenant) => {
+            return res.status(200).json({
+                success: true,
+                message: 'Result',
+                Tenant: oneTenant,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error. Please try again.',
+                error: err.message,
+            });
+        });
+}
+
 export function getOneTenant(req, res) {
     let mobileNumber = req.user.mobileNumber;
 
