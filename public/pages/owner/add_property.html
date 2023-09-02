@@ -181,6 +181,8 @@
 <script>
     document.getElementById('confirmButton').addEventListener('click', function () {
 
+        console.log(rent)
+
             axios.post("/api/addProperty", {
                 addr: address,
                 ptype: type,
@@ -195,7 +197,7 @@
             })
                 .then(function (response) {
                     console.log(response);
-                    window.location.href = "/";
+                    window.location.href = "/pages/owner/owner_panel.html"
                 })
                 .catch(function (error) {
                     console.log(error);

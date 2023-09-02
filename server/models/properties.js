@@ -7,11 +7,11 @@ const propertiesSchema = new mongoose.Schema({
     propertyType: String,
     bhk: String,
     location: String,
-    lat: mongoose.Schema.Types.Decimal128,
-    long: mongoose.Schema.Types.Decimal128,
-    rent: mongoose.Schema.Types.Decimal128,
-    securityDeposit: mongoose.Schema.Types.Decimal128,
-    age: mongoose.Schema.Types.Number,
+    lat: Number,
+    long: Number,
+    rent: Number,
+    securityDeposit: Number,
+    age: Number,
     vacancyStatus: String,
     ownerId: mongoose.Schema.Types.ObjectId
 

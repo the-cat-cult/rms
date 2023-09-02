@@ -41,7 +41,7 @@ export function getAllProperties(req, res) {
             return res.status(200).json({
                 success: true,
                 message: 'A list of all Properties',
-                Tenant: allProperty,
+                Properties: allProperty,
             });
         })
         .catch((err) => {

@@ -5,200 +5,143 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>START</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 </head>
 
-<body>
-    <!-- Header -->
-    <header>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand mx-4" href="/">
-                    <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="30">
-                </a>
+<body onload="get_properties()">
+<!-- Header -->
+<header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand mx-4" href="/">
+                <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="30">
+            </a>
 
-                <!-- Profile Page navigation button on the right side -->
-                <div class="d-flex mx-5">
-                    <!-- Sign out button -->
-                    <button type="button" class="btn btn-outline-primary mx-3" onclick="sign_out()">Sign Out</button>
-                </div>
+            <!-- Profile Page navigation button on the right side -->
+            <div class="d-flex mx-5">
+                <!-- Sign out button -->
+                <button type="button" class="btn btn-outline-primary mx-3" onclick="sign_out()">Sign Out</button>
             </div>
-        </nav>
-
-    </header>
-
-    <div class="container mt-5">
-        <h1>
-            Welcome <span name="name"></span>!
-        </h1>
-        <h4>
-            Let's have a look at the properties you have listed.
-        </h4>
-
-        <div class="hovering-container mt-5 mb-5">
-            <!-- Add property button -->
-            <button type="button" class="btn btn-primary p-3" id="add_property" onclick="window.location.href='/pages/owner/add_property.html'">Add Property</button>
-
         </div>
+    </nav>
 
+</header>
 
-        <div class="row row-cols-1 row-cols-md-3 g-4 mb-5" id="card-list">
+<div class="container mt-5">
+    <h1>
+        Welcome <span name="name"></span>!
+    </h1>
+    <h4>
+        Let's have a look at the properties you have listed.
+    </h4>
 
-        </div>
+    <div class="hovering-container mt-5 mb-5">
+        <!-- Add property button -->
+        <button type="button" class="btn btn-primary p-3" id="add_property"
+                onclick="window.location.href='/pages/owner/add_property.html'">Add Property
+        </button>
 
     </div>
-</body>
+
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5" id="card-list">
+
+    </div>
+
+</div>
 
 <script>
-    name = "Jignes"
+    name = localStorage.getItem("name");
     name_refs = document.getElementsByName("name")
-    for (i = 0; i < name_refs.length; i++) {
+    for (let i = 0; i < name_refs.length; i++) {
         name_refs[i].innerHTML = name;
     }
 
 
-    card_list = {
-        1: {
-            'id': "abc123",
-            'image': 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + 1,
-            'title': 'Property 1',
-            'address': 'Niralanagar, Lucknow, Uttar Pradesh, 226020',
-            'rent': '₹26000',
-            'link': '/pages/owner/property.html'
-        },
-        2: {
-            'id': "abc123",
-            'image': 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + 2,
-            'title': 'Property 2',
-            'address': 'Niralanagar, Lucknow, Uttar Pradesh, 226020',
-            'rent': '₹26000',
-            'link': '/pages/owner/property.html'
-        },
-        3: {
-            'id': "abc123",
-            'image': 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + 3,
-            'title': 'Property 3',
-            'address': 'Niralanagar, Lucknow, Uttar Pradesh, 226020',
-            'rent': '₹26000',
-            'link': '/pages/owner/property.html'
-        },
-        4: {
-            'id': "abc123",
-            'image': 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + 4,
-            'title': 'Property 4',
-            'address': 'Niralanagar, Lucknow, Uttar Pradesh, 226020',
-            'rent': '₹26000',
-            'link': '/pages/owner/property.html'
-        },
-        5: {
-            'id': "abc123",
-            'image': 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + 5,
-            'title': 'Property 5',
-            'address': 'Niralanagar, Lucknow, Uttar Pradesh, 226020',
-            'rent': '₹26000',
-            'link': '/pages/owner/property.html'
-        },
-        6: {
-            'id': "abc123",
-            'image': 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + 6,
-            'title': 'Property 6',
-            'address': 'Niralanagar, Lucknow, Uttar Pradesh, 226020',
-            'rent': '₹26000',
-            'link': '/pages/owner/property.html'
-        },
-        7: {
-            'id': "abc123",
-            'image': 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + 7,
-            'title': 'Property 7',
-            'address': 'Niralanagar, Lucknow, Uttar Pradesh, 226020',
-            'rent': '₹26000',
-            'link': '/pages/owner/property.html'
-        },
-        8: {
-            'id': "abc123",
-            'image': 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + 8,
-            'title': 'Property 8',
-            'address': 'Niralanagar, Lucknow, Uttar Pradesh, 226020',
-            'rent': '₹26000',
-            'link': '/pages/owner/property.html'
-        },
-        9: {
-            'id': "abc123",
-            'image': 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + 9,
-            'title': 'Property 9',
-            'address': 'Niralanagar, Lucknow, Uttar Pradesh, 226020',
-            'rent': '₹26000',
-            'link': '/pages/owner/property.html'
-        },
+    function get_properties() {
+        console.log("properties")
+        axios.get("/api/listAllProperties")
+            .then(function (response) {
+                console.log(response)
+                if (response.data.success) {
+                    let properties = response.data.Properties;
+                    let card_data = []
+                    for(let i = 0; i < properties.length; i++) {
+                        console.log(properties[i])
+                        card_data.push({
+                            'id': properties[i]._id,
+                            'image': 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + (i),
+                            'title': properties[i].propertyType,
+                            'address': properties[i].address,
+                            'rent': properties[i].rent,
+                            'link': '/pages/owner/property_view.html?propertyId=' + properties[i]._id
+                        })
+                    }
+
+
+                    build_card(card_data)
+                }
+
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
-    no_of_cards = Object.keys(card_list).length;
-    no_of_columns = 3;
-    no_of_rows = Math.floor(no_of_cards / no_of_columns);
-    last_row_cards = no_of_cards % no_of_columns;
-    counter = 0;
 
+    function build_card(card_list) {
 
-    cl = document.getElementById("card-list");
+        let no_of_cards = card_list.length
 
-
-
-
-    // Add cards to the card list
-    for (i = 0; i < no_of_rows; i++) {
-        for (j = 0; j < no_of_columns; j++) {
-            create_card(card_list[counter + 1]['id'], card_list[counter + 1]['image'], card_list[counter + 1]['title'], card_list[counter + 1]['address'], card_list[counter + 1]['rent'], card_list[counter + 1]['link']);
-            counter++;
+        for(let counter = 0; counter < no_of_cards; counter++) {
+            create_card(card_list[counter]['id'], card_list[counter]['image'], card_list[counter]['title'], card_list[counter]['address'], card_list[counter]['rent'], card_list[counter]['link']);
         }
     }
 
-    if (last_row_cards != 0) {
-        for (i = 0; i < last_row_cards; i++) {
-            create_card(card_list[counter + 1]['id'], card_list[counter + 1]['image'], card_list[counter + 1]['title'], card_list[counter + 1]['address'], card_list[counter + 1]['rent'], card_list[counter + 1]['link']);
-            counter++;
-        }
-    }
 
     function create_card(id, image, title, address, rent, link) {
+        let cl = document.getElementById("card-list");
 
-        a_link = document.createElement("a");
+        let a_link = document.createElement("a");
         a_link.href = link;
 
-        col_div = document.createElement("div");
+        let col_div = document.createElement("div");
         col_div.className = "col";
 
-        card_div = document.createElement("div");
+        let card_div = document.createElement("div");
         card_div.className = "card h-100";
 
-        card_img = document.createElement("img");
+        let card_img = document.createElement("img");
         card_img.src = image;
         card_img.className = "card-img-top";
         card_img.alt = "Property Image";
 
-        card_body = document.createElement("div");
+        let card_body = document.createElement("div");
         card_body.className = "card-body";
 
-        card_title = document.createElement("h5");
+        let card_title = document.createElement("h5");
         card_title.className = "card-title";
         card_title.innerHTML = title;
 
-        card_address = document.createElement("p");
+        let card_address = document.createElement("p");
         card_address.className = "card-text";
         card_address.innerHTML = address;
 
-        card_rent = document.createElement("p");
+        let card_rent = document.createElement("p");
         card_rent.className = "card-text";
-        card_rent.innerHTML = rent;
+        card_rent.innerHTML = '₹ ' + rent;
 
-        card_footer = document.createElement("div");
+        let card_footer = document.createElement("div");
         card_footer.className = "card-footer";
 
-        card_updated = document.createElement("small");
+        let card_updated = document.createElement("small");
         card_updated.className = "text-muted";
         card_updated.innerHTML = id;
 
@@ -215,20 +158,30 @@
     }
 
     function sign_out() {
-        window.location.href = "/";
+        axios.post('/api/signOut')
+            .then(function (response) {
+                console.log(response);
+                localStorage.clear();
+                alert("Signed Out")
+                window.location.href = "/";
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 </script>
+</body>
 
 <style>
     body {
         font-family: 'Poppins', sans-serif;
     }
-    
+
     h1 {
         font-weight: 600;
         color: #3a3a3a;
     }
-    
+
     .hovering-container {
         /* X = 0px, y = 8px, blur = 24px, alpha = 15% */
         box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
@@ -236,14 +189,16 @@
         padding: 20px;
         background-color: #ffffff;
     }
+
     /* Remove a decorations */
-    
+
     a {
         text-decoration: none;
         color: #000000;
     }
+
     /* Card hover animation */
-    
+
     .card:hover {
         transform: scale(1.05);
         box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.25);
@@ -251,13 +206,16 @@
         transition: 0.3s;
         background-color: rgb(230, 228, 255);
     }
+
     /* Exit hover */
-    
+
     .card {
         transition: 0.3s;
     }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
 
 </html>
