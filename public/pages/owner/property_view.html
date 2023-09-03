@@ -238,6 +238,21 @@
         }
     }
 
+    function sign_out() {
+        if (confirm("Are you sure you want to sign out?")) {
+            axios.post('/api/signOut')
+                .then(function (response) {
+                    console.log(response);
+                    localStorage.clear();
+                    alert("Signed Out")
+                    window.location.href = "/";
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    }
+
 
     carousel_indicators = document.getElementsByClassName("carousel-indicators")[0];
     for (i = 0; i < image_links.length; i++) {
