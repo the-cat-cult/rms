@@ -1,4 +1,3 @@
-
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
@@ -13,15 +12,16 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use("/", express.static('public'))
 // set up mongoose
-mongoose.connect(process.env.CONNECTION_STRING, { dbName: process.env.DATABASE_NAME })
+let connectionString = process.env.NODE_ENV === 'development' ? process.env.CONNECTION_STRING_DEV : process.env.CONNECTION_STRING_PROD;
+mongoose.connect(connectionString, {dbName: process.env.DATABASE_NAME})
     .then(() => {
         console.log('Database connected');
     })
     .catch((error) => {
-        console.log('Error connecting to database');
+        console.log('Error connecting to database', error);
     });
 // set up port
 const port = process.env.PORT || 8080;
@@ -34,10 +34,10 @@ app.get('/', (req, res) => {
 
 app.use('/api/', router);
 
-app.get('*', function(req, res){
+app.get('*', function (req, res) {
     res.status(404).redirect('/pages/page_404.html');
 });
 
 app.listen(port, () => {
-    console.log(`Our server is running on port ${port}`);
+    console.log(`Server running on port ${port}`);
 });

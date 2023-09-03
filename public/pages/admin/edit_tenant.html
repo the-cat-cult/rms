@@ -115,7 +115,6 @@
     let name, unit, phone, pnum, rank, dor, dov;
 
     function getTenantData() {
-        let tenantId = getTenantIdFromParam()
         axios.get("/api/getTenant?tenant_id=" + getTenantIdFromParam())
             .then(function (response) {
                 let tenantData = response.data.Tenant;
@@ -124,8 +123,8 @@
                 phone = tenantData.mobileNumber;
                 pnum = tenantData.pnum;
                 rank = tenantData.rank;
-                dor = tenantData.dateOfReporting;
-                dov = tenantData.dateOfVacation;
+                dor = tenantData.dateOfReporting || "";
+                dov = tenantData.dateOfVacation || "";
                 dor = dor.split('T')[0];
                 dov = dov.split('T')[0];
 

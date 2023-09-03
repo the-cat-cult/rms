@@ -27,9 +27,12 @@ export async function ownerSignUp(req, res) {
         }
     }
 
-    const otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
+    let otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
 
-    console.log(otpRecord)
+    if (process.env.NODE_ENV === 'development') {
+        otpRecord = {}
+        otpRecord.otp = 1234;
+    }
 
     otpRecord.otp = parseInt(otpRecord.otp)
     otp = parseInt(otp)

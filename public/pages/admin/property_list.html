@@ -81,19 +81,6 @@
                 <label for="address" class="form-label">Area</label>
                 <input type="text" class="form-control" placeholder="Area" id="address">
             </div>
-            <!-- Search by Property ID -->
-            <div class="col-md-3">
-                <label for="address" class="form-label">Property ID</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Property ID" id="property_id">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button"
-                                onclick="search_by_property_id(document.getElementById('property_id').value)">Search
-                        </button>
-                    </div>
-                </div>
-
-            </div>
         </div>
     </div>
 
@@ -251,57 +238,6 @@
                 item.appendChild(small2);
 
                 list.appendChild(item);
-            }
-        }
-
-        search_by_property = document.getElementById("property_id");
-        search_by_property.addEventListener("keyup", function (event) {
-            if (event.keyCode === 13) {
-                event.preventDefault();
-                value = search_by_property.value;
-                search_by_property_id(value);
-            }
-        });
-
-
-        function search_by_property_id(value) {
-            list = document.getElementById("prop-list");
-            list.innerHTML = "";
-            data_length = default_data.length;
-            for (var i = 1; i <= data_length; i++) {
-                if (default_data[i]["id"].includes(value)) {
-                    var item = document.createElement("a");
-                    item.setAttribute("href", default_data[i]["link"]);
-                    item.setAttribute("class", "list-group-item list-group-item-action");
-                    item.setAttribute("aria-current", "true");
-
-                    var div1 = document.createElement("div");
-                    div1.setAttribute("class", "d-flex w-100 justify-content-between");
-
-                    var h5 = document.createElement("h5");
-                    h5.setAttribute("class", "mb-1");
-                    h5.innerHTML = "₹" + default_data[i]["rent"]
-
-                    var small = document.createElement("small");
-                    small.innerHTML = default_data[i]["bhk"] + " BHK";
-
-                    div1.appendChild(h5);
-                    div1.appendChild(small);
-
-                    var p = document.createElement("p");
-                    p.setAttribute("class", "mb-1");
-                    p.innerHTML = default_data[i]["address"];
-
-                    var small2 = document.createElement("small");
-                    small2.setAttribute("class", "text-primary");
-                    small2.innerHTML = default_data[i]["id"];
-
-                    item.appendChild(div1);
-                    item.appendChild(p);
-                    item.appendChild(small2);
-
-                    list.appendChild(item);
-                }
             }
         }
 
