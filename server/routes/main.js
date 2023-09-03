@@ -18,7 +18,6 @@ import {
 import {createUser, getAllUsers, getOneUser, updateUser, deleteUser} from '../controllers/user.js'
 import {ownerSignUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
-import {addPreference, deletePreference, getPreference} from "../controllers/preference.js";
 
 const router = express.Router();
 
@@ -63,6 +62,5 @@ router.delete('/deleteTenant', authentication(["admin", "tenant"]), deleteTenant
 router.delete('/deleteProperty', authentication(["admin", "owner"]), deleteProperty)
 router.delete('/deleteBooking', authentication(["tenant"]), deleteBooking)
 router.get('/deleteTenantById', authentication(["admin"]), deleteTenantById)
-router.delete('/deletePreference', authentication(["tenant"]), deletePreference)
 
 export default router;

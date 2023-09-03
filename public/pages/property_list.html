@@ -175,8 +175,8 @@
                                 "rent": response.data.Property[i].rent,
                                 "propertyType": response.data.Property[i].propertyType,
                                 "bhk": response.data.Property[i].bhk,
-                                "id": response.data.Property[i].propertyId,
-                                "link": "/api/addBooking?propertyId=" + response.data.Property[i].propertyId
+                                "id": response.data.Property[i]._id,
+                                "link": "/api/addBooking?propertyId=" + response.data.Property[i]._id
                             })
 
                         }

@@ -143,13 +143,6 @@
             }
         });
 
-        document.getElementById("property_id").addEventListener("keyup", function (event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                search_by_property_id(document.getElementById('property_id').value);
-            }
-        });
-
         function getProperties() {
             //const {bhk, minRent, maxRent, area, propertyId} = req.body;
             let bhk = document.getElementById("BHK").value;
@@ -186,7 +179,7 @@
                                 "rent": response.data.Property[i].rent,
                                 "propertyType": response.data.Property[i].propertyType,
                                 "bhk": response.data.Property[i].bhk,
-                                "id": response.data.Property[i].propertyId,
+                                "id": response.data.Property[i]._id,
                                 "link": "/pages/property_details.html"
                             })
 

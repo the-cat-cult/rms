@@ -1,37 +1,60 @@
 import mongoose from "mongoose";
 import Booking from "../models/bookings.js";
+import Tenant from "../models/tenant.js";
+import * as path from "path";
 
-export function createBooking(req, res) {
+const __dirname = path.resolve();
+
+export async function createBooking(req, res) {
+
+    let tenantId = req.user._id;
+    let propertyId = req.query.propertyId;
+
+    //check if there are existing bookings for propertyId
+    try {
+        const existingBookings = await Booking.find({propertyId: propertyId})
+
+        if(existingBookings.length !== 0) {
+            return res.sendFile(path.join(__dirname + '/public/pages/tenant/existing_booking.html'));
+        }
+    } catch (e) {
+        return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
+    }
+
     const booking = new Booking({
         _id: new mongoose.Types.ObjectId(),
         bookingId: new mongoose.Types.ObjectId(),
-        preferenceNumber: req.body.pnumber,
-        allotmentStatus: req.body.allotmentStatus,
-        propertyId: req.body.pid,
-        ownerId: req.body.oid,
-        tenantId: req.body.tid
+        propertyId: propertyId,
+        tenantId: tenantId
     })
+
+    let bookings = await Booking.find({tenantId: req.user._id})
+    console.log(bookings)
+    if (bookings.length === 3) {
+        return res.sendFile(path.join(__dirname + '/public/pages/tenant/booking_failed.html'));
+    }
 
     return booking
         .save()
         .then((newBooking) => {
-            return res.status(201).json({
-                success: true,
-                message: 'New booking successfully added',
-                Booking: newBooking
-            });
+            return res.sendFile(path.join(__dirname + '/public/pages/tenant/booking_success.html'));
+
         })
         .catch((error) => {
-            return res.status(500).json({
-                success: false,
-                message: 'Error in adding a new booking' + error
-            })
+            return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
         });
 }
 
 export function getAllBookings(req, res) {
-    Booking.find()
-        .then((allBooking) => {
+    let userId = req.user._id
+
+    if (req.user.role === "admin") {
+        userId = req.body.userId
+    }
+
+    Booking.find({tenantId: userId})
+        .then(async (allBooking) => {
+            await Booking.populate(allBooking, {path: 'propertyId', model: 'Property'})
             return res.status(200).json({
                 success: true,
                 message: 'A list of all Bookings',
@@ -48,7 +71,8 @@ export function getAllBookings(req, res) {
 }
 
 export function getOneBooking(req, res) {
-    Booking.findOne({ bookingId: req.body.bid })
+
+    Booking.findOne({bookingId: req.body.bookingId})
         .then((oneBooking) => {
             return res.status(200).json({
                 success: true,
@@ -65,10 +89,18 @@ export function getOneBooking(req, res) {
         });
 }
 
-export async function updateBooking(req, res) {
-    const updateObject = req.body
-    Booking.findOneAndUpdate({ bookingId: req.body.bid }, { $set: updateObject })
-        .then((updatedBooking) => {
+export async function updateBookingStatus(req, res) {
+
+    let allotmentStatus = req.body.allotmentStatus
+    let bookingId = req.body.bookingId;
+
+    Booking.findOneAndUpdate({bookingId: bookingId}, {allotmentStatus: allotmentStatus})
+        .then(async (updatedBooking) => {
+
+            let tenant = await Tenant.findOne({_id: req.user._id})
+            tenant.allocationStatus = "yes"
+            await tenant.save()
+
             return res.status(200).json({
                 success: true,
                 message: 'Object Updated'
@@ -84,7 +116,7 @@ export async function updateBooking(req, res) {
 }
 
 export function deleteBooking(req, res) {
-    Booking.findOneAndDelete({ bookingId: req.body.bid })
+    Booking.findOneAndDelete({bookingId: req.body.bookingId, tenantId: req.user._id})
         .then((oneBooking) => {
             return res.status(200).json({
                 success: true,

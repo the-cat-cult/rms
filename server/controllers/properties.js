@@ -4,7 +4,6 @@ import Property from "../models/properties.js";
 export function createProperty(req, res) {
     const property = new Property({
         _id: new mongoose.Types.ObjectId(),
-        propertyId: new mongoose.Types.ObjectId(),
         address: req.body.addr,
         propertyType: req.body.ptype,
         bhk: req.body.bhk,
@@ -72,7 +71,7 @@ export function getAllPropertiesByUser(req, res) {
 }
 
 export function getOneProperty(req, res) {
-    Property.findOne({propertyId: req.body.pid})
+    Property.findOne({_id: req.body.pid})
         .then((oneProperty) => {
             return res.status(200).json({
                 success: true,
@@ -91,7 +90,7 @@ export function getOneProperty(req, res) {
 
 export function getPropertyById(req, res) {
 
-    Property.findOne({_id: req.body._id})
+    Property.findOne({_id: req.body.pid})
         .then((oneProperty) => {
             return res.status(200).json({
                 success: true,
@@ -144,7 +143,7 @@ export function getPropertiesByFilters(req, res) {
 
 export async function updateProperty(req, res) {
     const updateObject = req.body
-    Property.findOneAndUpdate({propertyId: req.body.pid}, {$set: updateObject})
+    Property.findOneAndUpdate({_id: req.body.pid}, {$set: updateObject})
         .then((updatedProperty) => {
             return res.status(200).json({
                 success: true,
@@ -161,7 +160,7 @@ export async function updateProperty(req, res) {
 }
 
 export function deleteProperty(req, res) {
-    Property.findOneAndDelete({propertyId: req.body.pid})
+    Property.findOneAndDelete({_id: req.body.pid})
         .then((oneProperty) => {
             return res.status(200).json({
                 success: true,
