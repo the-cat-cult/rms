@@ -72,7 +72,7 @@
 
             <div class="buttons">
                 <!-- Edit property button -->
-                <button type="button" class="btn btn-primary btn-lg mx-2 mb-2" id="edit_btn" onclick="window.location.href='/pages/owner/edit_property.html'">Edit Property</button>
+                <button type="button" class="btn btn-primary btn-lg mx-2 mb-2" id="edit_btn" onclick="edit()">Edit Property</button>
 
                 <!-- Delete property button -->
                 <button type="button" class="btn btn-outline-danger btn-lg mx-2 mb-2" id="delete_btn">Delete Property</button>
@@ -151,6 +151,10 @@
     function getPropertyId() {
         let url = new URL(window.location.href);
         return url.searchParams.get("propertyId");
+    }
+
+    function edit() {
+        window.location.href='/pages/owner/edit_property.html?propertyId=' + getPropertyId()
     }
 
     function get_property_data() {
@@ -234,7 +238,7 @@
             console.log({pid: getPropertyId()})
             axios.post("/api/deleteProperty", {pid: getPropertyId()})
                 .then(function (response) {
-                    // window.location.href = "/pages/owner/owner_panel.html";
+                    window.location.href = "/pages/owner/owner_panel.html";
                 })
                 .catch(function (error) {
                     alert("Could not delete property info")

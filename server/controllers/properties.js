@@ -123,10 +123,7 @@ export function getPropertiesByFilters(req, res) {
         query.location = area;
     }
 
-    console.log(query)
-
     Property.find(query).then((properties) => {
-        console.log(properties)
         return res.status(200).json({
             success: true,
             message: 'Result',
@@ -160,10 +157,8 @@ export async function updateProperty(req, res) {
 }
 
 export async function deleteProperty(req, res) {
-    console.log(await Property.findOne({_id: req.body.pid, ownerId: req.user._id}), {_id: req.body.pid, ownerId: req.user._id})
     Property.findOneAndDelete({_id: req.body.pid, ownerId: req.user._id})
         .then((oneProperty) => {
-            console.log(oneProperty)
             return res.status(200).json({
                 success: true,
                 message: 'Deleted Property',

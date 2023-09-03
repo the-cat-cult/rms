@@ -23,7 +23,7 @@
 <body onload="validate()">
 <div class="container mt-5 shadow">
     <form id="newTenantForm" class="mx-5">
-        <h2 class="mt-5 mb-1"> Add a new Property &#x1f3e0;</h2>
+        <h2 class="mt-5 mb-1"> Edit Property &#x1f3e0;</h2>
         <h4 class=" mb-5">Tell us a bit about the property...</h4>
 
 
@@ -103,7 +103,7 @@
         <button type="button" class="btn btn-outline-secondary mt-3 w-25 mb-5" onclick="validate_form()">Verify Data
         </button>
         <button type="button" class="btn btn-primary mt-3 w-25 mb-5" id="submit_new_tenant" data-toggle="modal"
-                data-target="#confirmModal" disabled>Add Property
+                data-target="#confirmModal" disabled>Edit Property
         </button>
     </form>
 
@@ -135,9 +135,36 @@
     let propertyLocation, address, bhk, type, rent, sd, age;
 
     function validate() {
-        if(localStorage.getItem("role") !== "owner") {
+        if(localStorage.getItem("role") !== "owner" && localStorage.getItem("role") !== "admin") {
             window.location.href = "/"
         }
+        get_property_data()
+    }
+
+    function getPropertyId() {
+        let url = new URL(window.location.href);
+        return url.searchParams.get("propertyId");
+    }
+
+    function get_property_data() {
+        axios.post("/api/getPropertyById", {pid: getPropertyId()})
+            .then(function (response) {
+                console.log(response);
+                if (response.data.success) {
+                    let property = response.data.Property
+
+                    propertyLocation = document.getElementById('property_locatiom').value = property.location || "";
+                    rent = document.getElementById('rent').value = property.rent || 0;
+                    address = document.getElementById('address').value = property.address || "";
+                    sd = document.getElementById('sd').value = property.securityDeposit;
+                    bhk = document.getElementById('bhk').value = property.bhk;
+                    type = document.getElementById('type').value = property.propertyType;
+                    age = document.getElementById('age').value = property.age;
+                }
+            })
+            .catch(function (error) {
+                alert("Could not fetch property info")
+            });
     }
 
     function validate_form() {
@@ -183,20 +210,22 @@
 
         console.log(rent)
 
-            axios.post("/api/addProperty", {
-                addr: address,
-                ptype: type,
+            axios.patch("/api/updateProperty", {
+                pid: getPropertyId(),
+                address: address,
+                propertyType: type,
                 bhk: bhk,
                 location: propertyLocation,
                 lat: 0,
                 long: 0,
-                rent: rent,
-                secdep: sd,
-                age: age,
+                rent: parseInt(rent),
+                securityDeposit: parseInt(sd),
+                age: parseInt(age),
+                verified: false,
             })
                 .then(function (response) {
                     console.log(response);
-                    window.location.href = "/pages/owner/owner_panel.html"
+                    window.location.href = "/"
                 })
                 .catch(function (error) {
                     console.log(error);
