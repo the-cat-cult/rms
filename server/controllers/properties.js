@@ -54,7 +54,7 @@ export function getAllProperties(req, res) {
 }
 
 export function getAllPropertiesByUser(req, res) {
-    Property.find({ ownerId: req.user._id })
+    Property.find({ownerId: req.user._id})
         .then((allProperty) => {
             return res.status(200).json({
                 success: true,
@@ -72,7 +72,7 @@ export function getAllPropertiesByUser(req, res) {
 }
 
 export function getOneProperty(req, res) {
-    Property.findOne({ propertyId: req.body.pid })
+    Property.findOne({propertyId: req.body.pid})
         .then((oneProperty) => {
             return res.status(200).json({
                 success: true,
@@ -87,6 +87,26 @@ export function getOneProperty(req, res) {
                 error: err.message,
             });
         });
+}
+
+export function getPropertyById(req, res) {
+
+    Property.findOne({_id: req.body._id})
+        .then((oneProperty) => {
+            return res.status(200).json({
+                success: true,
+                message: 'Result',
+                Property: oneProperty,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error. Please try again.',
+                error: err.message,
+            });
+        });
+
 }
 
 export function getPropertiesByFilters(req, res) {
@@ -124,7 +144,7 @@ export function getPropertiesByFilters(req, res) {
 
 export async function updateProperty(req, res) {
     const updateObject = req.body
-    Property.findOneAndUpdate({ propertyId: req.body.pid }, { $set: updateObject })
+    Property.findOneAndUpdate({propertyId: req.body.pid}, {$set: updateObject})
         .then((updatedProperty) => {
             return res.status(200).json({
                 success: true,
@@ -141,7 +161,7 @@ export async function updateProperty(req, res) {
 }
 
 export function deleteProperty(req, res) {
-    Property.findOneAndDelete({ propertyId: req.body.pid })
+    Property.findOneAndDelete({propertyId: req.body.pid})
         .then((oneProperty) => {
             return res.status(200).json({
                 success: true,

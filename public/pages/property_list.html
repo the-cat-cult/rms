@@ -111,10 +111,6 @@
     <script>
         let default_data = []
 
-        // current_user = "Jignesh";
-        // document.getElementById("profile_name").innerHTML = current_user;
-
-        //listen to bhk, minRent, and rest and if typing then search
         document.getElementById("BHK").addEventListener("keyup", function (event) {
             if (event.key === "Enter") {
                 event.preventDefault();
@@ -140,13 +136,6 @@
             if (event.key === "Enter") {
                 event.preventDefault();
                 getProperties();
-            }
-        });
-
-        document.getElementById("property_id").addEventListener("keyup", function (event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                search_by_property_id(document.getElementById('property_id').value);
             }
         });
 
@@ -187,7 +176,7 @@
                                 "propertyType": response.data.Property[i].propertyType,
                                 "bhk": response.data.Property[i].bhk,
                                 "id": response.data.Property[i].propertyId,
-                                "link": "/pages/property_details.html"
+                                "link": "/api/addBooking?propertyId=" + response.data.Property[i].propertyId
                             })
 
                         }
@@ -208,6 +197,7 @@
 
             for (var i = 0; i < default_data.length; i++) {
                 var item = document.createElement("a");
+                alert(default_data[i]["link"])
                 item.setAttribute("href", default_data[i]["link"]);
                 item.setAttribute("class", "list-group-item list-group-item-action");
                 item.setAttribute("aria-current", "true");

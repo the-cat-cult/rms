@@ -1,12 +1,12 @@
 import express from "express";
 
-import {createBooking, getAllBookings, getOneBooking, updateBooking, deleteBooking} from '../controllers/bookings.js'
+import {createBooking, getAllBookings, getOneBooking, updateBookingStatus, deleteBooking} from '../controllers/bookings.js'
 import {
     createProperty,
     getAllProperties,
     getOneProperty,
     updateProperty,
-    deleteProperty, getPropertiesByFilters, getAllPropertiesByUser
+    deleteProperty, getPropertiesByFilters, getAllPropertiesByUser, getPropertyById
 } from '../controllers/properties.js'
 import {
     createTenant,
@@ -30,40 +30,39 @@ router.post('/signOut', authentication(["admin", "owner", "tenant"]), singOut)
 router.get('/isAuthenticated', authentication(["admin", "owner", "tenant"]), checkAuth)
 
 //create entity routes
-router.post('/addBooking', authentication(["tenant"]), createBooking);
+router.get('/addBooking', authentication(["tenant"]), createBooking);
 router.post('/addProperty', authentication(["owner"]), createProperty);
 router.post("/addTenant", authentication(["admin"]), createTenant);
 router.post("/addUser", authentication(["admin"]), createUser);
-router.post("/addPreference", authentication(["tenant"]), addPreference);
 
 //get single entity
 router.post('/getUser', authentication(["admin", "owner"]), getOneUser)
 router.post('/getTenant', authentication(["admin", "tenant"]), getOneTenant)
 router.get('/getTenant', authentication(["admin"]), getOneTenantById)
 router.post('/getProperty', authentication(["admin", "owner", "tenant"]), getOneProperty)
+router.post('/getPropertyById', authentication(["owner"]), getPropertyById)
 router.post('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
-router.get('/getPreference', authentication(["tenant"]), getPreference)
 
 //get list of entities
 router.get('/listAllUsers', authentication(["admin"]), getAllUsers)
 router.get('/listAllTenants', authentication(["admin", "owner"]), getAllTenants)
 router.get('/listAllProperties', authentication(["admin", "tenant"]), getAllProperties)
 router.get('/listAllPropertiesByUser', authentication(["owner"]), getAllPropertiesByUser)
-router.get('/listAllBookings', authentication(["admin", "tenant"]), getAllBookings)
 router.post('/listAllPropertiesByFilter', authentication(["admin", "tenant"]), getPropertiesByFilters)
+router.post('/listAllBookings', authentication(["admin", "tenant"]), getAllBookings)
 
 //update entity
 router.patch('/updateUser', authentication(["admin", "owner"]), updateUser)
 router.patch('/updateTenant', authentication(["admin", "tenant"]), updateTenant)
 router.patch('/updateProperty', authentication(["admin", "owner"]), updateProperty)
-router.patch('/updateBooking', authentication(["admin"]), updateBooking)
+router.patch('/updateBookingStatus', authentication(["admin"]), updateBookingStatus)
 
 //delete entity
 router.delete('/deleteUser', authentication(["admin", "owner"]), deleteUser)
 router.delete('/deleteTenant', authentication(["admin", "tenant"]), deleteTenant)
 router.delete('/deleteProperty', authentication(["admin", "owner"]), deleteProperty)
-router.delete('/deleteBooking', authentication(["admin"]), deleteBooking)
+router.delete('/deleteBooking', authentication(["tenant"]), deleteBooking)
 router.get('/deleteTenantById', authentication(["admin"]), deleteTenantById)
-router.delete("/deletePreference", authentication(["tenant"]), deletePreference);
+router.delete('/deletePreference', authentication(["tenant"]), deletePreference)
 
 export default router;

@@ -115,6 +115,7 @@
                         document.getElementsByClassName("phone_number")[0].innerHTML = response.data.Tenant.mobileNumber;
                         document.getElementsByClassName("personal_number")[0].innerHTML = response.data.Tenant.pnum;
                         document.getElementsByClassName("rank")[0].innerHTML = response.data.Tenant.rank;
+                        get_preferences()
                     }
                 })
                 .catch(function (error) {
@@ -123,141 +124,170 @@
         }
 
         preference_list = document.getElementById("iter-elements");
-        preferences = null;
         //TODO: Replace preference
-        preferences = {
-            1: {
-                'Priority': 1,
-                'Address': 'Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.',
-                'Rent': 10000,
-                'Security Deposit': 10000,
-                'Owner': 'Owner 1',
-                'Owner Phone Number': '1234567890'
-            },
+        // preferences = {
+        //     1: {
+        //         'Priority': 1,
+        //         'Address': 'Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.',
+        //         'Rent': 10000,
+        //         'Security Deposit': 10000,
+        //         'Owner': 'Owner 1',
+        //         'Owner Phone Number': '1234567890'
+        //     },
+        //
+        //     2: {
+        //         'Priority': 2,
+        //         'Address': 'Donec id elit non  metus.  sed diam eget risus varius blandit.',
+        //         'Rent': 10000,
+        //         'Security Deposit': 10000,
+        //         'Owner': 'Owner 2',
+        //         'Owner Phone Number': '1234567890'
+        //     },
+        //
+        //     3: {
+        //         'Priority': 3,
+        //         'Address': 'Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.',
+        //         'Rent': 10000,
+        //         'Security Deposit': 10000,
+        //         'Owner': 'Owner 3',
+        //         'Owner Phone Number': '1234567890'
+        //     }
+        // }
 
-            2: {
-                'Priority': 2,
-                'Address': 'Donec id elit non  metus.  sed diam eget risus varius blandit.',
-                'Rent': 10000,
-                'Security Deposit': 10000,
-                'Owner': 'Owner 2',
-                'Owner Phone Number': '1234567890'
-            },
-
-            3: {
-                'Priority': 3,
-                'Address': 'Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.',
-                'Rent': 10000,
-                'Security Deposit': 10000,
-                'Owner': 'Owner 3',
-                'Owner Phone Number': '1234567890'
-            }
-        }
-
-        // Add each preference to the list in preference_list
-        if (preferences != null) {
-
-            for (var preference in preferences) {
-                // Create a new list item
-                var new_preference = document.createElement("a");
-                new_preference.setAttribute("href", "#");
-                new_preference.setAttribute("name", "preference");
-                new_preference.setAttribute("class", "list-group-item list-group-item-action flex-column align-items-start");
-                new_preference.setAttribute("id", preference);
-
-                // Create a new div for the preference
-                var preference_div = document.createElement("div");
-                preference_div.setAttribute("class", "d-flex w-100 justify-content-between");
-
-                // Create a new p for the address
-                var preference_address = document.createElement("p");
-                preference_address.setAttribute("class", "mb-1");
-                address = preferences[preference]['Address'];
-
-                // If the address is too long, truncate it
-                if (address.length > 50) {
-                    address = address.substring(0, 50) + "...";
-                }
-
-                // If address is too short, add a few spaces to make it look better
-                if (address.length < 50) {
-                    address = address + " ".repeat(50 - address.length);
-                }
-                preference_address.innerHTML = address;
-
-                // Create a new small for the rent
-                var preference_rent = document.createElement("small");
-                preference_rent.setAttribute("class", "text-muted");
-                preference_rent.innerHTML = "Rent: " + preferences[preference]['Rent'];
-
-                // Create a new small for the security deposit
-                var preference_sd = document.createElement("small");
-                preference_sd.setAttribute("class", "text-muted");
-                preference_sd.innerHTML = "Security Deposit: " + preferences[preference]['Security Deposit'];
-
-                // Add the address, rent and security deposit to the div
-                preference_div.appendChild(preference_address);
-                preference_div.appendChild(preference_rent);
-                preference_div.appendChild(preference_sd);
-
-                // Add the div to the list item
-                new_preference.appendChild(preference_div);
-
-                // Add the list item to the list
-                preference_list.appendChild(new_preference);
-            }
-            // Add a spacer
-            var spacer = document.createElement("div");
-            spacer.setAttribute("class", "mt-5");
-            preference_list.appendChild(spacer);
-        } else {
-            // Display a message saying that there are no preferences to display
-            var no_preferences = document.createElement("h2");
-            no_preferences.setAttribute("class", "text-muted mb-5");
-            no_preferences.innerHTML = "You have no preferences to display.";
-
-            preference_list.appendChild(no_preferences);
-
-        }
+        //    _id: mongoose.Schema.Types.ObjectId,
+        // bookingId: mongoose.Schema.Types.ObjectId,
+        //     preferenceNumber: Number,
+        //     allotmentStatus: {
+        //     type: Boolean,
+        // default: false
+        // },
+        // propertyId: mongoose.Schema.Types.ObjectId,
+        //     ownerId: mongoose.Schema.Types.ObjectId,
+        //     tenantId: mongoose.Schema.Types.ObjectId
 
 
-        var current_selection = null;
-        // Add event listeners to each preference
-        var preferences = document.getElementsByName("preference");
-        preferences.forEach(function (preference) {
-            preference.addEventListener("click", function () {
-                // Remove the active class from all preferences
-                preferences.forEach(function (preference) {
-                    preference.classList.remove("active");
+        function get_preferences() {
+            axios.post("/api/listAllBookings")
+                .then(function (response) {
+                    console.log(response);
+                    if (response.data.success) {
+                        let preferences_array = response.data.Booking;
+                        console.log(preferences_array);
+                        populate_preferences(preferences_array);
+
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
                 });
-
-                // Add the active class to the clicked preference
-                preference.classList.add("active");
-                current_selection = preference.id;
-
-                // Enable the delete button
-                document.getElementById("delete_btn").disabled = false;
-            });
-        });
-
-
-        // Add event listener to the delete button
-        document.getElementById("delete_btn").addEventListener("click", function () {
-            if (confirm("Are you sure you want to delete this preference?")) {
-                // Delete the preference from the database
-                // Delete the preference from the list
-                document.getElementById(current_selection).remove();
-                // Disable the delete button
-                document.getElementById("delete_btn").disabled = true;
-                // Enable the choose preferences button
-                document.getElementById("choose_prefs").disabled = false;
-            }
-        });
-
-        // If 3 preferences are selected, disable the choose preferences button
-        if (preferences.length == 3) {
-            document.getElementById("choose_prefs").disabled = true;
         }
+
+        function populate_preferences(preferences) {
+            // Add each preference to the list in preference_list
+            if (preferences != null) {
+                for (var preference in preferences) {
+                    // Create a new list item
+                    var new_preference = document.createElement("a");
+                    new_preference.setAttribute("href", "#");
+                    new_preference.setAttribute("name", "preference");
+                    new_preference.setAttribute("class", "list-group-item list-group-item-action flex-column align-items-start");
+                    new_preference.setAttribute("id", preference);
+
+                    // Create a new div for the preference
+                    var preference_div = document.createElement("div");
+                    preference_div.setAttribute("class", "d-flex w-100 justify-content-between");
+
+                    // Create a new p for the address
+                    var preference_address = document.createElement("p");
+                    preference_address.setAttribute("class", "mb-1");
+                    address = preferences[preference]['Address'];
+
+                    // If the address is too long, truncate it
+                    if (address.length > 50) {
+                        address = address.substring(0, 50) + "...";
+                    }
+
+                    // If address is too short, add a few spaces to make it look better
+                    if (address.length < 50) {
+                        address = address + " ".repeat(50 - address.length);
+                    }
+                    preference_address.innerHTML = address;
+
+                    // Create a new small for the rent
+                    var preference_rent = document.createElement("small");
+                    preference_rent.setAttribute("class", "text-muted");
+                    preference_rent.innerHTML = "Rent: " + preferences[preference]['Rent'];
+
+                    // Create a new small for the security deposit
+                    var preference_sd = document.createElement("small");
+                    preference_sd.setAttribute("class", "text-muted");
+                    preference_sd.innerHTML = "Security Deposit: " + preferences[preference]['Security Deposit'];
+
+                    // Add the address, rent and security deposit to the div
+                    preference_div.appendChild(preference_address);
+                    preference_div.appendChild(preference_rent);
+                    preference_div.appendChild(preference_sd);
+
+                    // Add the div to the list item
+                    new_preference.appendChild(preference_div);
+
+                    // Add the list item to the list
+                    preference_list.appendChild(new_preference);
+                }
+                // Add a spacer
+                var spacer = document.createElement("div");
+                spacer.setAttribute("class", "mt-5");
+                preference_list.appendChild(spacer);
+            } else {
+                // Display a message saying that there are no preferences to display
+                var no_preferences = document.createElement("h2");
+                no_preferences.setAttribute("class", "text-muted mb-5");
+                no_preferences.innerHTML = "You have no preferences to display.";
+
+                preference_list.appendChild(no_preferences);
+
+            }
+
+
+            var current_selection = null;
+            // Add event listeners to each preference
+            var preferencesElement = document.getElementsByName("preference");
+            preferencesElement.forEach(function (preference) {
+                preferencesElement.addEventListener("click", function () {
+                    // Remove the active class from all preferences
+                    preferencesElement.forEach(function (preference) {
+                        preferencesElement.classList.remove("active");
+                    });
+
+                    // Add the active class to the clicked preference
+                    preferencesElement.classList.add("active");
+                    current_selection = preferencesElement.id;
+
+                    // Enable the delete button
+                    document.getElementById("delete_btn").disabled = false;
+                });
+            });
+
+
+            // Add event listener to the delete button
+            document.getElementById("delete_btn").addEventListener("click", function () {
+                if (confirm("Are you sure you want to delete this preference?")) {
+                    // Delete the preference from the database
+                    // Delete the preference from the list
+                    document.getElementById(current_selection).remove();
+                    // Disable the delete button
+                    document.getElementById("delete_btn").disabled = true;
+                    // Enable the choose preferences button
+                    document.getElementById("choose_prefs").disabled = false;
+                }
+            });
+
+            // If 3 preferences are selected, disable the choose preferences button
+            if (preferences.length == 3) {
+                document.getElementById("choose_prefs").disabled = true;
+            }
+        }
+
 
         function edit() {
             window.location.href = "/pages/edit_tenant.html";

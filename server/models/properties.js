@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 mongoose.Promise = global.Promise;
 const propertiesSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -13,7 +14,11 @@ const propertiesSchema = new mongoose.Schema({
     securityDeposit: Number,
     age: Number,
     vacancyStatus: String,
-    ownerId: mongoose.Schema.Types.ObjectId
+    ownerId: mongoose.Schema.Types.ObjectId,
+    verified: {
+        type: Boolean,
+        default: false
+    }
 
-}, { collection: "properties" });
+}, {collection: "properties"});
 export default mongoose.model('Property', propertiesSchema);

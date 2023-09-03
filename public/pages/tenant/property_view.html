@@ -21,7 +21,6 @@
                 <a class="navbar-brand mx-4" href="/">
                     <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="30">
                 </a>
-
                 <!-- Profile Page navigation button on the right side -->
                 <div class="d-flex mx-5">
                     <!-- Sign out button -->
@@ -71,11 +70,8 @@
 
 
             <div class="buttons">
-                <!-- Edit property button -->
-                <button type="button" class="btn btn-primary btn-lg mx-2 mb-2" id="edit_btn" onclick="window.location.href='/pages/owner/edit_property.html'">Edit Property</button>
-
-                <!-- Delete property button -->
-                <button type="button" class="btn btn-outline-danger btn-lg mx-2 mb-2" id="delete_btn">Delete Property</button>
+                <!-- Add preference button -->
+                <button type="button" class="btn btn-outline-primary mt-5 btn-lg" onclick="add_to_pref()" id="add_to_pref"></button>
             </div>
 
         </div>
@@ -132,6 +128,15 @@
     type = "Apartment";
     image_links = null;
     verified = false;
+    user_prefs = 0;
+
+
+    button_text = document.getElementById("add_to_pref");
+    if (user_prefs == 0) {
+        button_text.innerHTML = "Add to Preferences (" + user_prefs + "/3)";
+    } else {
+        button_text.innerHTML = "Remove from Preferences";
+    }
 
     image_links = [
         "https://cf.bstatic.com/xdata/images/hotel/max1024x768/282045997.jpg?k=4d013e07aa9dcc9c0844ba222b108a3f143092f6ea3a67b0f3249f3c3a65af2b&o=&hp=1",
@@ -222,6 +227,29 @@
             window.location.href = "/pages/owner/owner_panel.html";
         }
     });
+
+
+    function add_to_pref() {
+        if (user_prefs == 0) {
+            if (confirm("Are you sure you want to add this property to your preferences?")) {
+                // Add the property to the preferences
+                // Update the button text
+                user_prefs++;
+                button_text.innerHTML = "Remove from Preferences";
+                button_text.classList.remove("btn-outline-primary");
+                button_text.classList.add("btn-outline-danger");
+            }
+        } else {
+            if (confirm("Are you sure you want to remove this property from your preferences?")) {
+                // Remove the property from the preferences
+                // Update the button text
+                user_prefs--;
+                button_text.innerHTML = "Add to Preferences (" + user_prefs + "/3)";
+                button_text.classList.remove("btn-outline-danger");
+                button_text.classList.add("btn-outline-primary");
+            }
+        }
+    }
 </script>
 
 
