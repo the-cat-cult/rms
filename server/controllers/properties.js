@@ -159,9 +159,11 @@ export async function updateProperty(req, res) {
         });
 }
 
-export function deleteProperty(req, res) {
-    Property.findOneAndDelete({_id: req.body.pid})
+export async function deleteProperty(req, res) {
+    console.log(await Property.findOne({_id: req.body.pid, ownerId: req.user._id}), {_id: req.body.pid, ownerId: req.user._id})
+    Property.findOneAndDelete({_id: req.body.pid, ownerId: req.user._id})
         .then((oneProperty) => {
+            console.log(oneProperty)
             return res.status(200).json({
                 success: true,
                 message: 'Deleted Property',

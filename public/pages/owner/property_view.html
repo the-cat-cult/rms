@@ -9,11 +9,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 </head>
 
-<body>
+<body onload="get_property_data()">
     <!-- Header -->
     <header>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -56,7 +56,7 @@
             <div class="details">
                 <!-- Details of the apartment -->
                 <h1 class="mt-5">
-                    <span id="bhk"></span> BHK <span id="type"></span>
+                    <span id="bhk"></span> <span id="type"></span>
                 </h1>
 
 
@@ -128,10 +128,10 @@
 </style>
 
 <script>
-    bhk = "3";
-    type = "Apartment";
-    image_links = null;
-    verified = false;
+    let bhk = "...";
+    let type = "...";
+    let image_links = null;
+    let verified = false;
 
     image_links = [
         "https://cf.bstatic.com/xdata/images/hotel/max1024x768/282045997.jpg?k=4d013e07aa9dcc9c0844ba222b108a3f143092f6ea3a67b0f3249f3c3a65af2b&o=&hp=1",
@@ -143,9 +143,34 @@
         image_links = ["https://dummyimage.com/1000x400/808080/ffffff&text=no+image+uploaded"]
     }
 
-    address = "B123, ABC Apartments, XYZ Road, Mumbai, Maharashtra, India";
-    rent = 99999;
-    security_deposit = 99999;
+
+    let address = "...";
+    let rent = 0;
+    let security_deposit = 0;
+
+    function getPropertyId() {
+        let url = new URL(window.location.href);
+        return url.searchParams.get("propertyId");
+    }
+
+    function get_property_data() {
+        axios.post("/api/getPropertyById", {pid: getPropertyId()})
+            .then(function (response) {
+                console.log(response);
+                if (response.data.success) {
+                    bhk = response.data.Property.bhk
+                    type = response.data.Property.propertyType
+                    address = response.data.Property.address
+                    rent = response.data.Property.rent
+                    security_deposit = response.data.Property.securityDeposit
+                    build_data()
+
+                }
+            })
+            .catch(function (error) {
+                alert("Could not fetch property info")
+            });
+    }
 
     function formatNumber(num) {
         rent_str = "";
@@ -171,21 +196,23 @@
     status_refs = document.getElementById("status");
     security_deposit_refs = document.getElementById("security_deposit");
 
-    bhk_refs.innerHTML = bhk;
-    type_refs.innerHTML = type;
-    rent_refs.innerHTML = "₹" + rent_str + " /month";
-    security_deposit_refs.innerHTML = "₹" + security_deposit_str + " /month";
-    address_refs.innerHTML = address;
-    if (verified) {
-        status_refs.classList.add("badge");
-        status_refs.classList.add("rounded-pill");
-        status_refs.classList.add("text-bg-success");
-        status_refs.innerHTML = "Verified";
-    } else {
-        status_refs.classList.add("badge");
-        status_refs.classList.add("rounded-pill");
-        status_refs.classList.add("text-bg-warning");
-        status_refs.innerHTML = "Not Verified";
+    function build_data() {
+        bhk_refs.innerHTML = bhk;
+        type_refs.innerHTML = type;
+        rent_refs.innerHTML = "₹" + rent_str + " /month";
+        security_deposit_refs.innerHTML = "₹" + security_deposit_str + " /month";
+        address_refs.innerHTML = address;
+        if (verified) {
+            status_refs.classList.add("badge");
+            status_refs.classList.add("rounded-pill");
+            status_refs.classList.add("text-bg-success");
+            status_refs.innerHTML = "Verified";
+        } else {
+            status_refs.classList.add("badge");
+            status_refs.classList.add("rounded-pill");
+            status_refs.classList.add("text-bg-warning");
+            status_refs.innerHTML = "Not Verified";
+        }
     }
 
 
@@ -217,9 +244,14 @@
     delete_btn = document.getElementById("delete_btn");
     delete_btn.addEventListener("click", function() {
         if (confirm("Are you sure you want to delete this property?")) {
-            // Delete the property from the database
-            // Delete the property from the list
-            window.location.href = "/pages/owner/owner_panel.html";
+            console.log({pid: getPropertyId()})
+            axios.post("/api/deleteProperty", {pid: getPropertyId()})
+                .then(function (response) {
+                    // window.location.href = "/pages/owner/owner_panel.html";
+                })
+                .catch(function (error) {
+                    alert("Could not delete property info")
+                });
         }
     });
 </script>
