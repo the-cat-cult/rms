@@ -199,13 +199,14 @@
 
                     let verifiedElement = document.getElementById("verified")
                     if(verifiedElement) {
-                        verifiedElement.getElementById("verified").checked = verified
+                        verifiedElement.checked = verified
                     }
 
                     build_data()
                 }
             })
             .catch(function (error) {
+                console.log(error)
                 alert("Could not fetch property info")
             });
     }
