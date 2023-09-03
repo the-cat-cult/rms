@@ -45,7 +45,6 @@ export async function ownerSignUp(req, res) {
     }
 
     if (otpRecord.otp !== otp) {
-        console.log(otpRecord.otp, otp, otpRecord.otp !== otp)
         return res.status(400).json({
             success: false,
             message: 'OTP not matched'
@@ -138,6 +137,7 @@ export async function generateOTP(req, res) {
             message: 'OTP successfully generated',
         });
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             success: false,
             message: 'Error in generating new OTP' + error

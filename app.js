@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import cookieParser from "cookie-parser";
 
 import router from './server/routes/main.js';
+import path from "path";
 
 dotenv.config();
 
@@ -36,6 +37,17 @@ app.use('/api/', router);
 
 app.get('*', function (req, res) {
     res.status(404).redirect('/pages/page_404.html');
+});
+
+const __dirname = path.resolve();
+
+
+app.use((err, req, res, next) => {
+    if (! err) {
+        return next();
+    }
+
+    return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
 });
 
 app.listen(port, () => {

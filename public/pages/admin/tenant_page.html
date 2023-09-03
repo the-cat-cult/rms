@@ -104,7 +104,6 @@
                         console.log(response);
                         if (response.data.success) {
                             let preferences_array = response.data.Booking;
-                            console.log(preferences_array);
                             populate_preferences(preferences_array);
                             property_data = preferences_array
 
@@ -186,7 +185,6 @@
 
                 var preferencesElement = document.getElementsByName("preference");
                 preferencesElement.forEach(function (preference) {
-                    console.log(preference)
                     preference.addEventListener("click", function () {
                         preferencesElement.forEach(function (preference) {
                             preference.classList.remove("active");

@@ -81,7 +81,6 @@ export function setVerificationStatus(req, res) {
 
     Property.findOneAndUpdate({_id: propertyId}, {$set: { verified: verified }})
         .then((updatedProperty) => {
-            console.log(updatedProperty)
             return res.status(200).json({
                 success: true,
                 message: 'Object Updated'
@@ -179,7 +178,6 @@ export async function updateProperty(req, res) {
 
     Property.findOneAndUpdate(updateProp, {$set: updateObject})
         .then((updatedProperty) => {
-            console.log(updatedProperty)
             return res.status(200).json({
                 success: true,
                 message: 'Object Updated'

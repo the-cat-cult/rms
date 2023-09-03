@@ -270,7 +270,7 @@
             console.log({pid: getPropertyId()})
             axios.post("/api/deleteProperty", {pid: getPropertyId()})
                 .then(function (response) {
-                    window.location.href = "/pages/owner/owner_panel.html";
+                    window.location.href = "/";
                 })
                 .catch(function (error) {
                     alert("Could not delete property info")

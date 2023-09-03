@@ -30,7 +30,6 @@ export async function createBooking(req, res) {
     })
 
     let bookings = await Booking.find({tenantId: req.user._id})
-    console.log(bookings)
     if (bookings.length === 3) {
         return res.sendFile(path.join(__dirname + '/public/pages/tenant/booking_failed.html'));
     }
