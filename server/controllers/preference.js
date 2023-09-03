@@ -6,8 +6,10 @@ export function getPreference(req, res) {
     let userId = req.user._id;
 
     Preference.findOne({userId: userId})
-        .populate("properties")
-        .then((preference) => {
+        .then(async (preference) => {
+
+            await Preference.populate(preference, {path: 'propertyPreferenceIds', model: 'Property'})
+
             return res.status(200).json({
                 success: true,
                 message: 'Result',
@@ -26,7 +28,7 @@ export function getPreference(req, res) {
 
 export async function addPreference(req, res) {
     let userId = req.user._id;
-    let propertyId = req.propertyId;
+    let propertyId = req.body.propertyId;
 
     let preference = await Preference.findOne({userId: userId});
 
@@ -36,17 +38,33 @@ export async function addPreference(req, res) {
             propertyPreferenceIds: [],
             userId: userId
         })
-        await preference.save()
     }
 
-    Preference.findOneAndUpdate({userId: userId}, {$push: {propertyPreferenceIds: new mongoose.Types.ObjectId(propertyId)}})
+    let propertyPreferenceIds = preference.propertyPreferenceIds;
+    if (propertyPreferenceIds.length === 3) {
+        return res.status(400).json({
+            success: false,
+            message: 'Preference limit reached'
+        });
+    }
+
+    if (propertyPreferenceIds.includes(propertyId)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Property already added'
+        });
+    }
+
+    propertyPreferenceIds.push(propertyId);
+    preference.propertyPreferenceIds = propertyPreferenceIds;
+
+    await preference.save()
         .then((preference) => {
             return res.status(200).json({
                 success: true,
                 message: 'Property Added',
             });
-        })
-        .catch((err) => {
+        }).catch((err) => {
             res.status(500).json({
                 success: false,
                 message: 'Server error. Please try again.',
@@ -57,7 +75,7 @@ export async function addPreference(req, res) {
 
 export function deletePreference(req, res) {
     let userId = req.user._id;
-    let propertyId = req.propertyId;
+    let propertyId = req.body.propertyId;
 
     Preference.findOne({userId: userId})
         .then((preference) => {
