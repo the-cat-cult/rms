@@ -190,15 +190,19 @@
             .then(function (response) {
                 console.log(response);
                 if (response.data.success) {
-                    bhk = response.data.Property.bhk
-                    type = response.data.Property.propertyType
-                    address = response.data.Property.address
-                    rent = response.data.Property.rent
-                    security_deposit = response.data.Property.securityDeposit
-                    verified = response.data.Property.verified
-                    document.getElementById("verified").checked = verified
-                    build_data()
+                    bhk = response.data.Property.bhk || ""
+                    type = response.data.Property.propertyType || ""
+                    address = response.data.Property.address || ""
+                    rent = response.data.Property.rent || 0
+                    security_deposit = response.data.Property.securityDeposit || 0
+                    verified = response.data.Property.verified || false
 
+                    let verifiedElement = document.getElementById("verified")
+                    if(verifiedElement) {
+                        verifiedElement.getElementById("verified").checked = verified
+                    }
+
+                    build_data()
                 }
             })
             .catch(function (error) {
