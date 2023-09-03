@@ -6,7 +6,7 @@ import {
     getAllProperties,
     getOneProperty,
     updateProperty,
-    deleteProperty, getPropertiesByFilters
+    deleteProperty, getPropertiesByFilters, getAllPropertiesByUser
 } from '../controllers/properties.js'
 import {
     createTenant,
@@ -47,7 +47,8 @@ router.get('/getPreference', authentication(["tenant"]), getPreference)
 //get list of entities
 router.get('/listAllUsers', authentication(["admin"]), getAllUsers)
 router.get('/listAllTenants', authentication(["admin", "owner"]), getAllTenants)
-router.get('/listAllProperties', authentication(["admin", "owner", "tenant"]), getAllProperties)
+router.get('/listAllProperties', authentication(["admin", "tenant"]), getAllProperties)
+router.get('/listAllPropertiesByUser', authentication(["owner"]), getAllPropertiesByUser)
 router.get('/listAllBookings', authentication(["admin", "tenant"]), getAllBookings)
 router.post('/listAllPropertiesByFilter', authentication(["admin", "tenant"]), getPropertiesByFilters)
 

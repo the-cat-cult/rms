@@ -53,6 +53,24 @@ export function getAllProperties(req, res) {
         });
 }
 
+export function getAllPropertiesByUser(req, res) {
+    Property.find({ ownerId: req.user._id })
+        .then((allProperty) => {
+            return res.status(200).json({
+                success: true,
+                message: 'A list of all Properties',
+                Properties: allProperty,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error. Please try again.',
+                error: err.message,
+            });
+        });
+}
+
 export function getOneProperty(req, res) {
     Property.findOne({ propertyId: req.body.pid })
         .then((oneProperty) => {
