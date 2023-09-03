@@ -5,77 +5,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>START</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 
 </head>
 
-<body>
-    <!-- Header -->
-    <header>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand mx-4" href="/">
-                    <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="30">
-                </a>
-                <!-- Profile Page navigation button on the right side -->
-                <div class="d-flex mx-5">
-                    <!-- Sign out button -->
-                    <button type="button" class="btn btn-outline-primary mx-3" onclick="sign_out()">Sign Out</button>
-                </div>
+<body onload="get_property_data()">
+<!-- Header -->
+<header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand mx-4" href="/">
+                <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="30">
+            </a>
+            <!-- Profile Page navigation button on the right side -->
+            <div class="d-flex mx-5">
+                <!-- Sign out button -->
+                <button type="button" class="btn btn-outline-primary mx-3" onclick="sign_out()">Sign Out</button>
             </div>
-        </nav>
-
-    </header>
-    <!-- Carousel -->
-    <div id="myCarousel" class="carousel slide" data-ride="carousel">
-        <!-- Indicators -->
-        <ul class="carousel-indicators">
-        </ul>
-
-        <!-- Slides -->
-        <div class="carousel-inner">
         </div>
+    </nav>
 
-        <!-- Controls -->
-        <a class="carousel-control-prev" href="#myCarousel" data-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </a>
-        <a class="carousel-control-next" href="#myCarousel" data-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </a>
+</header>
+<!-- Carousel -->
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ul class="carousel-indicators">
+    </ul>
+
+    <!-- Slides -->
+    <div class="carousel-inner">
     </div>
 
-    <div class="container">
-        <!-- A card with details of rent and address -->
-        <div class="d-flex justify-content-around align-items-baseline">
-            <div class="details">
-                <!-- Details of the apartment -->
-                <h1 class="mt-5">
-                    <span id="bhk"></span> BHK <span id="type"></span>
-                </h1>
+    <!-- Controls -->
+    <a class="carousel-control-prev" href="#myCarousel" data-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </a>
+    <a class="carousel-control-next" href="#myCarousel" data-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </a>
+</div>
+
+<div class="container">
+    <!-- A card with details of rent and address -->
+    <div class="d-flex justify-content-around align-items-baseline">
+        <div class="details">
+            <!-- Details of the apartment -->
+            <h1 class="mt-5">
+                <span id="bhk"></span> BHK <span id="type"></span>
+            </h1>
 
 
-                <h4 class="mt-3" id="status"></h4>
-                <h5 class="mt-3">Rent</h5>
-                <h2 id="rent"></h2>
-                <h5 class="mt-3">Address</h5>
-                <h3 id="address"></h3>
-                <h5 class="mt-3">security Deposit</h5>
-                <h3 id="security_deposit"></h3>
-            </div>
-
-
-            <div class="buttons">
-                <!-- Add preference button -->
-                <button type="button" class="btn btn-outline-primary mt-5 btn-lg" onclick="add_to_pref()" id="add_to_pref"></button>
-            </div>
-
+            <h4 class="mt-3" id="status"></h4>
+            <h5 class="mt-3">Rent</h5>
+            <h2 id="rent"></h2>
+            <h5 class="mt-3">Address</h5>
+            <h3 id="address"></h3>
+            <h5 class="mt-3">security Deposit</h5>
+            <h3 id="security_deposit"></h3>
         </div>
+
+
+        <div class="buttons">
+            <!-- Add preference button -->
+            <button type="button" class="btn btn-outline-primary mt-5 btn-lg" onclick="add_to_pref()" id="add_to_pref">
+                Add property to preference
+            </button>
+        </div>
+
     </div>
+</div>
 
 
 </body>
@@ -90,32 +95,32 @@
     body {
         font-family: 'Poppins', sans-serif;
     }
-    
+
     h5 {
         font-weight: 400;
         font-size: 20px;
     }
-    
+
     .carousel {
         height: 500px;
     }
-    
+
     .carousel-inner img {
         width: 100%;
         height: 500px;
         object-fit: cover;
     }
-    
+
     .container {
         margin-top: 20px;
     }
-    
+
     h1 {
         font-weight: 600;
         font-size: 45px;
         color: rgb(53, 53, 53);
     }
-    
+
     h4 {
         font-weight: 400;
         font-size: 20px;
@@ -124,19 +129,10 @@
 </style>
 
 <script>
-    bhk = "3";
-    type = "Apartment";
-    image_links = null;
-    verified = false;
-    user_prefs = 0;
-
-
-    button_text = document.getElementById("add_to_pref");
-    if (user_prefs == 0) {
-        button_text.innerHTML = "Add to Preferences (" + user_prefs + "/3)";
-    } else {
-        button_text.innerHTML = "Remove from Preferences";
-    }
+    let bhk = "...";
+    let type = "...";
+    let image_links = null;
+    let verified = false;
 
     image_links = [
         "https://cf.bstatic.com/xdata/images/hotel/max1024x768/282045997.jpg?k=4d013e07aa9dcc9c0844ba222b108a3f143092f6ea3a67b0f3249f3c3a65af2b&o=&hp=1",
@@ -148,9 +144,34 @@
         image_links = ["https://dummyimage.com/1000x400/808080/ffffff&text=no+image+uploaded"]
     }
 
-    address = "B123, ABC Apartments, XYZ Road, Mumbai, Maharashtra, India";
-    rent = 99999;
-    security_deposit = 99999;
+
+    let address = "...";
+    let rent = 0;
+    let security_deposit = 0;
+
+    function getPropertyId() {
+        let url = new URL(window.location.href);
+        return url.searchParams.get("propertyId");
+    }
+
+    function get_property_data() {
+        axios.post("/api/getPropertyById", {pid: getPropertyId()})
+            .then(function (response) {
+                console.log(response);
+                if (response.data.success) {
+                    bhk = response.data.Property.bhk
+                    type = response.data.Property.propertyType
+                    address = response.data.Property.address
+                    rent = response.data.Property.rent
+                    security_deposit = response.data.Property.securityDeposit
+                    build_data()
+
+                }
+            })
+            .catch(function (error) {
+                alert("Could not fetch property info")
+            });
+    }
 
     function formatNumber(num) {
         rent_str = "";
@@ -162,6 +183,7 @@
         }
         return rent_str;
     }
+
     rent_str = formatNumber(rent);
     security_deposit_str = formatNumber(security_deposit);
 
@@ -176,23 +198,24 @@
     status_refs = document.getElementById("status");
     security_deposit_refs = document.getElementById("security_deposit");
 
-    bhk_refs.innerHTML = bhk;
-    type_refs.innerHTML = type;
-    rent_refs.innerHTML = "₹" + rent_str + " /month";
-    security_deposit_refs.innerHTML = "₹" + security_deposit_str + " /month";
-    address_refs.innerHTML = address;
-    if (verified) {
-        status_refs.classList.add("badge");
-        status_refs.classList.add("rounded-pill");
-        status_refs.classList.add("text-bg-success");
-        status_refs.innerHTML = "Verified";
-    } else {
-        status_refs.classList.add("badge");
-        status_refs.classList.add("rounded-pill");
-        status_refs.classList.add("text-bg-warning");
-        status_refs.innerHTML = "Not Verified";
+    function build_data() {
+        bhk_refs.innerHTML = bhk;
+        type_refs.innerHTML = type;
+        rent_refs.innerHTML = "₹" + rent_str + " /month";
+        security_deposit_refs.innerHTML = "₹" + security_deposit_str + " /month";
+        address_refs.innerHTML = address;
+        if (verified) {
+            status_refs.classList.add("badge");
+            status_refs.classList.add("rounded-pill");
+            status_refs.classList.add("text-bg-success");
+            status_refs.innerHTML = "Verified";
+        } else {
+            status_refs.classList.add("badge");
+            status_refs.classList.add("rounded-pill");
+            status_refs.classList.add("text-bg-warning");
+            status_refs.innerHTML = "Not Verified";
+        }
     }
-
 
     carousel_indicators = document.getElementsByClassName("carousel-indicators")[0];
     for (i = 0; i < image_links.length; i++) {
@@ -219,35 +242,10 @@
         carousel_inner.appendChild(div);
     }
 
-    delete_btn = document.getElementById("delete_btn");
-    delete_btn.addEventListener("click", function() {
-        if (confirm("Are you sure you want to delete this property?")) {
-            // Delete the property from the database
-            // Delete the property from the list
-            window.location.href = "/pages/owner/owner_panel.html";
-        }
-    });
-
 
     function add_to_pref() {
-        if (user_prefs == 0) {
-            if (confirm("Are you sure you want to add this property to your preferences?")) {
-                // Add the property to the preferences
-                // Update the button text
-                user_prefs++;
-                button_text.innerHTML = "Remove from Preferences";
-                button_text.classList.remove("btn-outline-primary");
-                button_text.classList.add("btn-outline-danger");
-            }
-        } else {
-            if (confirm("Are you sure you want to remove this property from your preferences?")) {
-                // Remove the property from the preferences
-                // Update the button text
-                user_prefs--;
-                button_text.innerHTML = "Add to Preferences (" + user_prefs + "/3)";
-                button_text.classList.remove("btn-outline-danger");
-                button_text.classList.add("btn-outline-primary");
-            }
+        if (confirm("Are you sure you want to add this property to your preferences?")) {
+            window.location.href = "/api/addBooking?propertyId=" + getPropertyId()
         }
     }
 </script>

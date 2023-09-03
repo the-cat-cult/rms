@@ -39,7 +39,7 @@ router.post('/getUser', authentication(["admin", "owner"]), getOneUser)
 router.post('/getTenant', authentication(["admin", "tenant"]), getOneTenant)
 router.get('/getTenant', authentication(["admin"]), getOneTenantById)
 router.post('/getProperty', authentication(["admin", "owner", "tenant"]), getOneProperty)
-router.post('/getPropertyById', authentication(["owner"]), getPropertyById)
+router.post('/getPropertyById', authentication(["owner", "tenant", "admin"]), getPropertyById)
 router.post('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
 
 //get list of entities
