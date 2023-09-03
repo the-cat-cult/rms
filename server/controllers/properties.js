@@ -145,6 +145,7 @@ export async function updateProperty(req, res) {
 
     if (req.user.role !== "admin") {
         updateProp.ownerId = req.user._id;
+        delete updateObject.verified
     }
 
     Property.findOneAndUpdate(updateProp, {$set: updateObject})
