@@ -16,7 +16,7 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/", express.static('public'))
 // set up mongoose
-mongoose.connect('mongodb+srv://root:root@cluster0.sagez.mongodb.net/?retryWrites=true&w=majority', { dbName: 'rms' })
+mongoose.connect(process.env.CONNECTION_STRING, { dbName: process.env.DATABASE_NAME })
     .then(() => {
         console.log('Database connected');
     })

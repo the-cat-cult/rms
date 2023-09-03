@@ -88,7 +88,7 @@ function sendSMS(code, phone) {
     const req = unirest("POST", "https://www.fast2sms.com/dev/bulkV2");
 
     req.headers({
-        "authorization": "B7YnZprFjHLm4ui1aqJzAW6cOvwS8IkRyPUf9GVKlNEDt35Xbsldg6QCnOY4MbuvjhVq0wx3WSDp9zs2"
+        "authorization": process.env.FAST2SMS_API_KEY,
     });
 
     req.form({
