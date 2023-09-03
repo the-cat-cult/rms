@@ -262,17 +262,19 @@
         }
 
         function delete_tenant() {
-            axios.delete("/api/deleteTenant")
-                .then(function (response) {
-                    console.log(response);
-                    if (response.data.success) {
-                        alert("Tenant deleted successfully");
-                        sign_out()
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+            if(confirm("Are you sure you want to delete this account?")) {
+                axios.delete("/api/deleteTenant")
+                    .then(function (response) {
+                        console.log(response);
+                        if (response.data.success) {
+                            alert("Tenant deleted successfully");
+                            sign_out()
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
         }
     </script>
 </div>
