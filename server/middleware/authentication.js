@@ -16,6 +16,7 @@ export default function (roles) {
             request.user = jwt.verify(receiveToken, process.env.JWT_SECRET_KEY);
             const userRole = request.user.role;
             const id = request.user._id
+            console.log(userRole, roles)
 
             if (!userRole) {
                 return response.status(403).send("You are not authorised to perform this action");

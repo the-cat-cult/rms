@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Booking from "../models/bookings.js";
 import Tenant from "../models/tenant.js";
 import * as path from "path";
+import Properties from "../models/properties.js";
 
 const __dirname = path.resolve();
 
@@ -91,19 +92,24 @@ export function getOneBooking(req, res) {
 
 export async function updateBookingStatus(req, res) {
 
-    let allotmentStatus = req.body.allotmentStatus
-    let bookingId = req.body.bookingId;
+    let tenantId = new mongoose.Types.ObjectId(req.body.userId);
+    let propertyId =  new mongoose.Types.ObjectId(req.body.propertyId)
 
-    Booking.findOneAndUpdate({bookingId: bookingId}, {allotmentStatus: allotmentStatus})
+    Booking.findOneAndUpdate({propertyId: propertyId, tenantId: tenantId}, {allotmentStatus: true})
         .then(async (updatedBooking) => {
 
-            let tenant = await Tenant.findOne({_id: req.user._id})
+            let tenant = await Tenant.findOne({_id: tenantId})
             tenant.allocationStatus = "yes"
             await tenant.save()
 
+            let property = await Properties.findOne({_id: propertyId})
+            property.vacancyStatus = false
+            await property.save()
+
             return res.status(200).json({
                 success: true,
-                message: 'Object Updated'
+                message: 'Object Updated',
+                Booking: updatedBooking,
             });
         })
         .catch((err) => {
@@ -116,8 +122,6 @@ export async function updateBookingStatus(req, res) {
 }
 
 export async function deleteBooking(req, res) {
-
-    console.log(await Booking.find({propertyId: req.body.propertyId}))
 
     Booking.findOneAndDelete({propertyId: new mongoose.Types.ObjectId(req.body.propertyId), tenantId: req.user._id})
         .then((oneBooking) => {

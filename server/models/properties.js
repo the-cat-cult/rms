@@ -12,7 +12,10 @@ const propertiesSchema = new mongoose.Schema({
     rent: Number,
     securityDeposit: Number,
     age: Number,
-    vacancyStatus: String,
+    vacancyStatus: {
+        type: Boolean,
+        default: true
+    },
     ownerId: mongoose.Schema.Types.ObjectId,
     verified: {
         type: Boolean,

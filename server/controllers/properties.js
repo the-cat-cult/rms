@@ -13,7 +13,6 @@ export function createProperty(req, res) {
         rent: req.body.rent,
         securityDeposit: req.body.secdep,
         age: req.body.age,
-        vacancyStatus: req.body.vstatus,
         ownerId: req.user._id
     })
 
@@ -35,7 +34,7 @@ export function createProperty(req, res) {
 }
 
 export function getAllProperties(req, res) {
-    Property.find()
+    Property.find({vacancyStatus: true})
         .then((allProperty) => {
             return res.status(200).json({
                 success: true,
@@ -127,10 +126,11 @@ export function getPropertiesByFilters(req, res) {
     console.log(query)
 
     Property.find(query).then((properties) => {
+        console.log(properties)
         return res.status(200).json({
             success: true,
             message: 'Result',
-            Property: properties,
+            Property: properties.filter(propertiesData => propertiesData.vacancyStatus === true),
         });
     }).catch((err) => {
         res.status(400).json({
