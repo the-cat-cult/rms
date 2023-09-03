@@ -140,8 +140,16 @@ export function getPropertiesByFilters(req, res) {
 
 export async function updateProperty(req, res) {
     const updateObject = req.body
-    Property.findOneAndUpdate({_id: req.body.pid}, {$set: updateObject})
+
+    let updateProp = {_id: req.body.pid}
+
+    if (req.user.role !== "admin") {
+        updateProp.ownerId = req.user._id;
+    }
+
+    Property.findOneAndUpdate(updateProp, {$set: updateObject})
         .then((updatedProperty) => {
+            console.log(updatedProperty)
             return res.status(200).json({
                 success: true,
                 message: 'Object Updated'
