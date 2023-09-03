@@ -164,6 +164,8 @@
                     address = response.data.Property.address
                     rent = response.data.Property.rent
                     security_deposit = response.data.Property.securityDeposit
+                    verified = response.data.Property.verified
+
                     build_data()
 
                 }
@@ -184,6 +186,7 @@
     address_refs = document.getElementById("address");
     status_refs = document.getElementById("status");
     security_deposit_refs = document.getElementById("security_deposit");
+
 
     function build_data() {
         bhk_refs.innerHTML = bhk;

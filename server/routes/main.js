@@ -6,7 +6,7 @@ import {
     getAllProperties,
     getOneProperty,
     updateProperty,
-    deleteProperty, getPropertiesByFilters, getAllPropertiesByUser, getPropertyById
+    deleteProperty, getPropertiesByFilters, getAllPropertiesByUser, getPropertyById, setVerificationStatus
 } from '../controllers/properties.js'
 import {
     createTenant,
@@ -55,6 +55,7 @@ router.patch('/updateUser', authentication(["admin", "owner"]), updateUser)
 router.patch('/updateTenant', authentication(["admin", "tenant"]), updateTenant)
 router.patch('/updateProperty', authentication(["admin", "owner"]), updateProperty)
 router.patch('/updateBookingStatus', authentication(["admin"]), updateBookingStatus)
+router.post('/setVerificationStatus', authentication("admin"), setVerificationStatus)
 
 //delete entity
 router.delete('/deleteUser', authentication(["admin", "owner"]), deleteUser)

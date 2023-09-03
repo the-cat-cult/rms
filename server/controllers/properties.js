@@ -69,6 +69,35 @@ export function getAllPropertiesByUser(req, res) {
         });
 }
 
+export function setVerificationStatus(req, res) {
+    let verified = req.body.verified;
+    let propertyId = req.body.pid;
+    if(verified === undefined) {
+        return res.status(400).json({
+            success: false,
+            message: 'Please attach verified value',
+        });
+    }
+
+    Property.findOneAndUpdate({_id: propertyId}, {$set: { verified: verified }})
+        .then((updatedProperty) => {
+            console.log(updatedProperty)
+            return res.status(200).json({
+                success: true,
+                message: 'Object Updated'
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error. Please try again.',
+                error: err.message,
+            });
+        });
+
+
+}
+
 export function getOneProperty(req, res) {
     Property.findOne({_id: req.body.pid})
         .then((oneProperty) => {
