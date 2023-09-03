@@ -60,7 +60,7 @@ router.patch('/updateBookingStatus', authentication(["admin"]), updateBookingSta
 router.delete('/deleteUser', authentication(["admin", "owner"]), deleteUser)
 router.delete('/deleteTenant', authentication(["admin", "tenant"]), deleteTenant)
 router.delete('/deleteProperty', authentication(["admin", "owner"]), deleteProperty)
-router.delete('/deleteBooking', authentication(["tenant"]), deleteBooking)
+router.post('/deleteBooking', authentication(["tenant"]), deleteBooking)
 router.get('/deleteTenantById', authentication(["admin"]), deleteTenantById)
 
 export default router;

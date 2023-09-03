@@ -115,8 +115,11 @@ export async function updateBookingStatus(req, res) {
         });
 }
 
-export function deleteBooking(req, res) {
-    Booking.findOneAndDelete({bookingId: req.body.bookingId, tenantId: req.user._id})
+export async function deleteBooking(req, res) {
+
+    console.log(await Booking.find({propertyId: req.body.propertyId}))
+
+    Booking.findOneAndDelete({propertyId: new mongoose.Types.ObjectId(req.body.propertyId), tenantId: req.user._id})
         .then((oneBooking) => {
             return res.status(200).json({
                 success: true,
