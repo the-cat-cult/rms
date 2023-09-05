@@ -5,12 +5,19 @@ import mongoose from "mongoose";
 import unirest from 'unirest'
 import jwt from "jsonwebtoken";
 
+// helper functions
+function setExpDateTime(minutes) {
+    let curr = new Date()
+    return new Date(curr.getTime() + minutes * 60000);
+}
+// helper functions end
+
 export async function ownerSignUp(req, res) {
     let otp = req.body.otp;
     const mobileNumber = req.body.phone;
     const name = req.body.name;
 
-    const existingOwner = await User.findOne({mobileNumber: mobileNumber});
+    const existingOwner = await User.findOne({ mobileNumber: mobileNumber });
 
     if (existingOwner) {
         return res.status(400).json({
@@ -18,7 +25,7 @@ export async function ownerSignUp(req, res) {
             message: 'Owner already exists'
         });
     } else {
-        const existingTenant = await Tenant.findOne({mobileNumber: mobileNumber});
+        const existingTenant = await Tenant.findOne({ mobileNumber: mobileNumber });
         if (existingTenant) {
             return res.status(400).json({
                 success: false,
@@ -27,7 +34,7 @@ export async function ownerSignUp(req, res) {
         }
     }
 
-    let otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
+    let otpRecord = await Otp.findOne({ mobileNumber: mobileNumber });
 
     if (process.env.NODE_ENV === 'development') {
         otpRecord = {}
@@ -61,7 +68,7 @@ export async function ownerSignUp(req, res) {
         const newUser = await user
             .save();
 
-        await Otp.deleteOne({mobileNumber: mobileNumber});
+        await Otp.deleteOne({ mobileNumber: mobileNumber });
 
         const token = generateJWTToken(newUser, "owner");
 
@@ -115,16 +122,19 @@ export async function generateOTP(req, res) {
     }
 
     const code = Math.floor(1000 + Math.random() * 9000);
-    let otpRecord = await Otp.findOne({mobileNumber: phone});
+    let otpRecord = await Otp.findOne({ mobileNumber: phone });
+    let expDateTime = setExpDateTime(5);
 
     if (!otpRecord) {
         otpRecord = new Otp({
             _id: new mongoose.Types.ObjectId(),
             mobileNumber: phone,
             otp: code,
+            exp: expDateTime,
         });
     } else {
         otpRecord.otp = code;
+        otpRecord.exp = setExpDateTime;
     }
 
 
@@ -150,7 +160,7 @@ export async function login(req, res) {
     let otp = req.body.otp;
     const mobileNumber = req.body.phone;
 
-    let user = await User.findOne({mobileNumber: mobileNumber});
+    let user = await User.findOne({ mobileNumber: mobileNumber });
     let role = 'owner';
 
     if (user) {
@@ -160,7 +170,7 @@ export async function login(req, res) {
             role = 'owner';
         }
     } else {
-        user = await Tenant.findOne({mobileNumber: mobileNumber});
+        user = await Tenant.findOne({ mobileNumber: mobileNumber });
 
         if (!user) {
             return res.status(400).json({
@@ -172,7 +182,7 @@ export async function login(req, res) {
         role = 'tenant';
     }
 
-    let otpRecord = await Otp.findOne({mobileNumber: mobileNumber});
+    let otpRecord = await Otp.findOne({ mobileNumber: mobileNumber });
 
     //if env is def
     if (process.env.NODE_ENV === 'development') {
@@ -200,7 +210,7 @@ export async function login(req, res) {
 
     const token = generateJWTToken(user, role);
 
-    await Otp.deleteOne({mobileNumber: mobileNumber});
+    await Otp.deleteOne({ mobileNumber: mobileNumber });
 
     return res
         .cookie("user-auth-token", token, {
@@ -217,7 +227,7 @@ export async function login(req, res) {
 }
 
 function generateJWTToken(user, role) {
-    return jwt.sign({_id: user._id, role: role}, process.env.JWT_SECRET_KEY);
+    return jwt.sign({ _id: user._id, role: role }, process.env.JWT_SECRET_KEY);
 }
 
 export function singOut(req, res) {
