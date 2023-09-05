@@ -13,11 +13,11 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/", express.static('public'))
 // set up mongoose
 let connectionString = process.env.NODE_ENV === 'development' ? process.env.CONNECTION_STRING_DEV : process.env.CONNECTION_STRING_PROD;
-mongoose.connect(connectionString, {dbName: process.env.DATABASE_NAME})
+mongoose.connect(connectionString, { dbName: process.env.DATABASE_NAME })
     .then(() => {
         console.log('Database connected');
     })
@@ -43,7 +43,7 @@ const __dirname = path.resolve();
 
 
 app.use((err, req, res, next) => {
-    if (! err) {
+    if (!err) {
         return next();
     }
 
