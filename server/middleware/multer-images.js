@@ -7,7 +7,8 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, file.fieldname + '-' + uniqueSuffix + '.jpg');
     }
 });
 
@@ -15,39 +16,41 @@ const upload = multer({storage: storage});
 
 export default function (req, res, next) {
     upload.array('files', 5)(req, res, async (err) => {
-        console.log(req.files)
         if (err) {
             return res.status(400).json({error: err.message});
         }
 
-        const files = req.files;
+        const files = req.files || [];
         const errors = [];
 
-        for (const file of files) {
-            const allowedTypes = ['image/jpeg', 'image/png'];
-            //2mb nax file size
+        if (!files || files.length === 0) {
+            errors.push('No files uploaded');
+        } else {
+            for (const file of files) {
+                const allowedTypes = ['image/jpeg', 'image/png'];
+                //2mb nax file size
 
-            if (!allowedTypes.includes(file.mimetype)) {
-                errors.push(`Invalid file type: ${file.originalname}`);
-            }
-
-            const targetFileSizeInBytes = 2 * 1024 * 1024; // 2MB
-
-            if (file.size > targetFileSizeInBytes) {
-                let quality = 70;
-                let resizedImage = await sharp(file.buffer).resize(1200, 760);
-                let baseHeight = 760;
-                let baseWidth = 1200;
-                while (resizedImage.toBuffer().length > targetFileSizeInBytes) {
-                    quality -= 5;
-                    baseHeight -= 10;
-                    baseWidth -= 10;
-                    resizedImage = await sharp(file.buffer).resize(baseWidth, baseHeight).jpeg({quality});
+                if (!allowedTypes.includes(file.mimetype)) {
+                    errors.push(`Invalid file type: ${file.originalname}`);
                 }
 
-                await resizedImage.toFile(`uploads/${file.originalname}`);
-            }
+                const targetFileSizeInBytes = 2 * 1024 * 1024; // 2MB
 
+                if (file.size > targetFileSizeInBytes) {
+                    let quality = 70;
+                    let resizedImage = await sharp(file.buffer).resize(1200, 760);
+                    let baseHeight = 760;
+                    let baseWidth = 1200;
+                    while (resizedImage.toBuffer().length > targetFileSizeInBytes) {
+                        quality -= 5;
+                        baseHeight -= 10;
+                        baseWidth -= 10;
+                        resizedImage = await sharp(file.buffer).resize(baseWidth, baseHeight).jpeg({quality});
+                    }
+
+                    await resizedImage.toFile(`uploads/${file.originalname}`);
+                }
+            }
         }
 
         if (errors.length > 0) {

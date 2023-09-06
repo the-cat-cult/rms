@@ -20,7 +20,12 @@ const propertiesSchema = new mongoose.Schema({
     verified: {
         type: Boolean,
         default: false
-    }
+    },
+    images: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Images',
+        default: []
+    }],
 
 }, {collection: "properties"});
 export default mongoose.model('Property', propertiesSchema);

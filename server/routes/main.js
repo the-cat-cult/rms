@@ -6,7 +6,13 @@ import {
     getAllProperties,
     getOneProperty,
     updateProperty,
-    deleteProperty, getPropertiesByFilters, getAllPropertiesByUser, getPropertyById, setVerificationStatus
+    deleteProperty,
+    getPropertiesByFilters,
+    getAllPropertiesByUser,
+    getPropertyById,
+    setVerificationStatus,
+    uploadFiles,
+    deleteFile, getFile
 } from '../controllers/properties.js'
 import {
     createTenant,
@@ -15,11 +21,23 @@ import {
     updateTenant,
     deleteTenant, getOneTenantById, deleteTenantById,
 } from '../controllers/tenant.js'
-import {createUser, getAllUsers, getOneUser, updateUser, deleteUser} from '../controllers/user.js'
+import {
+    createUser,
+    getAllUsers,
+    getOneUser,
+    updateUser,
+    deleteUser,
+} from '../controllers/user.js'
 import {ownerSignUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
+import multerImages from '../middleware/multer-images.js'
 
 const router = express.Router();
+
+//images
+router.post('/uploadImages', authentication(["owner"]), multerImages, uploadFiles)
+router.delete('/deleteImage', authentication(["owner"]), deleteFile)
+router.get('/image/:id', authentication(['owner', 'tenant', 'admin']), getFile)
 
 //authentication
 router.post('/login', login)
