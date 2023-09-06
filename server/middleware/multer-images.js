@@ -2,20 +2,17 @@ import multer from "multer";
 import * as fs from "fs";
 import sharp from "sharp";
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        cb(null, file.fieldname + '-' + uniqueSuffix + '.jpg');
-    }
-});
+//{
+//     filename: (req, file, cb) => {
+//         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+//         cb(null, file.fieldname + '-' + uniqueSuffix + '.jpg');
+//     }
+// }
 
-const upload = multer({storage: storage});
+const upload = multer({storage: multer.memoryStorage()});
 
 export default function (req, res, next) {
-    upload.array('files', 5)(req, res, async (err) => {
+    upload.array('files', 10)(req, res, async (err) => {
         if (err) {
             return res.status(400).json({error: err.message});
         }
@@ -34,30 +31,35 @@ export default function (req, res, next) {
                     errors.push(`Invalid file type: ${file.originalname}`);
                 }
 
-                const targetFileSizeInBytes = 2 * 1024 * 1024; // 2MB
+                const targetFileSizeInBytes = 1024 * 1024;
 
                 if (file.size > targetFileSizeInBytes) {
                     let quality = 70;
-                    let resizedImage = await sharp(file.buffer).resize(1200, 760);
-                    let baseHeight = 760;
-                    let baseWidth = 1200;
+                    let baseHeight = 480;
+                    let baseWidth = 720;
+                    let resizedImage = await sharp(file.buffer).resize({
+                        height: baseHeight,
+                        width: baseWidth,
+                    }).jpeg({quality});
+
                     while (resizedImage.toBuffer().length > targetFileSizeInBytes) {
                         quality -= 5;
                         baseHeight -= 10;
                         baseWidth -= 10;
-                        resizedImage = await sharp(file.buffer).resize(baseWidth, baseHeight).jpeg({quality});
+
+                        resizedImage = await sharp(file.buffer).resize({
+                            height: baseHeight,
+                            width: baseWidth,
+                        }).jpeg({quality});
+
                     }
 
-                    await resizedImage.toFile(`uploads/${file.originalname}`);
+                    file.buffer = await resizedImage.toBuffer();
                 }
             }
         }
 
         if (errors.length > 0) {
-            files.forEach((file) => {
-                fs.unlinkSync(file.path);
-            });
-
             return res.status(400).json({errors});
         }
 

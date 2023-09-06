@@ -222,7 +222,6 @@ export async function uploadFiles(req, res) {
     const propertyId = req.body.propertyId;
 
     if (!propertyId) {
-        await unlinkAsync(files);
         return res.status(400).json({
             success: false,
             message: 'Please attach property id'
@@ -230,7 +229,6 @@ export async function uploadFiles(req, res) {
     }
 
     if (!files) {
-        await unlinkAsync(files);
         return res.status(400).json({
             success: false,
             message: 'No file uploaded'
@@ -240,7 +238,6 @@ export async function uploadFiles(req, res) {
     Property.findOne({_id: propertyId, ownerId: req.user._id})
         .then(async (property) => {
             if (!property) {
-                await unlinkAsync(files);
                 return res.status(400).json({
                     success: false,
                     message: 'User not found'
@@ -248,7 +245,6 @@ export async function uploadFiles(req, res) {
             }
 
             if (property.images.length >= 5) {
-                await unlinkAsync(files);
                 return res.status(400).json({
                     success: false,
                     message: 'Maximum 5 images allowed'
@@ -265,7 +261,7 @@ export async function uploadFiles(req, res) {
                     _id: new mongoose.Types.ObjectId(),
                     ownerId: req.user._id,
                     image: {
-                        data: fs.readFileSync(path.join(__dirname + '/uploads/' + file.filename)),
+                        data: file.buffer,
                         contentType: 'image/jpeg'
                     }
                 });
@@ -278,7 +274,6 @@ export async function uploadFiles(req, res) {
 
             property.save()
                 .then(async (updatedProperty) => {
-                    await unlinkAsync(files);
                     return res.status(200).json({
                         success: true,
                         message: 'Images uploaded successfully',
@@ -286,7 +281,6 @@ export async function uploadFiles(req, res) {
                     });
                 })
                 .catch(async (err) => {
-                    await unlinkAsync(files);
                     return res.status(500).json({
                         success: false,
                         message: 'Error in uploading images' + err
@@ -294,27 +288,6 @@ export async function uploadFiles(req, res) {
                 });
         })
 
-}
-
-function unlinkAsync(files) {
-    return new Promise((resolve, reject) => {
-        if (files) {
-            files.forEach((file) => {
-                try {
-                    fs.unlink(file.path, (err) => {
-                        if (err) {
-                            resolve();
-                        }
-                        resolve();
-                    });
-                } catch (err) {
-                    resolve();
-                }
-            });
-        } else {
-            resolve();
-        }
-    });
 }
 
 export function deleteFile(req, res) {
