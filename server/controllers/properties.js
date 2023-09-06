@@ -244,7 +244,7 @@ export async function uploadFiles(req, res) {
                 });
             }
 
-            if (property.images.length >= 5) {
+            if (property.images.length >= 10) {
                 return res.status(400).json({
                     success: false,
                     message: 'Maximum 5 images allowed'
@@ -253,7 +253,7 @@ export async function uploadFiles(req, res) {
 
             for (const file of files) {
 
-                if (property.images.length >= 5) {
+                if (property.images.length >= 10) {
                     break;
                 }
 
