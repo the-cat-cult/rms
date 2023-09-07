@@ -8,4 +8,4 @@ const optSchema = new mongoose.Schema({
     exp: Date,
 }, { collection: "otp" });
 
-export default mongoose.model('OTP', optSchema);
+export default mongoose.model('Otp', optSchema);
