@@ -5,12 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>rms</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <!-- Import css -->
@@ -21,159 +19,160 @@
 </head>
 
 <body onload="sendOTP()">
-<div class="container mt-5">
-    <h1>Great! Tell me your one time password (OTP) &#128516;</h1>
-    <h4>You should have receieved it on your phone. </h4>
-    <div class="otp">
-        <!-- Four boxes representing each digit -->
-        <input type="text" class="otp-box" id="digit1" maxlength="1" autocomplete="off"/>
-        <input type="text" class="otp-box" id="digit2" maxlength="1" autocomplete="off"/>
-        <input type="text" class="otp-box" id="digit3" maxlength="1" autocomplete="off"/>
-        <input type="text" class="otp-box" id="digit4" maxlength="1" autocomplete="off"/>
+    <div class="container mt-5">
+        <h1>Great! Tell me your one time password (OTP) &#128516;</h1>
+        <h4>You should have receieved it on your phone. </h4>
+        <div class="otp">
+            <!-- Four boxes representing each digit -->
+            <input type="text" class="otp-box" id="digit1" maxlength="1" autocomplete="off" />
+            <input type="text" class="otp-box" id="digit2" maxlength="1" autocomplete="off" />
+            <input type="text" class="otp-box" id="digit3" maxlength="1" autocomplete="off" />
+            <input type="text" class="otp-box" id="digit4" maxlength="1" autocomplete="off" />
 
-        <div class="buttons mt-3">
-            <button type="submit" class="btn btn-primary" id="sendOTP" onclick="verifyOTP()">Verify OTP</button>
-            <button class="btn btn-outline-secondary" id="resend" disabled onclick="sendOTP()">Resend OTP</button>
-            <div class="mt-2">
-                <span id="countdown"></span>
+            <div class="buttons mt-3">
+                <button type="submit" class="btn btn-primary" id="sendOTP" onclick="verifyOTP()">Verify OTP</button>
+                <button class="btn btn-outline-secondary" id="resend" disabled onclick="sendOTP()">Resend OTP</button>
+                <div class="mt-2">
+                    <span id="countdown"></span>
+                </div>
             </div>
         </div>
+
+
+        <!-- Change number box -->
+        <div class="no-acc ">
+            Is <span id="phone_number"></span> not your number?
+            <a href="phone_number.html" class="hyperlink" style="text-decoration: none; ">
+                <br/>Use another number
+            </a>
+        </div>
+
+
     </div>
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js "></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js "></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js "></script>
 
+    <script>
+        function getPhoneNumber() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const phone = urlParams.get('phoneNumber');
 
-    <!-- Change number box -->
-    <div class="no-acc ">
-        Is <span id="phone_number"></span> not your number?
-        <a href="phone_number.html" class="hyperlink" style="text-decoration: none; ">
-            <br/>Use another number
-        </a>
-    </div>
+            if (phone == null) {
+                window.location.href = "phone_number.html";
+            }
 
-
-</div>
-
-<div class="progress bottom-50">
-    <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0"
-         aria-valuemax="100"></div>
-</div>
-<!-- Include Bootstrap JS and jQuery -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js "></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js "></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js "></script>
-
-<script>
-
-    function getPhoneNumber() {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const phone = urlParams.get('phoneNumber');
-
-        if (phone == null) {
-            window.location.href = "phone_number.html";
+            return phone;
         }
 
-        return phone;
-    }
+        function sendOTP() {
+            const data = {
+                "phone": getPhoneNumber()
+            };
 
-    function sendOTP() {
-        const data = {
-            "phone": getPhoneNumber()
-        };
+            // /api/generateOTP -> use axios post
+            axios.post('/api/generateOTP', data)
+                .then(function(response) {
+                    alert("OTP sent successfully, OTP is valid for five minutes")
+                })
+                .catch(function(error) {
+                    alert("Error sending OTP")
+                    console.log(error);
+                });
+        }
 
-        // /api/generateOTP -> use axios post
-        axios.post('/api/generateOTP', data)
-            .then(function (response) {
-                alert("OTP sent successfully, OTP is valid for five minutes")
-            })
-            .catch(function (error) {
-                alert("Error sending OTP")
-                console.log(error);
-            });
-    }
+        function verifyOTP() {
+            const data = {
+                "phone": getPhoneNumber(),
+                "otp": document.getElementById("digit1").value + document.getElementById("digit2").value + document.getElementById("digit3").value + document.getElementById("digit4").value
+            };
 
-    function verifyOTP() {
-        const data = {
-            "phone": getPhoneNumber(),
-            "otp": document.getElementById("digit1").value + document.getElementById("digit2").value + document.getElementById("digit3").value + document.getElementById("digit4").value
-        };
+            // /api/verifyOTP -> use axios post
+            axios.post('/api/login', data)
+                .then(function(response) {
+                    console.log(response);
+                    if (response.data.success) {
+                        //get name and role from response.data and store in local storage
+                        localStorage.setItem("name", response.data.name);
+                        localStorage.setItem("role", response.data.role);
+                        window.location.href = "home.html";
+                    } else {
+                        alert("Wrong OTP");
+                    }
+                })
+                .catch(function(error) {
+                    let message = error.response.data.message;
+                    alert(message);
+                });
+        }
 
-        // /api/verifyOTP -> use axios post
-        axios.post('/api/login', data)
-            .then(function (response) {
-                console.log(response);
-                if (response.data.success) {
-                    //get name and role from response.data and store in local storage
-                    localStorage.setItem("name", response.data.name);
-                    localStorage.setItem("role", response.data.role);
-                    window.location.href = "home.html";
-                } else {
-                    alert("Wrong OTP");
+        document.querySelectorAll('.otp-box').forEach(item => {
+            item.addEventListener('keyup', event => {
+                if (isNaN(event.target.value)) {
+                    event.target.value = "";
+                    return;
+                }
+
+                if (event.target.value.length == 1) {
+                    // Get the next sibling element
+                    const nextSibling = item.nextElementSibling;
+
+                    // If it exists, focus on it
+                    if (nextSibling) {
+                        nextSibling.focus();
+                    }
+
+
+                    // If last digit, verify OTP
+                    if (item.id == "digit4") {
+                        verifyOTP();
+                    }
+                }
+
+                if (event.target.value.length == 0) {
+                    // Get the previous sibling element
+                    const previousSibling = item.previousElementSibling;
+
+                    // If it exists, focus on it
+                    if (previousSibling) {
+                        previousSibling.focus();
+                    }
                 }
             })
-            .catch(function (error) {
-                let message = error.response.data.message;
-                alert(message);
-            });
-    }
-
-    document.querySelectorAll('.otp-box').forEach(item => {
-        item.addEventListener('keyup', event => {
-            if (isNaN(event.target.value)) {
-                event.target.value = "";
-                return;
-            }
-
-            if (event.target.value.length == 1) {
-                // Get the next sibling element
-                const nextSibling = item.nextElementSibling;
-
-                // If it exists, focus on it
-                if (nextSibling) {
-                    nextSibling.focus();
-                }
-            }
-
-            if (event.target.value.length == 0) {
-                // Get the previous sibling element
-                const previousSibling = item.previousElementSibling;
-
-                // If it exists, focus on it
-                if (previousSibling) {
-                    previousSibling.focus();
-                }
-            }
         })
-    })
-</script>
+    </script>
 
-<script>
-    var timeleft = 60;
+    <script>
+        var timeleft = 60;
 
-    function countdown() {
-        var downloadTimer = setInterval(function () {
-            if (timeleft <= 0) {
-                clearInterval(downloadTimer);
+        function countdown() {
+            var downloadTimer = setInterval(function() {
+                if (timeleft <= 0) {
+                    clearInterval(downloadTimer);
 
-                document.getElementById("countdown").innerHTML = "Resend OTP now!";
+                    document.getElementById("countdown").innerHTML = "Resend OTP now!";
 
-                // Change resend button to enabled
-                document.getElementById("resend").disabled = false;
+                    // Change resend button to enabled
+                    document.getElementById("resend").disabled = false;
 
-            } else {
-                document.getElementById("countdown").innerHTML = "Resend OTP in " + timeleft + " seconds...";
-            }
-            timeleft -= 1;
-        }, 1000);
-    }
-
-
-    var phone = getPhoneNumber();
-    // Change element with id phone_number to the phone number
-    document.getElementById("phone_number").innerHTML = phone;
+                } else {
+                    document.getElementById("countdown").innerHTML = "Resend OTP in " + timeleft + " seconds...";
+                }
+                timeleft -= 1;
+            }, 1000);
+        }
 
 
-    countdown();
-</script>
+        var phone = getPhoneNumber();
+        // Change element with id phone_number to the phone number
+        document.getElementById("phone_number").innerHTML = phone;
+
+
+        countdown();
+    </script>
 
 </body>
+
 </html>
