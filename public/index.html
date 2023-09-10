@@ -16,6 +16,8 @@
     <link rel="stylesheet">
     <!-- Javascript -->
     <script src="../script.js"></script>
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" sizes="any" type="image/x-icon">
+
 
 </head>
 
@@ -24,7 +26,7 @@
 
         <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm p-3">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="/">
                     <img src="/assets/icons/START Logo-01.svg" alt="Bootstrap" height="40">
                 </a>
                 <div class="d-flex">
@@ -44,7 +46,7 @@
     <div class="container-fluid d-flex justify-content-center align-items-center" style="height: 90vh">
         <div class="text-center text-body-tertiary">
             <img src="/assets/icons/START Logo-02.svg" alt="Bootstrap" height="100" class="mb-5">
-            <p class="display-6 text-secondary mt-lg-5 mt-sm-1 mt-md-2" style="font-weight: 600;" id="subtext">Accommodation on HRA for Naval Personnel
+            <p class="display-6 text-white mt-lg-5 mt-sm-1 mt-md-2" id="subtext">Accommodation on HRA for Naval Personnel
             </p>
             <div class="d-flex justify-content-center mt-4">
                 <button type="button" class="btn btn-primary me-2 w-50 p-2 rounded-3 btn-lg" onclick="location.href='/pages/phone_number.html'">Login
@@ -77,18 +79,24 @@
         if (theme == "dark") {
             document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
             document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
-            document.getElementById("subtext").setAttribute("class", "display-6 text-secondary mt-lg-5 mt-sm-1 mt-md-2");
+
+            // Change from text-primary to text-white
+            document.getElementById("subtext").classList.remove("text-white");
+            document.getElementById("subtext").classList.add("text-primary");
+
+
         } else {
             document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
             document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
-            document.getElementById("subtext").setAttribute("class", "display-6 text-secondary mt-lg-5 mt-sm-1 mt-md-2");
+
+            // Change from text-white to text-primary
+            document.getElementById("subtext").classList.remove("text-primary");
+            document.getElementById("subtext").classList.add("text-white");
         }
     }
 </script>
 
 <style>
-    /* Hover for theme-select */
-    
     #theme-icon:hover {
         cursor: pointer;
         animation: rotation 2s infinite linear;
