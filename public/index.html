@@ -68,8 +68,8 @@
     </header>
     <div class="container-fluid d-flex justify-content-center align-items-center" style="height: 90vh">
         <div class="text-center text-body-tertiary">
-            <img src="/assets/icons/START Logo-02.svg" alt="Bootstrap" height="100" class="mb-5">
-            <p class="display-6 text-white mt-lg-5 mt-sm-1 mt-md-2" id="subtext">Accommodation on HRA for Naval Personnel
+            <img src="/assets/icons/START Logo-02.svg" alt="Bootstrap" height="200" class="mb-5" id="logo">
+            <p class="display-6 text-white mt-lg-5 mt-sm-1 mt-md-2" id="subtext">Accommodation on HRA for Naval&nbsp;Personnel
             </p>
             <div class="d-flex justify-content-center mt-4">
                 <button type="button" style="padding: 1em 0;" class="btn btn-primary me-2 w-50 rounded-3 btn-lg" onclick="location.href='/pages/phone_number.html'">
@@ -109,22 +109,32 @@
             document.getElementById("theme_bg").setAttribute("href", "/assets/screen/bg-light.css");
             document.getElementById("navbar").setAttribute("style", "background-color: rgba(255, 255, 255, 0.356) !important;");
 
-            // Change from text-primary to text-white
             document.getElementById("subtext").classList.remove("text-white");
             document.getElementById("subtext").classList.add("text-primary");
-
-
         } else {
             document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
             document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
             document.getElementById("theme_bg").setAttribute("href", "/assets/screen/bg-dark.css");
             document.getElementById("navbar").setAttribute("style", "background-color: rgba(0, 0, 0, 0.356) !important;");
 
-            // Change from text-white to text-primary
             document.getElementById("subtext").classList.remove("text-primary");
             document.getElementById("subtext").classList.add("text-white");
         }
     }
+
+
+    function resize_logo() {
+        var logo = document.getElementById("logo");
+        var width = window.innerWidth;
+        if (width < 1080) {
+            logo.setAttribute("height", "100");
+        } else {
+            logo.setAttribute("height", "200");
+        }
+    }
+
+    window.addEventListener('resize', resize_logo);
+    window.addEventListener('load', resize_logo);
 </script>
 
 <style>
