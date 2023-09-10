@@ -12,26 +12,42 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <!-- Import css -->
-    <link rel="stylesheet" href="../style.css">
+    <!-- <link rel="stylesheet" href="../style.css"> -->
     <!-- Javascript -->
     <script src="../script.js"></script>
 
 </head>
 
-<body onload="sendOTP()">
-    <div class="container mt-5">
+<body onload="sendOTP()" data-bs-theme="dark">
+
+    <header>
+
+        <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm p-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="/assets/icons/START Logo-01.svg" alt="Bootstrap" height="40">
+                </a>
+                <div class="d-flex">
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5 centered">
         <h1>Great! Tell me your one time password (OTP) &#128516;</h1>
         <h4>You should have receieved it on your phone. </h4>
         <div class="otp">
             <!-- Four boxes representing each digit -->
-            <input type="text" class="otp-box" id="digit1" maxlength="1" autocomplete="off" />
-            <input type="text" class="otp-box" id="digit2" maxlength="1" autocomplete="off" />
-            <input type="text" class="otp-box" id="digit3" maxlength="1" autocomplete="off" />
-            <input type="text" class="otp-box" id="digit4" maxlength="1" autocomplete="off" />
+            <input type="text" class="otp-box-small" id="digit1" maxlength="1" autocomplete="off" />
+            <input type="text" class="otp-box-small" id="digit2" maxlength="1" autocomplete="off" />
+            <input type="text" class="otp-box-small" id="digit3" maxlength="1" autocomplete="off" />
+            <input type="text" class="otp-box-small" id="digit4" maxlength="1" autocomplete="off" />
 
-            <div class="buttons mt-3">
-                <button type="submit" class="btn btn-primary" id="sendOTP" onclick="verifyOTP()">Verify OTP</button>
-                <button class="btn btn-outline-secondary" id="resend" disabled onclick="sendOTP()">Resend OTP</button>
+            <div class="buttons mt-3 mb-sm-3 mb-md-3 mb-lg-5">
+                <button type="submit" class="btn btn-primary mb-3" id="sendOTP" onclick="verifyOTP()">Verify OTP</button>
+                <button class="btn btn-outline-secondary mb-3" id="resend" disabled onclick="sendOTP()">Resend OTP</button>
                 <div class="mt-2">
                     <span id="countdown"></span>
                 </div>
@@ -105,10 +121,13 @@
                 .catch(function(error) {
                     let message = error.response.data.message;
                     alert(message);
+                    document.querySelectorAll('.otp-box-small').forEach(item => {
+                        item.value = "";
+                    })
                 });
         }
 
-        document.querySelectorAll('.otp-box').forEach(item => {
+        document.querySelectorAll('.otp-box-small').forEach(item => {
             item.addEventListener('keyup', event => {
                 if (isNaN(event.target.value)) {
                     event.target.value = "";
@@ -171,8 +190,112 @@
 
 
         countdown();
+
+        function toggleTheme() {
+
+            var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+            if (theme == "dark") {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+            } else {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+            }
+        }
+
+
+        submit_button = document.getElementById("sendOTP");
+        resend = document.getElementById("resend");
+        otp_box = document.getElementsByClassName("otp-box");
+
+
+        function size_set() {
+
+            if (window.innerWidth < 576) {
+                submit_button.setAttribute("style", "width: 100% !important; padding: 1rem 0.5rem !important;");
+                resend.setAttribute("style", "width: 100% !important; padding: 1rem 0.5rem !important;");
+            } else {
+                submit_button.setAttribute("style", "width: 25% !important; padding: 0.5rem 1rem !important;");
+                resend.setAttribute("style", "width: 25% !important; padding: 0.5rem 1rem !important;");
+            }
+        }
+
+
+        window.onload = size_set;
+        window.onresize = size_set;
     </script>
 
 </body>
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    h1 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 3rem;
+    }
+    
+    .centered {
+        /* Vertically centered */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    h5 {
+        font-weight: 600;
+    }
+    
+    #theme-icon {
+        cursor: pointer;
+    }
+    
+    #theme-icon:hover {
+        animation: rotation 2s infinite linear;
+    }
+    
+    @keyframes rotation {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(359deg);
+        }
+    }
+    
+    .otp-box {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 4rem;
+        width: 7rem;
+        height: 7rem;
+        margin: 1rem 0.5rem 1rem 0;
+        font-size: 2rem;
+        border-radius: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        text-align: center;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+    
+    .otp-box-small {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 4rem;
+        width: 5rem;
+        height: 5rem;
+        margin: 1rem 0.5rem 1rem 0;
+        font-size: 2rem;
+        border-radius: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        text-align: center;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+</style>
 
 </html>

@@ -10,26 +10,35 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
 
-    <!-- Import css -->
-    <link rel="stylesheet" href="new_user.css">
-    <!-- Javascript -->
-    <script src="../../../../../Downloads/Prozzect/script.js"></script>
-
 </head>
 
-<body>
-    <div class="container mt-5">
+<body data-bs-theme="dark">
+
+    <header>
+
+        <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm p-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="/assets/icons/START Logo-01.svg" alt="Bootstrap" height="40">
+                </a>
+                <div class="d-flex">
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container mt-5 centered">
         <h1>Hi! I see this is your first time in here &#x1f973;</h1>
         <h2>Let's set you up with a new account...</h2>
         <form id="loginForm" class="mt-5">
             <div class="form-group">
                 <!-- Full Name floating label -->
-                <div class="form-floating mb-3">
+                <div class="form-floating mb-3 w-50" id="name_div">
                     <input type="text" class="form-control" id="name" placeholder="John Doe">
                     <label for="name">Full Name</label>
                 </div>
                 <!-- Phone number floating label -->
-                <div class="form-floating mb-3">
+                <div class="form-floating mb-3 w-50" id="phone_number_div">
                     <input type="tel" class="form-control" id="phone_number" placeholder="123456789" pattern="[0-9]{5}-[0-9]{5}">
                     <label for="phone_number">Phone Number</label>
                 </div>
@@ -37,10 +46,15 @@
 
             <!-- Buttons to validate and submit -->
             <div class="buttons mt-5">
-                <button type="button" class="btn btn-primary w-50 m-2" disabled onclick="create()">Submit</button>
-                <button type="button" class="btn btn-outline-secondary m-2 w-50" onclick="homepage()">Cancel</button>
+                <button type="button" id="submit" style="padding-top: 1rem; padding-bottom: 1rem;" class="btn btn-primary w-25" disabled onclick="create()">Submit</button>
+                <button type="button" id="cancel" style="padding-top: 1rem; padding-bottom: 1rem;" class="btn btn-outline-secondary w-25" onclick="homepage()">Cancel</button>
             </div>
         </form>
+
+        <h6 class="mt-lg-5 mt-md-3 mt-sm-3 mt-3">
+            Already have an account? <a href="/pages/phone_number.html" style="text-decoration: none;">Login</a>
+        </h6>
+
     </div>
 
     <script>
@@ -53,10 +67,52 @@
             }
         });
 
+
+        function size_set() {
+            name_input = document.getElementById("name_div");
+            phone_number_input = document.getElementById("phone_number_div");
+            submit_button = document.getElementById("submit");
+            cancel_button = document.getElementById("cancel");
+
+            if (window.innerWidth < 576) {
+                submit_button.setAttribute("class", "btn btn-primary w-100 mt-3");
+                cancel_button.setAttribute("class", "btn btn-outline-secondary w-100 mt-3");
+                name_input.setAttribute("class", "form-floating mb-3 w-100");
+                phone_number_input.setAttribute("class", "form-floating mb-3 w-100");
+
+            } else if (window.innerWidth < 768) {
+                submit_button.setAttribute("class", "btn btn-primary w-50 mt-3");
+                cancel_button.setAttribute("class", "btn btn-outline-secondary w-50 mt-3");
+                name_input.setAttribute("class", "form-floating mb-3 w-100");
+                phone_number_input.setAttribute("class", "form-floating mb-3 w-100");
+
+            } else if (window.innerWidth < 992) {
+                submit_button.setAttribute("class", "btn btn-primary w-25");
+                cancel_button.setAttribute("class", "btn btn-outline-secondary w-25");
+                name_input.setAttribute("class", "form-floating mb-3 w-50");
+                phone_number_input.setAttribute("class", "form-floating mb-3 w-50");
+
+            } else {
+                submit_button.setAttribute("class", "btn btn-primary w-25");
+                cancel_button.setAttribute("class", "btn btn-outline-secondary w-25");
+                name_input.setAttribute("class", "form-floating mb-3 w-50");
+                phone_number_input.setAttribute("class", "form-floating mb-3 w-50");
+            }
+        }
+
+
+        window.onload = size_set;
+        window.onresize = size_set;
+
         // Keep phone number under 10 digits and only numbers
         document.getElementById("phone_number").addEventListener("keyup", function() {
             if (document.getElementById("phone_number").value.length > 10) {
                 document.getElementById("phone_number").value = document.getElementById("phone_number").value.slice(0, 10);
+            }
+
+            // Accept only numbers
+            if (isNaN(document.getElementById("phone_number").value)) {
+                document.getElementById("phone_number").value = document.getElementById("phone_number").value.slice(0, -1);
             }
 
             if (document.getElementById("name").value.length > 0 && document.getElementById("phone_number").value.length == 10) {
@@ -79,7 +135,60 @@
             // Redirect to the homepage
             window.location.href = "/";
         }
+
+        function toggleTheme() {
+
+            var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+            if (theme == "dark") {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+            } else {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+            }
+        }
     </script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 3rem;
+        }
+        
+        .centered {
+            /* Vertically centered */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        h5 {
+            font-weight: 600;
+        }
+        
+        #theme-icon {
+            cursor: pointer;
+        }
+        
+        #theme-icon:hover {
+            animation: rotation 2s infinite linear;
+        }
+        
+        @keyframes rotation {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(359deg);
+            }
+        }
+    </style>
 
     <!-- Include Bootstrap JS and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
