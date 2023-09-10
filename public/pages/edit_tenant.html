@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>rms</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" sizes="any" type="image/x-icon">
 
     <!-- Import css -->
     <link rel="stylesheet" href="../style.css">
@@ -21,202 +21,200 @@
 </head>
 
 <body onload="getTenantData()">
-<div class="container mt-5 shadow">
-    <form id="newTenantForm" class="mx-5">
-        <h2 class="mt-5 mx-1 mb-5"> Edit Tenant &#x1f3e0;</h2>
+    <div class="container mt-5 shadow">
+        <form id="newTenantForm" class="mx-5">
+            <h2 class="mt-5 mx-1 mb-5"> Edit Tenant &#x1f3e0;</h2>
 
-        <div class="form-floating mb-3 ">
-            <input type="text" class="form-control" id="name" placeholder="00000" value="">
-            <label for="name">Full Name</label>
-        </div>
-
-
-        <div class="row g-3 mb-3">
-
-            <div class="col-md">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="unit" placeholder="00000" value="">
-                    <label for="unit">Unit</label>
-                </div>
-            </div>
-
-            <div class="col-md">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="phno" placeholder="00000" value="">
-                    <label for="phno">Phone Number</label>
-                </div>
-            </div>
-
-            <div class="col-md">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="pnum" placeholder="123456-Z" value="">
-                    <label for="pnum">Personal Number</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-3 mb-3">
-
-            <div class="col-md">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="rank" placeholder="ABCD" value="">
-                    <label for="rank">Rank</label>
-                </div>
-            </div>
-
-            <!-- Date of Reporting -->
-            <div class="col-md">
-                <div class="form-floating">
-                    <input type="date" class="form-control" id="dor" placeholder="Date of Reporting" value="">
-                    <label for="dor">Date of Reporting</label>
-                </div>
-
-            </div>
-
-            <!-- Date of Vacation -->
-            <div class="col-md">
-                <div class="form-floating">
-                    <input type="date" class="form-control" id="dov" placeholder="Date of Vacation" value="">
-                    <label for="dov">Date of Vacation</label>
-                </div>
+            <div class="form-floating mb-3 ">
+                <input type="text" class="form-control" id="name" placeholder="00000" value="">
+                <label for="name">Full Name</label>
             </div>
 
 
-        </div>
+            <div class="row g-3 mb-3">
 
-        <button type="button" class="btn btn-outline-secondary mt-3 w-25 mb-5" onclick="validate_form()">Verify Data
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="unit" placeholder="00000" value="">
+                        <label for="unit">Unit</label>
+                    </div>
+                </div>
+
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="phno" placeholder="00000" value="">
+                        <label for="phno">Phone Number</label>
+                    </div>
+                </div>
+
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="pnum" placeholder="123456-Z" value="">
+                        <label for="pnum">Personal Number</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="rank" placeholder="ABCD" value="">
+                        <label for="rank">Rank</label>
+                    </div>
+                </div>
+
+                <!-- Date of Reporting -->
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="dor" placeholder="Date of Reporting" value="">
+                        <label for="dor">Date of Reporting</label>
+                    </div>
+
+                </div>
+
+                <!-- Date of Vacation -->
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="dov" placeholder="Date of Vacation" value="">
+                        <label for="dov">Date of Vacation</label>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <button type="button" class="btn btn-outline-secondary mt-3 w-25 mb-5" onclick="validate_form()">Verify Data
         </button>
-        <button type="button" class="btn btn-primary mt-3 w-25 mb-5" id="submit_new_tenant" data-toggle="modal"
-                data-target="#confirmModal" disabled>Edit Tenant
+            <button type="button" class="btn btn-primary mt-3 w-25 mb-5" id="submit_new_tenant" data-toggle="modal" data-target="#confirmModal" disabled>Edit Tenant
         </button>
-    </form>
+        </form>
 
 
-    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmModalLabel">Confirm Submission</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+        <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel">Confirm Submission</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
 
-                </div>
-                <div class="modal-body" id="modalContent">
-                    Are you sure you want to make the changes to the user?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Go Back</button>
-                    <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
+                    </div>
+                    <div class="modal-body" id="modalContent">
+                        Are you sure you want to make the changes to the user?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Go Back</button>
+                        <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
+    <script>
+        let name, unit, phone, pnum, rank, dor, dov;
 
-</div>
-<script>
-    let name, unit, phone, pnum, rank, dor, dov;
-
-    function getTenantData() {
-        axios.post('/api/getTenant')
-            .then(function (response) {
-                let tenantData = response.data.Tenant;
-                name = tenantData.name;
-                unit = tenantData.unit;
-                phone = tenantData.mobileNumber;
-                pnum = tenantData.pnum;
-                rank = tenantData.rank;
-                dor = tenantData.dateOfReporting;
-                dov = tenantData.dateOfVacation;
-                dor = dor.split('T')[0];
-                dov = dov.split('T')[0];
+        function getTenantData() {
+            axios.post('/api/getTenant')
+                .then(function(response) {
+                    let tenantData = response.data.Tenant;
+                    name = tenantData.name;
+                    unit = tenantData.unit;
+                    phone = tenantData.mobileNumber;
+                    pnum = tenantData.pnum;
+                    rank = tenantData.rank;
+                    dor = tenantData.dateOfReporting;
+                    dov = tenantData.dateOfVacation;
+                    dor = dor.split('T')[0];
+                    dov = dov.split('T')[0];
 
 
-                console.log(response.data.Tenant)
+                    console.log(response.data.Tenant)
 
-                document.getElementById('name').value = name || "";
-                document.getElementById('unit').value = unit || "";
-                document.getElementById('phno').value = phone || "";
-                document.getElementById('pnum').value = pnum || "";
-                document.getElementById('rank').value = rank || "";
-                document.getElementById('dor').value = dor || "";
-                document.getElementById('dov').value = dov || "";
-            })
-            .catch(function (error) {
-                console.log(error);
-                alert("Error getting tenant");
-            });
-    }
-
-    function validate_form() {
-        name = document.getElementById('name').value;
-        unit = document.getElementById('unit').value;
-        phone = document.getElementById('phno').value;
-        pnum = document.getElementById('pnum').value;
-        rank = document.getElementById('rank').value;
-        dor = document.getElementById('dor').value;
-        dov = document.getElementById('dov').value;
-
-
-        console.log(name, unit, pnum, rank, dor, dov);
-
-        // Verify that all fields are filled
-        if (name === "" || unit === "" || pnum === "" || rank === "" || dor === "" || dov === "") {
-            alert("Please fill in all fields");
-            return false;
+                    document.getElementById('name').value = name || "";
+                    document.getElementById('unit').value = unit || "";
+                    document.getElementById('phno').value = phone || "";
+                    document.getElementById('pnum').value = pnum || "";
+                    document.getElementById('rank').value = rank || "";
+                    document.getElementById('dor').value = dor || "";
+                    document.getElementById('dov').value = dov || "";
+                })
+                .catch(function(error) {
+                    console.log(error);
+                    alert("Error getting tenant");
+                });
         }
 
-        // Verify that the phone number is 10 digits
-        if (phone.length !== 10) {
-            alert("Please enter a valid phone number");
-            return false;
+        function validate_form() {
+            name = document.getElementById('name').value;
+            unit = document.getElementById('unit').value;
+            phone = document.getElementById('phno').value;
+            pnum = document.getElementById('pnum').value;
+            rank = document.getElementById('rank').value;
+            dor = document.getElementById('dor').value;
+            dov = document.getElementById('dov').value;
+
+
+            console.log(name, unit, pnum, rank, dor, dov);
+
+            // Verify that all fields are filled
+            if (name === "" || unit === "" || pnum === "" || rank === "" || dor === "" || dov === "") {
+                alert("Please fill in all fields");
+                return false;
+            }
+
+            // Verify that the phone number is 10 digits
+            if (phone.length !== 10) {
+                alert("Please enter a valid phone number");
+                return false;
+            }
+
+            // Verify that the date of reporting is before the date of vacation
+            if (dor > dov) {
+                alert("Please enter a valid date of reporting and date of vacation");
+                return false;
+            }
+
+            // Verify that personal number is in the format 000000-X where X is a letter, and number is of any number of digits
+            if (!pnum.match(/^\d+-[A-Z]$/)) {
+                alert("Please enter a valid personal number");
+                return false;
+            }
+
+            // If all fields are valid, enable the submit button
+            document.getElementById('submit_new_tenant').disabled = false;
         }
+    </script>
 
-        // Verify that the date of reporting is before the date of vacation
-        if (dor > dov) {
-            alert("Please enter a valid date of reporting and date of vacation");
-            return false;
-        }
+    <script>
+        // Handle form submission confirmation
+        document.getElementById('confirmButton').addEventListener('click', function() {
+            axios.patch('/api/updateTenant', {
+                    name: name,
+                    mobileNumber: phone,
+                    rank: rank,
+                    unit: unit,
+                    pnum: pnum,
+                    dateOfReporting: dor,
+                    dateOfVacation: dov
+                })
+                .then(function(response) {
+                    console.log(response);
+                    alert("Tenant updated successfully");
+                    window.location.href = "/pages/tenant_page_ts.html";
+                })
+                .catch(function(error) {
+                    let message = error.response.data.message;
+                    alert(message);
+                    console.log(error);
+                });
+        });
+    </script>
 
-        // Verify that personal number is in the format 000000-X where X is a letter, and number is of any number of digits
-        if (!pnum.match(/^\d+-[A-Z]$/)) {
-            alert("Please enter a valid personal number");
-            return false;
-        }
-
-        // If all fields are valid, enable the submit button
-        document.getElementById('submit_new_tenant').disabled = false;
-    }
-</script>
-
-<script>
-    // Handle form submission confirmation
-    document.getElementById('confirmButton').addEventListener('click', function () {
-        axios.patch('/api/updateTenant', {
-            name: name,
-            mobileNumber: phone,
-            rank: rank,
-            unit: unit,
-            pnum: pnum,
-            dateOfReporting: dor,
-            dateOfVacation: dov
-        })
-            .then(function (response) {
-                console.log(response);
-                alert("Tenant updated successfully");
-                window.location.href = "/pages/tenant_page_ts.html";
-            })
-            .catch(function (error) {
-                let message = error.response.data.message;
-                alert(message);
-                console.log(error);
-            });
-    });
-</script>
-
-<!-- Include Bootstrap JS and jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

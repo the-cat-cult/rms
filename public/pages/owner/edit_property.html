@@ -5,13 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>START</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
 
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" sizes="any" type="image/x-icon">
     <!-- Import css -->
     <link rel="stylesheet" href="../../style.css">
     <!-- Javascript -->
@@ -21,49 +20,49 @@
 </head>
 
 <body onload="validate()">
-<div class="container mt-5 shadow">
-    <form id="newTenantForm" class="mx-5">
-        <h2 class="mt-5 mb-1"> Edit Property &#x1f3e0;</h2>
-        <h4 class=" mb-5">Tell us a bit about the property...</h4>
+    <div class="container mt-5 shadow">
+        <form id="newTenantForm" class="mx-5">
+            <h2 class="mt-5 mb-1"> Edit Property &#x1f3e0;</h2>
+            <h4 class=" mb-5">Tell us a bit about the property...</h4>
 
 
-        <div class="row g-3 mb-3">
-            <div class="col-md">
-                <div class="form-floating mb-3 ">
-                    <input type="text" class="form-control" id="property_locatiom" placeholder="00000">
-                    <label for="property_locatiom">Location</label>
-                </div>
-            </div>
-
-            <div class="col-md">
-                <div class="form-floating">
-                    <input type="number" class="form-control" id="rent" placeholder="00000">
-                    <label for="rent">Rent</label>
+            <div class="row g-3 mb-3">
+                <div class="col-md">
+                    <div class="form-floating mb-3 ">
+                        <input type="text" class="form-control" id="property_locatiom" placeholder="00000">
+                        <label for="property_locatiom">Location</label>
+                    </div>
                 </div>
 
-            </div>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="rent" placeholder="00000">
+                        <label for="rent">Rent</label>
+                    </div>
 
-            <div class="col-md">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="address" placeholder="00000">
-                    <label for="address">Address</label>
                 </div>
-            </div>
 
-        </div>
-
-        <div class="row g-3 mb-3">
-
-            <div class="col-md">
-                <div class="form-floating">
-                    <input type="number" class="form-control" id="sd" placeholder="00000">
-                    <label for="sd">Security Deposit</label>
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="address" placeholder="00000">
+                        <label for="address">Address</label>
+                    </div>
                 </div>
+
             </div>
 
-            <div class="col-md">
-                <label for="bhk">Housing Type (BHK)</label>
-                <select class="form-select" id="bhk">
+            <div class="row g-3 mb-3">
+
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="sd" placeholder="00000">
+                        <label for="sd">Security Deposit</label>
+                    </div>
+                </div>
+
+                <div class="col-md">
+                    <label for="bhk">Housing Type (BHK)</label>
+                    <select class="form-select" id="bhk">
                     <option value="1 BHK">1 BHK</option>
                     <option value="1.5 BHK">1.5 BHK</option>
                     <option value="2 BHK">2 BHK</option>
@@ -73,169 +72,169 @@
                     <option value="4">4 BHK</option>
                     <option value="Other">Other</option>
                 </select>
-            </div>
+                </div>
 
 
-            <div class="col-md">
-                <label for="type">Type of Property</label>
-                <select class="form-select" id="type">
+                <div class="col-md">
+                    <label for="type">Type of Property</label>
+                    <select class="form-select" id="type">
                     <option value="Apartment">Apartment</option>
                     <option value="Independent House">Independent House</option>
                     <option value="Villa">Villa</option>
                     <option value="Studio Apartment">Studio Apartment</option>
                     <option value="Other">Other</option>
                 </select>
+                </div>
+
+                <div class="row g-3 mb-3">
+
+                    <div class="col-md">
+                        <div class="form-floating">
+                            <input type="number" class="form-control" id="age" placeholder="00000">
+                            <label for="age">Age of Property (In years)</label>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="row g-3 mb-3">
+            <button type="button" class="btn btn-outline-secondary mt-3 w-25 mb-5" onclick="validate_form()">Verify Data
+        </button>
+            <button type="button" class="btn btn-primary mt-3 w-25 mb-5" id="submit_new_tenant" data-toggle="modal" data-target="#confirmModal" disabled>Edit Property
+        </button>
+        </form>
 
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input type="number" class="form-control" id="age" placeholder="00000">
-                        <label for="age">Age of Property (In years)</label>
+
+        <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel">Confirm Submission</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" />
+
+                    </div>
+                    <div class="modal-body" id="modalContent">
+                        Confirm creation of new tenant?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Go Back</button>
+                        <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
                     </div>
                 </div>
-
-            </div>
-
-        </div>
-
-        <button type="button" class="btn btn-outline-secondary mt-3 w-25 mb-5" onclick="validate_form()">Verify Data
-        </button>
-        <button type="button" class="btn btn-primary mt-3 w-25 mb-5" id="submit_new_tenant" data-toggle="modal"
-                data-target="#confirmModal" disabled>Edit Property
-        </button>
-    </form>
-
-
-    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmModalLabel">Confirm Submission</h5>
-                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"/>
-
-                </div>
-                <div class="modal-body" id="modalContent">
-                    Confirm creation of new tenant?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Go Back</button>
-                    <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
-                </div>
             </div>
         </div>
+
+
     </div>
+    <script>
+        // Validate all fields
+        let propertyLocation, address, bhk, type, rent, sd, age;
 
-
-</div>
-<script>
-    // Validate all fields
-    let propertyLocation, address, bhk, type, rent, sd, age;
-
-    function validate() {
-        if(localStorage.getItem("role") !== "owner" && localStorage.getItem("role") !== "admin") {
-            window.location.href = "/"
-        }
-        get_property_data()
-    }
-
-    function getPropertyId() {
-        let url = new URL(window.location.href);
-        return url.searchParams.get("propertyId");
-    }
-
-    function get_property_data() {
-        axios.post("/api/getPropertyById", {pid: getPropertyId()})
-            .then(function (response) {
-                console.log(response);
-                if (response.data.success) {
-                    let property = response.data.Property
-
-                    propertyLocation = document.getElementById('property_locatiom').value = property.location || "";
-                    rent = document.getElementById('rent').value = property.rent || 0;
-                    address = document.getElementById('address').value = property.address || "";
-                    sd = document.getElementById('sd').value = property.securityDeposit;
-                    bhk = document.getElementById('bhk').value = property.bhk;
-                    type = document.getElementById('type').value = property.propertyType;
-                    age = document.getElementById('age').value = property.age;
-                }
-            })
-            .catch(function (error) {
-                alert("Could not fetch property info")
-            });
-    }
-
-    function validate_form() {
-        propertyLocation = document.getElementById('property_locatiom').value;
-        rent = document.getElementById('rent').value;
-        address = document.getElementById('address').value;
-        sd = document.getElementById('sd').value;
-        bhk = document.getElementById('bhk').value;
-        type = document.getElementById('type').value;
-        age = document.getElementById('age').value;
-
-        console.log(propertyLocation, address, bhk, type, rent, sd, age)
-        console.log(bhk)
-
-        // Verify that all fields are filled
-        if (propertyLocation === "" || address === "" || bhk === "" || type === "" || rent === "" || sd === "" || age === "") {
-            alert("Please fill all fields");
-            return false;
+        function validate() {
+            if (localStorage.getItem("role") !== "owner" && localStorage.getItem("role") !== "admin") {
+                window.location.href = "/"
+            }
+            get_property_data()
         }
 
-        console.log(isNaN(rent), isNaN(sd), isNaN(age))
-
-        //nan
-        if (isNaN(rent) || isNaN(sd) || isNaN(age)) {
-            alert("Please enter valid numbers");
-            return false;
+        function getPropertyId() {
+            let url = new URL(window.location.href);
+            return url.searchParams.get("propertyId");
         }
 
-        // Verify that all fields are valid
-        if (propertyLocation < 0 || rent < 0 || sd < 0 || age < 0) {
-            alert("Please enter valid numbers");
-            return false;
+        function get_property_data() {
+            axios.post("/api/getPropertyById", {
+                    pid: getPropertyId()
+                })
+                .then(function(response) {
+                    console.log(response);
+                    if (response.data.success) {
+                        let property = response.data.Property
+
+                        propertyLocation = document.getElementById('property_locatiom').value = property.location || "";
+                        rent = document.getElementById('rent').value = property.rent || 0;
+                        address = document.getElementById('address').value = property.address || "";
+                        sd = document.getElementById('sd').value = property.securityDeposit;
+                        bhk = document.getElementById('bhk').value = property.bhk;
+                        type = document.getElementById('type').value = property.propertyType;
+                        age = document.getElementById('age').value = property.age;
+                    }
+                })
+                .catch(function(error) {
+                    alert("Could not fetch property info")
+                });
         }
 
+        function validate_form() {
+            propertyLocation = document.getElementById('property_locatiom').value;
+            rent = document.getElementById('rent').value;
+            address = document.getElementById('address').value;
+            sd = document.getElementById('sd').value;
+            bhk = document.getElementById('bhk').value;
+            type = document.getElementById('type').value;
+            age = document.getElementById('age').value;
 
-        // If all fields are valid, enable the submit button
-        document.getElementById('submit_new_tenant').disabled = false;
-    }
-</script>
+            console.log(propertyLocation, address, bhk, type, rent, sd, age)
+            console.log(bhk)
 
-<script>
-    document.getElementById('confirmButton').addEventListener('click', function () {
+            // Verify that all fields are filled
+            if (propertyLocation === "" || address === "" || bhk === "" || type === "" || rent === "" || sd === "" || age === "") {
+                alert("Please fill all fields");
+                return false;
+            }
 
-        console.log(rent)
+            console.log(isNaN(rent), isNaN(sd), isNaN(age))
+
+            //nan
+            if (isNaN(rent) || isNaN(sd) || isNaN(age)) {
+                alert("Please enter valid numbers");
+                return false;
+            }
+
+            // Verify that all fields are valid
+            if (propertyLocation < 0 || rent < 0 || sd < 0 || age < 0) {
+                alert("Please enter valid numbers");
+                return false;
+            }
+
+
+            // If all fields are valid, enable the submit button
+            document.getElementById('submit_new_tenant').disabled = false;
+        }
+    </script>
+
+    <script>
+        document.getElementById('confirmButton').addEventListener('click', function() {
+
+            console.log(rent)
 
             axios.patch("/api/updateProperty", {
-                pid: getPropertyId(),
-                address: address,
-                propertyType: type,
-                bhk: bhk,
-                location: propertyLocation,
-                lat: 0,
-                long: 0,
-                rent: parseInt(rent),
-                securityDeposit: parseInt(sd),
-                age: parseInt(age),
-            })
-                .then(function (response) {
+                    pid: getPropertyId(),
+                    address: address,
+                    propertyType: type,
+                    bhk: bhk,
+                    location: propertyLocation,
+                    lat: 0,
+                    long: 0,
+                    rent: parseInt(rent),
+                    securityDeposit: parseInt(sd),
+                    age: parseInt(age),
+                })
+                .then(function(response) {
                     console.log(response);
                     window.location.href = "/"
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                     console.log(error);
                 });
-    });
-</script>
+        });
+    </script>
 
-<!-- Include Bootstrap JS and jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
