@@ -134,7 +134,7 @@ export async function generateOTP(req, res) {
         });
     } else {
         otpRecord.otp = code;
-        otpRecord.exp = setExpDateTime;
+        otpRecord.exp = expDateTime;
     }
 
 

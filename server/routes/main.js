@@ -1,6 +1,6 @@
 import express from "express";
 
-import {createBooking, getAllBookings, getOneBooking, updateBookingStatus, deleteBooking} from '../controllers/bookings.js'
+import { createBooking, getAllBookings, getOneBooking, updateBookingStatus, deleteBooking } from '../controllers/bookings.js'
 import {
     createProperty,
     getAllProperties,
@@ -28,15 +28,15 @@ import {
     updateUser,
     deleteUser,
 } from '../controllers/user.js'
-import {ownerSignUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
+import { ownerSignUp, generateOTP, login, singOut, checkAuth } from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
 import multerImages from '../middleware/multer-images.js'
 
 const router = express.Router();
 
 //images
-router.post('/uploadImages', authentication(["owner"]), multerImages, uploadFiles)
-router.delete('/deleteImage', authentication(["owner"]), deleteFile)
+router.post('/uploadImages', authentication(["owner", "admin"]), multerImages, uploadFiles)
+router.delete('/deleteImage', authentication(["owner", "admin"]), deleteFile)
 router.get('/image/:id', authentication(['owner', 'tenant', 'admin']), getFile)
 
 //authentication
