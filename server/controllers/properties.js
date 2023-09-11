@@ -177,13 +177,8 @@ export async function updateProperty(req, res) {
     if (req.user.role !== "admin") {
         updateProp.ownerId = req.user._id;
         delete updateObject.verified
-
-        if (updateObject.lat || updateObject.long) {
-            return res.status(400).json({
-                success: false,
-                message: 'You are not authorized to change the location of the property',
-            });
-        }
+        delete updateObject.lat
+        delete updateObject.long
     }
 
     Property.findOneAndUpdate(updateProp, {$set: updateObject})
