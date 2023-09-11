@@ -7,8 +7,14 @@ const propertiesSchema = new mongoose.Schema({
     propertyType: String,
     bhk: String,
     location: String,
-    lat: Number,
-    long: Number,
+    lat: {
+        type: Number,
+        default: 0
+    },
+    long: {
+        type: Number,
+        default: 0
+    },
     rent: Number,
     securityDeposit: Number,
     age: Number,

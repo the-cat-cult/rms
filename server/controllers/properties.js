@@ -13,8 +13,6 @@ export function createProperty(req, res) {
         propertyType: req.body.ptype,
         bhk: req.body.bhk,
         location: req.body.location,
-        lat: req.body.lat,
-        long: req.body.long,
         rent: req.body.rent,
         securityDeposit: req.body.secdep,
         age: req.body.age,
@@ -179,6 +177,13 @@ export async function updateProperty(req, res) {
     if (req.user.role !== "admin") {
         updateProp.ownerId = req.user._id;
         delete updateObject.verified
+
+        if (updateObject.lat || updateObject.long) {
+            return res.status(400).json({
+                success: false,
+                message: 'You are not authorized to change the location of the property',
+            });
+        }
     }
 
     Property.findOneAndUpdate(updateProp, {$set: updateObject})
