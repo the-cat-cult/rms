@@ -19,7 +19,7 @@
 
 </head>
 
-<body onload="sendOTP()" data-bs-theme="dark">
+<body data-bs-theme="dark">
 
     <header>
 
@@ -222,7 +222,10 @@
         }
 
 
-        window.onload = size_set;
+        window.onload = function() {
+            size_set();
+            sendOTP();
+        }
         window.onresize = size_set;
     </script>
 
