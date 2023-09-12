@@ -9,21 +9,43 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 
     <link rel="icon" href="/assets/icons/START Logo-01.svg" sizes="any" type="image/x-icon">
     <!-- Import css -->
-    <link rel="stylesheet" href="../../style.css">
-    <!-- Javascript -->
-    <script src="../../script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 </head>
 
-<body onload="validate()">
-    <div class="container mt-5 shadow">
+<body onload="validate()" data-bs-theme="dark">
+
+
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-4" href="/">
+                    <img src="../../assets/icons/START Logo-01.svg" alt="START Home" height="40">
+                </a>
+
+                <!-- Profile Page navigation button on the right side -->
+                <div class="d-flex">
+                    <!-- Sign out button -->
+                    <button type="button" class="btn btn-outline-danger" onclick="sign_out()">Sign Out</button>
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
+                </div>
+            </div>
+        </nav>
+
+    </header>
+    <div class="container mt-5 shadow centered">
         <form id="newTenantForm" class="mx-5">
             <h2 class="mt-5 mb-1"> Add a new Property &#x1f3e0;</h2>
             <h4 class=" mb-5">Tell us a bit about the property...</h4>
+
+
+            <div class="container w-100 mb-5 rounded border d-flex align-items-center justify-content-center" style="background-color: transparent; height: 250px;" id="add-image">
+            </div>
 
 
             <div class="row g-3 mb-3">
@@ -173,9 +195,19 @@
             // If all fields are valid, enable the submit button
             document.getElementById('submit_new_tenant').disabled = false;
         }
-    </script>
 
-    <script>
+        function toggleTheme() {
+            var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+
+            if (theme == "dark") {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+            } else {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+            }
+        }
+
         document.getElementById('confirmButton').addEventListener('click', function() {
 
             console.log(rent)
@@ -199,7 +231,86 @@
                     console.log(error);
                 });
         });
+
+
+        // Add image
+        let image_upload = document.getElementById('add-image');
+
+        var img_array = {
+            '1 BHK': 'https://dummyimage.com/600x400/000/fff.png&text=1+BHK',
+            '1.5 BHK': 'https://dummyimage.com/600x400/000/fff.png&text=1.5+BHK',
+            '2 BHK': 'https://dummyimage.com/600x400/000/fff.png&text=2+BHK',
+            '2.5 BHK': 'https://dummyimage.com/600x400/000/fff.png&text=2.5+BHK',
+            '3 BHK': 'https://dummyimage.com/600x400/000/fff.png&text=3+BHK',
+            '3.5 BHK': 'https://dummyimage.com/600x400/000/fff.png&text=3.5+BHK',
+            '4 BHK': 'https://dummyimage.com/600x400/000/fff.png&text=4+BHK',
+            'Other': 'https://dummyimage.com/600x400/000/fff.png&text=Other'
+        }
+
+        for (let i = 0; i < Object.keys(img_array).length; i++) {
+            let img = document.createElement('img');
+            img.src = Object.values(img_array)[i];
+            img.style.width = "200px";
+            img.style.height = "200px";
+            img.style.margin = "10px";
+            img.style.objectFit = "cover";
+            img.style.objectPosition = "center";
+            img.style.boxShadow = "0px 0px 10px 0px rgba(0,0,0,0.75)";
+            img.style.cursor = "pointer";
+            img.addEventListener('click', function() {
+                console.log("clicked")
+                window.location.href = "/pages/owner/add_image.html"
+            })
+            image_upload.appendChild(img);
+        }
+
+
+        image_upload.addEventListener('click', function() {
+            console.log("clicked")
+                // window.location.href = "/pages/owner/add_image.html"
+        })
     </script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        h1,
+        h2 {
+            font-weight: 600;
+        }
+        
+        #theme-icon:hover {
+            cursor: pointer;
+            animation: rotation 2s infinite linear;
+            /* Tooltip */
+            position: relative;
+        }
+        
+        @keyframes rotation {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(359deg);
+            }
+        }
+        /* Remove spinner from input field */
+        
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+        }
+        
+        .centered {
+            /* Vertically centered */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
 
     <!-- Include Bootstrap JS and jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
