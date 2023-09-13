@@ -10,27 +10,23 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
     <link rel="icon" href="/assets/icons/START Logo-01.svg" sizes="any" type="image/x-icon">
 </head>
 
-<body onload="get_property_data()">
+<body onload="get_property_data()" data-bs-theme="dark">
     <!-- Header -->
     <header>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
                 <a class="navbar-brand mx-4" href="/">
-                    <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="30">
+                    <img src="/assets/icons/START Logo-01.svg" alt="START Home" height="40">
                 </a>
-
-                <!-- Profile Page navigation button on the right side -->
-                <div class="d-flex mx-5">
-                    <!-- Sign out button -->
-                    <button type="button" class="btn btn-outline-primary mx-3" onclick="sign_out()">Sign Out</button>
+                <div class="d-flex">
+                    <button type="button" class="btn btn-outline-primary" onclick="sign_out()">Sign Out</button>
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
                 </div>
             </div>
         </nav>
-
     </header>
     <!-- Carousel -->
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -52,9 +48,20 @@
     </div>
 
     <div class="container">
-        <!-- A card with details of rent and address -->
-        <div class="d-flex justify-content-around align-items-baseline">
+        <div class="clearfix">
             <div class="details">
+
+                <div class="buttons col-md-6 float-md-end mb-3 ms-md-3">
+                    <!-- Edit property button -->
+                    <button type="button" class="btn btn-primary btn-lg mx-2 mb-2" id="edit_btn" onclick="edit()"> Edit Property</button>
+
+                    <!-- Delete property button -->
+                    <button type="button" class="btn btn-outline-danger btn-lg mx-2 mb-2" id="delete_btn">Delete Property</button>
+                    <br>
+                    <div class="custom-control custom-switch" id="verified-box">
+
+                    </div>
+                </div>
                 <!-- Details of the apartment -->
                 <h1 class="mt-5">
                     <span id="bhk"></span> <span id="type"></span>
@@ -71,21 +78,7 @@
             </div>
 
 
-            <div class="buttons">
-                <!-- Edit property button -->
-                <button type="button" class="btn btn-primary btn-lg mx-2 mb-2" id="edit_btn" onclick="edit()">Edit
-                Property
-            </button>
 
-                <!-- Delete property button -->
-                <button type="button" class="btn btn-outline-danger btn-lg mx-2 mb-2" id="delete_btn">
-                Delete Property
-            </button>
-                <br>
-                <div class="custom-control custom-switch" id="verified-box">
-
-                </div>
-            </div>
 
         </div>
     </div>
@@ -126,13 +119,11 @@
     h1 {
         font-weight: 600;
         font-size: 45px;
-        color: rgb(53, 53, 53);
     }
     
     h4 {
         font-weight: 400;
         font-size: 20px;
-        color: rgb(53, 53, 53);
     }
 </style>
 
@@ -192,7 +183,7 @@
                 pid: getPropertyId()
             })
             .then(function(response) {
-                console.log(response);
+                // console.log(response);
                 if (response.data.success) {
                     bhk = response.data.Property.bhk || ""
                     type = response.data.Property.propertyType || ""
@@ -305,7 +296,44 @@
                 });
         }
     });
+
+
+    function toggleTheme() {
+        var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+        var theme_bg = document.getElementById("theme_bg");
+        var navbar = document.getElementById("navbar");
+        if (theme == "dark") {
+            document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+            document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+
+            document.getElementById("subtext").classList.remove("text-white");
+            document.getElementById("subtext").classList.add("text-primary");
+        } else {
+            document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+            document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+
+            document.getElementById("subtext").classList.remove("text-primary");
+            document.getElementById("subtext").classList.add("text-white");
+        }
+    }
 </script>
 
+<style>
+    #theme-icon:hover {
+        cursor: pointer;
+        animation: rotation 2s infinite linear;
+        /* Tooltip */
+        position: relative;
+    }
+    
+    @keyframes rotation {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(359deg);
+        }
+    }
+</style>
 
 </html>
