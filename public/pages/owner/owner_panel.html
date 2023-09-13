@@ -100,8 +100,33 @@
 
             let no_of_cards = card_list.length
 
-            for (let counter = 0; counter < no_of_cards; counter++) {
-                create_card(card_list[counter]['id'], card_list[counter]['image'], card_list[counter]['title'], card_list[counter]['address'], card_list[counter]['rent'], card_list[counter]['link']);
+            if (no_of_cards == 0) {
+                let cl = document.getElementById("card-list");
+                let col_div = document.createElement("div");
+                col_div.className = "col";
+                let card_div = document.createElement("div");
+                card_div.className = "card";
+                card_div.style = "height: 400px";
+                let card_body = document.createElement("div");
+                card_body.className = "card-body";
+                let add_symbol = document.createElement("p");
+                add_symbol.className = "card-text";
+                add_symbol.innerHTML = "+";
+                // Place in the middle of the card
+                add_symbol.style = "position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px;";
+                card_body.appendChild(add_symbol);
+                card_div.appendChild(card_body);
+
+                add_prop = document.createElement("a");
+                add_prop.href = "/pages/owner/add_property.html";
+                add_prop.appendChild(card_div);
+
+                col_div.appendChild(add_prop);
+                cl.appendChild(col_div);
+            } else {
+                for (let counter = 0; counter < no_of_cards; counter++) {
+                    create_card(card_list[counter]['id'], card_list[counter]['image'], card_list[counter]['title'], card_list[counter]['address'], card_list[counter]['rent'], card_list[counter]['link']);
+                }
             }
         }
 
@@ -193,6 +218,7 @@
 <style>
     body {
         font-family: 'Poppins', sans-serif;
+        transition: 0.2s;
     }
     
     h1 {
@@ -217,12 +243,12 @@
         transform: scale(1.05);
         box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.25);
         /* Time */
-        transition: 0.3s;
+        transition: 0.2s;
     }
     /* Exit hover */
     
     .card {
-        transition: 0.3s;
+        transition: 0.2s;
     }
 </style>
 
