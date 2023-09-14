@@ -12,47 +12,52 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <link rel="icon" href="/assets/icons/START Logo-01.svg" sizes="any" type="image/x-icon">
-    <!-- Import css -->
-    <link rel="stylesheet" href="../style.css">
-    <!-- Javascript -->
-    <script src="../script.js"></script>
 
 </head>
 
-<body onload="sendOTP()">
+<body data-bs-theme="dark">
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm p-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="/assets/icons/START Logo-01.svg" alt="START Home" height="40">
+                </a>
+                <div class="d-flex">
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
+
+                </div>
+            </div>
+        </nav>
+    </header>
     <div class="container mt-5">
         <h1>Great! Tell me your one time password (OTP) &#128516;</h1>
         <h4>You should have receieved it on your phone. </h4>
         <div class="otp">
             <!-- Four boxes representing each digit -->
-            <input type="text" class="otp-box" id="digit1" maxlength="1" autocomplete="off" />
-            <input type="text" class="otp-box" id="digit2" maxlength="1" autocomplete="off" />
-            <input type="text" class="otp-box" id="digit3" maxlength="1" autocomplete="off" />
-            <input type="text" class="otp-box" id="digit4" maxlength="1" autocomplete="off" />
+            <input type="number" class="otp-box" id="digit1" maxlength="1" autocomplete="off" />
+            <input type="number" class="otp-box" id="digit2" maxlength="1" autocomplete="off" />
+            <input type="number" class="otp-box" id="digit3" maxlength="1" autocomplete="off" />
+            <input type="number" class="otp-box" id="digit4" maxlength="1" autocomplete="off" />
 
             <div class="buttons mt-3">
-                <button type="submit" class="btn btn-primary" id="sendOTP" onclick="verifyOTP()">Verify OTP</button>
-                <button class="btn btn-outline-secondary" id="resend" disabled onclick="sendOTP()">Resend OTP</button>
+                <button type="submit" class="btn btn-primary mt-2" id="sendOTP" onclick="verifyOTP()">Verify OTP</button>
+                <button class="btn btn-outline-secondary mt-2" id="resend" disabled onclick="resend_route()">Resend OTP</button>
                 <div class="mt-2">
-                    <span id="countdown"></span>
+                    <span id="countdown"></span><br>
+                    <span id="expiry" class="text-warning">OTP expires in 5 minutes...</span>
                 </div>
             </div>
         </div>
 
-
         <!-- Change number box -->
         <div class="no-acc ">
             Is <span id="phone_number"></span> not your number?
-            <a href="phone_number.html" class="hyperlink" style="text-decoration: none; ">
+            <a href="new_user.html" class="hyperlink" style="text-decoration: none; ">
                 <br/>Use another number
             </a>
         </div>
 
 
-    </div>
-
-    <div class="progress bottom-50">
-        <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
     <!-- Include Bootstrap JS and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js "></script>
@@ -159,7 +164,20 @@
     </script>
 
     <script>
+        function toggleTheme() {
+
+            var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+            if (theme == "dark") {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+            } else {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+            }
+        }
+
         var timeleft = 60;
+        var expire_countdown = 300;
 
         function countdown() {
             var downloadTimer = setInterval(function() {
@@ -179,14 +197,129 @@
         }
 
 
+        function expire_otp() {
+            var expireTimer = setInterval(function() {
+                if (expire_countdown <= 0) {
+                    clearInterval(expireTimer);
+
+                    document.getElementById("expiry").innerHTML = "OTP expired!";
+                    document.getElementById("expiry").classList.remove("text-warning");
+                    document.getElementById("expiry").classList.add("text-danger");
+                    document.getElementById("resend").disabled = false;
+
+                    // Put trigger to delete OTP from database here
+
+
+                } else {
+                    document.getElementById("expiry").classList.remove("text-danger");
+                    document.getElementById("expiry").classList.add("text-warning");
+                    document.getElementById("expiry").innerHTML = "OTP expires in " + expire_countdown + " seconds...";
+
+                }
+                expire_countdown -= 1;
+            }, 1000);
+        }
         var phone = getPhoneNumber();
         // Change element with id phone_number to the phone number
         document.getElementById("phone_number").innerHTML = phone;
 
 
+        function size_set() {
+
+            submit_button = document.getElementById("sendOTP");
+            resend = document.getElementById("resend");
+            if (window.innerWidth < 576) {
+                submit_button.setAttribute("style", "width: 100% !important; padding: 1rem 0.5rem !important;");
+                resend.setAttribute("style", "width: 100% !important; padding: 1rem 0.5rem !important;");
+            } else {
+                submit_button.setAttribute("style", "width: 25% !important; padding: 0.5rem 1rem !important;");
+                resend.setAttribute("style", "width: 25% !important; padding: 0.5rem 1rem !important;");
+            }
+        }
         countdown();
+        expire_otp();
+
+        onload = function() {
+            size_set();
+            sendOTP();
+            document.getElementById("digit1").focus();
+        }
+
+        window.onresize = size_set;
+
+        function resend_route() {
+            sendOTP();
+            expire_countdown = 300;
+            timeleft = 60;
+            countdown();
+            expire_otp();
+            document.getElementById("resend").disabled = true;
+        }
     </script>
 
 </body>
+
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    h1 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 3rem;
+    }
+    
+    .centered {
+        /* Vertically centered */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    h5 {
+        font-weight: 600;
+    }
+    
+    #theme-icon {
+        cursor: pointer;
+    }
+    
+    #theme-icon:hover {
+        animation: rotation 2s infinite linear;
+    }
+    
+    @keyframes rotation {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(359deg);
+        }
+    }
+    
+    .otp-box {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 4rem;
+        width: 5rem;
+        height: 5rem;
+        margin: 1rem 0.5rem 1rem 0;
+        font-size: 2rem;
+        border-radius: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        text-align: center;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+    
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
 
 </html>
