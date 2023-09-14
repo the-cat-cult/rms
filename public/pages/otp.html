@@ -48,9 +48,10 @@
 
             <div class="buttons mt-3 mb-sm-3 mb-md-3 mb-lg-5">
                 <button type="submit" class="btn btn-primary mb-3" id="sendOTP" onclick="verifyOTP()">Verify OTP</button>
-                <button class="btn btn-outline-secondary mb-3" id="resend" disabled onclick="sendOTP()">Resend OTP</button>
+                <button class="btn btn-outline-secondary mb-3" id="resend" disabled onclick="resend_route()">Resend OTP</button>
                 <div class="mt-2">
-                    <span id="countdown"></span>
+                    <span id="countdown">Resend OTP in 60 seconds...</span><br>
+                    <span id="expiry" class="text-warning">OTP expires in 5 minutes...</span>
                 </div>
             </div>
         </div>
@@ -162,10 +163,9 @@
                 }
             })
         })
-    </script>
 
-    <script>
         var timeleft = 60;
+        var expire_countdown = 300;
 
         function countdown() {
             var downloadTimer = setInterval(function() {
@@ -184,6 +184,29 @@
             }, 1000);
         }
 
+        function expire_otp() {
+            var expireTimer = setInterval(function() {
+                if (expire_countdown <= 0) {
+                    clearInterval(expireTimer);
+
+                    document.getElementById("expiry").innerHTML = "OTP expired!";
+                    document.getElementById("expiry").classList.remove("text-warning");
+                    document.getElementById("expiry").classList.add("text-danger");
+                    document.getElementById("resend").disabled = false;
+
+                    // Put trigger to delete OTP from database here
+
+
+                } else {
+                    document.getElementById("expiry").classList.remove("text-danger");
+                    document.getElementById("expiry").classList.add("text-warning");
+                    document.getElementById("expiry").innerHTML = "OTP expires in " + expire_countdown + " seconds...";
+
+                }
+                expire_countdown -= 1;
+            }, 1000);
+        }
+
 
         var phone = getPhoneNumber();
         // Change element with id phone_number to the phone number
@@ -191,6 +214,7 @@
 
 
         countdown();
+        expire_otp();
 
         function toggleTheme() {
 
@@ -227,6 +251,16 @@
             sendOTP();
         }
         window.onresize = size_set;
+
+
+        function resend_route() {
+            sendOTP();
+            expire_countdown = 300;
+            timeleft = 60;
+            countdown();
+            expire_otp();
+            document.getElementById("resend").disabled = true;
+        }
     </script>
 
 </body>
