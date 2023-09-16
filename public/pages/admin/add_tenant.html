@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rms</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" sizes="any" type="image/x-icon">
+</head>
+
+<body onload="validate()" data-bs-theme="dark">
+
+    <!-- Navbar -->
+
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-md-2 mx-lg-5 mx-sm-0" href="/">
+                    <img src="/assets/icons/START Logo-01.svg" alt="START Home" height="40">
+                </a>
+
+                <!-- Profile Page navigation button on the right side -->
+                <div class="d-flex mx-sm-0 mx-lg-5 mx-md-2">
+                    <!-- Sign out button -->
+                    <button type="button" class="btn btn-outline-danger" onclick="sign_out()">Sign Out</button>
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5 shadow centered">
+        <form id="newTenantForm" class="mx-5">
+            <h2 class="mt-5 mx-1 mb-5"> Add a new Tenant &#x1f3e0;</h2>
+
+            <div class="form-floating mb-3 ">
+                <input type="text" class="form-control" id="name" placeholder="00000">
+                <label for="name">Full Name</label>
+            </div>
+
+
+            <div class="row g-3 mb-3">
+
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="unit" placeholder="00000">
+                        <label for="unit">Unit</label>
+                    </div>
+                </div>
+
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="phone" placeholder="00000">
+                        <label for="pnum">Phone Number</label>
+                    </div>
+                </div>
+
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="pnum" placeholder="123456-Z">
+                        <label for="pnum">Personal Number</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="rank" placeholder="ABCD">
+                        <label for="rank">Rank</label>
+                    </div>
+                </div>
+
+                <!-- Date of Reporting -->
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="dor" placeholder="Date of Reporting">
+                        <label for="dor">Date of Reporting</label>
+                    </div>
+
+                </div>
+
+                <!-- Date of Vacation -->
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="dov" placeholder="Date of Vacation">
+                        <label for="dov">Date of Vacation</label>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="mb-5">
+                <button type="button" class="btn btn-outline-secondary mt-3 w-25 btn-lg" onclick="validate_form()" id="verify-data">Verify Data</button>
+                <button type="button" class="btn btn-primary mt-3 w-25 btn-lg" id="submit_new_tenant" disabled>Add Tenant</button>
+            </div>
+
+        </form>
+
+
+
+
+    </div>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        h1,
+        h2 {
+            font-weight: 600;
+        }
+        
+        #theme-icon:hover {
+            cursor: pointer;
+            animation: rotation 2s infinite linear;
+        }
+        
+        @keyframes rotation {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(359deg);
+            }
+        }
+        
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* bring your own prefixes */
+        }
+    </style>
+
+    <script>
+        // Validate all fields
+        let name, unit, phone, pnum, rank, dor, dov;
+
+        function validate_form() {
+            name = document.getElementById('name').value;
+            unit = document.getElementById('unit').value;
+            phone = document.getElementById('phone').value;
+            pnum = document.getElementById('pnum').value;
+            rank = document.getElementById('rank').value;
+            dor = document.getElementById('dor').value;
+            dov = document.getElementById('dov').value;
+
+            // Verify that all fields are filled
+            if (name === "" || unit === "" || pnum === "" || rank === "" || dor === "" || dov === "") {
+                alert("Please fill in all fields");
+                return false;
+            }
+
+            // Verify that the phone number is 10 digits
+            if (isNaN(phone) || phone.length !== 10) {
+                alert("Please enter a valid phone number");
+                return false;
+            }
+
+            // Verify that the date of reporting is before the date of vacation
+            if (dor > dov) {
+                alert("Please enter a valid date of reporting and date of vacation");
+                return false;
+            }
+
+            // Verify that personal number is in the format 000000-X where X is a letter
+            if (!pnum.match(/\d+-[A-Z]/)) {
+                alert("Please enter a valid personal number");
+                return false;
+            }
+
+            // If all fields are valid, enable the submit button
+            document.getElementById('submit_new_tenant').disabled = false;
+        }
+    </script>
+
+    <script>
+        function validate() {
+            if (localStorage.getItem("role") !== "admin") {
+                window.location.href = "/"
+            }
+        }
+        // Handle form submission confirmation
+        document.getElementById('submit_new_tenant').addEventListener('click', function() {
+            event.preventDefault();
+
+            if (confirm("Are you sure you want to add this tenant?") == false) {
+                return false;
+            }
+
+            //TODO: Call submission method
+
+            // /api/addTenant - post
+            axios.post('/api/addTenant', {
+                    name: name,
+                    mno: phone,
+                    rank: rank,
+                    unit: unit,
+                    pnum: pnum,
+                    dor: dor,
+                    dov: dov
+                })
+                .then(function(response) {
+                    console.log(response);
+                    alert("Tenant added successfully");
+                    window.location.href = "/"
+                })
+                .catch(function(error) {
+                    console.log(error);
+                    alert("Error adding tenant");
+                });
+        });
+
+
+        function toggleTheme() {
+
+            var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+            if (theme == "dark") {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+            } else {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+            }
+        }
+
+        function sign_out() {
+            if (confirm("Are you sure you want to sign out?")) {
+                axios.post('/api/signOut')
+                    .then(function(response) {
+                        console.log(response);
+                        localStorage.clear();
+                        alert("Signed Out")
+                        window.location.href = "/";
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
+            }
+        }
+
+        function resize_buttons() {
+            verify_data = document.getElementById("verify-data");
+            add_tenant = document.getElementById("submit_new_tenant");
+
+            if (window.innerWidth < 576) {
+                verify_data.classList.remove("w-25");
+                verify_data.classList.add("w-100");
+
+                add_tenant.classList.remove("w-25");
+                add_tenant.classList.add("w-100");
+            } else {
+                verify_data.classList.remove("w-100");
+                verify_data.classList.add("w-25");
+
+                add_tenant.classList.remove("w-100");
+                add_tenant.classList.add("w-25");
+            }
+        }
+
+        window.onload = resize_buttons;
+        window.onresize = resize_buttons;
+    </script>
+
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -57,7 +57,7 @@
             <!-- Spacer -->
             <div class="mt-5"></div>
 
-            <div class="container list-group mb-5" id="preference-list">
+            <div class="container list-group mb-5 rounded" id="preference-list">
 
                 <div id="iter-elements">
 
@@ -247,27 +247,6 @@
                 // If 3 preferences are selected, disable the choose preferences button
                 if (preferences.length == 3) {
                     document.getElementById("choose_prefs").disabled = true;
-                }
-            }
-
-
-            function edit() {
-                window.location.href = "/pages/edit_tenant.html";
-            }
-
-            function delete_tenant() {
-                if (confirm("Are you sure you want to delete this account?")) {
-                    axios.delete("/api/deleteTenant")
-                        .then(function(response) {
-                            console.log(response);
-                            if (response.data.success) {
-                                alert("Tenant deleted successfully");
-                                sign_out()
-                            }
-                        })
-                        .catch(function(error) {
-                            console.log(error);
-                        });
                 }
             }
         </script>
