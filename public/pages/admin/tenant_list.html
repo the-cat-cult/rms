@@ -10,34 +10,29 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" type="image/x-icon">
 
 </head>
 
-<body onload="getTenants()">
+<body onload="getTenants()" data-bs-theme="dark">
     <!-- Header -->
     <header>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand mx-4" href="/">
-                    <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="30">
+                <a class="navbar-brand mx-md-2 mx-lg-5 mx-sm-0" href="/">
+                    <img src="/assets/icons/START Logo-01.svg" alt="START Home" height="40">
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    </ul>
-                </div>
 
-
-                <!-- Sign Out button -->
-                <div class="d-flex mx-5">
-                    <button type="button" class="btn btn-outline-primary mx-3" onclick="sign_out()">Sign Out</button>
+                <!-- Profile Page navigation button on the right side -->
+                <div class="d-flex mx-sm-0 mx-lg-5 mx-md-2">
+                    <!-- Sign out button -->
+                    <button type="button" class="btn btn-outline-danger" onclick="sign_out()">Sign Out</button>
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
                 </div>
             </div>
         </nav>
-    </header>
 
+    </header>
 
     <!-- Body -->
     <div class="container">
@@ -78,7 +73,6 @@
 
         <style>
             .filter-section {
-                background-color: #F2F2F2;
                 border-radius: 10px;
                 padding: 20px;
                 margin-top: 20px;
@@ -87,8 +81,22 @@
             .list-group {
                 max-height: 700px;
                 margin-bottom: 10px;
-                overflow-y: scroll;
+                overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
+            }
+            
+            #theme-icon:hover {
+                cursor: pointer;
+                animation: rotation 2s infinite linear;
+            }
+            
+            @keyframes rotation {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(359deg);
+                }
             }
         </style>
 
@@ -101,7 +109,7 @@
             function getTenants() {
                 axios.get('/api/listAllTenants')
                     .then(function(response) {
-                        if(response.data.success) {
+                        if (response.data.success) {
                             console.log(response.data)
                             let default_data = []
                             let tenants = response.data.Tenant;
@@ -183,12 +191,12 @@
             //frontend search, do not change original list
             function search_by_personal_number(personal_number) {
                 let filtered_list = original_list.filter(function(item) {
-                    if(item["personal_no"] !== undefined) {
+                    if (item["personal_no"] !== undefined) {
                         return item["personal_no"].includes(personal_number);
                     }
                 });
 
-                if(personal_number == "") {
+                if (personal_number == "") {
                     filtered_list = original_list;
                 }
 
@@ -197,12 +205,12 @@
 
             function search_by_phone_number(phone_number) {
                 let filtered_list = original_list.filter(function(item) {
-                    if(item["ph_no"] !== undefined) {
+                    if (item["ph_no"] !== undefined) {
                         return item["ph_no"].toString().includes(phone_number);
                     }
                 });
 
-                if(phone_number == "") {
+                if (phone_number == "") {
                     filtered_list = original_list;
                 }
 
@@ -212,18 +220,30 @@
             function sign_out() {
                 if (confirm("Are you sure you want to sign out?")) {
                     axios.post('/api/signOut')
-                        .then(function (response) {
+                        .then(function(response) {
                             console.log(response);
                             localStorage.clear();
                             alert("Signed Out")
                             window.location.href = "/";
                         })
-                        .catch(function (error) {
+                        .catch(function(error) {
                             console.log(error);
                         });
                 }
             }
 
+
+            function toggleTheme() {
+
+                var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+                if (theme == "dark") {
+                    document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+                    document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+                } else {
+                    document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+                    document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+                }
+            }
         </script>
     </div>
 
