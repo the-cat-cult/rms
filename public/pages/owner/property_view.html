@@ -53,21 +53,18 @@
 
                 <div class="buttons col-md-6 float-md-end mb-3 ms-md-3">
                     <!-- Edit property button -->
-                    <button type="button" class="btn btn-primary btn-lg mx-2 mb-2" id="edit_btn" onclick="edit()"> Edit Property</button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg mb-2" id="edit_btn" onclick="edit()"> Edit Property</button>
 
                     <!-- Delete property button -->
-                    <button type="button" class="btn btn-outline-danger btn-lg mx-2 mb-2" id="delete_btn">Delete Property</button>
+                    <button type="button" class="btn btn-outline-danger btn-lg mb-2 float-end" id="delete_btn">Delete Property</button>
                     <br>
                     <div class="custom-control custom-switch" id="verified-box">
-
                     </div>
                 </div>
                 <!-- Details of the apartment -->
                 <h1 class="mt-5">
                     <span id="bhk"></span> <span id="type"></span>
                 </h1>
-
-
                 <h4 class="mt-3" id="status"></h4>
                 <h5 class="mt-3 text-muted">Rent</h5>
                 <h2 id="rent"></h2>
@@ -76,14 +73,8 @@
                 <h5 class="mt-3 text-muted">Security Deposit</h5>
                 <h3 id="security_deposit"></h3>
             </div>
-
-
-
-
         </div>
     </div>
-
-
 </body>
 
 <!-- Include Bootstrap JS and jQuery -->
@@ -149,24 +140,94 @@
     }
 
     if (localStorage.getItem("role") === "admin") {
-        document.getElementById("verified-box").innerHTML = "<input type=\"checkbox\" class=\"custom-control-input\" id=\"verified\">\n" +
-            "<label class=\"custom-control-label\" for=\"verified\">Verified</label>"
+        // document.getElementById("verified-box").innerHTML = "<input type=\"checkbox\" class=\"custom-control-input\" id=\"verified\">\n" +
+        //     "<label class=\"custom-control-label\" for=\"verified\">Verified</label>"
 
-        document.getElementById("verified").addEventListener('change', function() {
-            verified = this.checked
-            build_data()
-            axios.post("/api/setVerificationStatus", {
-                    verified: this.checked,
-                    pid: getPropertyId()
-                })
-                .then(function(response) {
-                    console.log(response);
-                })
-                .catch(function(error) {
-                    alert("Could not change verification status")
-                });
+        // document.getElementById("verified").addEventListener('change', function() {
+        //     verified = this.checked
+        //     build_data()
+        //     axios.post("/api/setVerificationStatus", {
+        //             verified: this.checked,
+        //             pid: getPropertyId()
+        //         })
+        //         .then(function(response) {
+        //             console.log(response);
+        //         })
+        //         .catch(function(error) {
+        //             alert("Could not change verification status")
+        //         });
 
+        // });
+
+        verified_box = document.getElementById("verified-box")
+
+        x_coord = document.createElement("input")
+        y_coord = document.createElement("input")
+        x_coord.setAttribute("type", "number")
+        y_coord.setAttribute("type", "number")
+        x_coord.setAttribute("placeholder", "X Coordinate")
+        y_coord.setAttribute("placeholder", "Y Coordinate")
+        x_coord.setAttribute("id", "x_coord")
+        y_coord.setAttribute("id", "y_coord")
+        x_coord.classList.add("form-control")
+        y_coord.classList.add("form-control")
+        x_coord.classList.add("mb-2")
+        y_coord.classList.add("mb-2")
+            // Max width of input box
+        x_coord.style.marginRight = "10px"
+        y_coord.style.marginRight = "10px"
+
+        // Button to get coordinates
+        get_coordinates_btn = document.createElement("button")
+        get_coordinates_btn.classList.add("btn")
+        get_coordinates_btn.classList.add("btn-primary")
+        get_coordinates_btn.classList.add("mb-2")
+        get_coordinates_btn.innerHTML = "Get Coordinates"
+        get_coordinates_btn.addEventListener("click", get_coordinates)
+
+
+        // Verify Button
+        verify_btn = document.createElement("button")
+        verify_btn.classList.add("btn")
+        verify_btn.classList.add("btn-success")
+        verify_btn.classList.add("mb-2")
+        verify_btn.classList.add("float-end")
+        verify_btn.innerHTML = "Verify Property"
+        verify_btn.addEventListener("click", handleVerification)
+        verified_box.appendChild(x_coord)
+        verified_box.appendChild(y_coord)
+        verified_box.appendChild(get_coordinates_btn)
+        verified_box.appendChild(verify_btn)
+
+    }
+
+    function get_coordinates() {
+        navigator.geolocation.highAccuracy = true;
+        navigator.geolocation.getCurrentPosition(function(position) {
+            x_coord.value = position.coords.latitude
+            y_coord.value = position.coords.longitude
         });
+    }
+
+    function handleVerification() {
+        if (x_coord.value === "" || y_coord.value === "") {
+            alert("Please enter coordinates")
+            return
+        }
+        axios.post("/api/setVerificationStatus", {
+                verified: true,
+                pid: getPropertyId(),
+                x_coord: x_coord.value,
+                y_coord: y_coord.value
+            })
+            .then(function(response) {
+                console.log(response);
+                alert("Property Verified")
+                window.location.reload()
+            })
+            .catch(function(error) {
+                alert("Could not change verification status")
+            });
     }
 
 
@@ -319,6 +380,14 @@
 </script>
 
 <style>
+    /* remove number input spinner */
+    
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+    }
+    
     #theme-icon:hover {
         cursor: pointer;
         animation: rotation 2s infinite linear;

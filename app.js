@@ -19,9 +19,7 @@ app.use("/", express.static('public'))
 let connectionString = process.env.NODE_ENV === 'development' ? process.env.CONNECTION_STRING_DEV : process.env.CONNECTION_STRING_PROD;
 mongoose.connect(connectionString, { dbName: process.env.DATABASE_NAME })
     .then(() => {
-        // Blue text
         console.log('\x1b[34m%s\x1b[0m', 'Connected to database');
-        // Orange text
         let url = 'http://localhost:8080/';
         console.log('\x1b[33m%s\x1b[0m', `Server running on ${url}`);
     })
