@@ -15,11 +15,15 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/", express.static('public'))
-// set up mongoose
+    // set up mongoose
 let connectionString = process.env.NODE_ENV === 'development' ? process.env.CONNECTION_STRING_DEV : process.env.CONNECTION_STRING_PROD;
 mongoose.connect(connectionString, { dbName: process.env.DATABASE_NAME })
     .then(() => {
-        console.log('Database connected');
+        // Blue text
+        console.log('\x1b[34m%s\x1b[0m', 'Connected to database');
+        // Orange text
+        let url = 'http://localhost:8080/';
+        console.log('\x1b[33m%s\x1b[0m', `Server running on ${url}`);
     })
     .catch((error) => {
         console.log('Error connecting to database', error);
@@ -35,7 +39,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/', router);
 
-app.get('*', function (req, res) {
+app.get('*', function(req, res) {
     res.status(404).redirect('/pages/page_404.html');
 });
 
