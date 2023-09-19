@@ -121,18 +121,9 @@
 <script>
     let bhk = "...";
     let type = "...";
-    let image_links = null;
     let verified = false;
 
-    image_links = [
-        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/282045997.jpg?k=4d013e07aa9dcc9c0844ba222b108a3f143092f6ea3a67b0f3249f3c3a65af2b&o=&hp=1",
-        "https://cf.bstatic.com/xdata/images/hotel/max1024x768/282137886.jpg?k=eb29490f709dc28acf550e7381043903dad87e6641cd6354e4f9545d02d09a86&o=&hp=1",
-        "https://wallpapercave.com/wp/wp1906312.jpg"
-    ];
-
-    if (image_links === null) {
-        image_links = ["https://dummyimage.com/1000x400/808080/ffffff&text=no+image+uploaded"]
-    }
+    let image_links = [];
 
     function getPropertyId() {
         let url = new URL(window.location.href);
@@ -253,6 +244,12 @@
                     security_deposit = response.data.Property.securityDeposit || 0
                     verified = response.data.Property.verified || false
 
+                    console.log(response.data.Property.images)
+
+                    response.data.Property.images.forEach((image) => {
+                        image_links.push(window.location.origin + "/api/image/" + image)
+                    })
+
                     let verifiedElement = document.getElementById("verified")
                     if (verifiedElement) {
                         verifiedElement.checked = verified
@@ -279,6 +276,31 @@
     security_deposit_refs = document.getElementById("security_deposit");
 
     function build_data() {
+        let carousel_indicators = document.getElementsByClassName("carousel-indicators")[0];
+        for (i = 0; i < image_links.length; i++) {
+            li = document.createElement("li");
+            li.setAttribute("data-target", "#myCarousel");
+            li.setAttribute("data-slide-to", i);
+            if (i == 0) {
+                li.classList.add("active");
+            }
+            carousel_indicators.appendChild(li);
+        }
+
+        carousel_inner = document.getElementsByClassName("carousel-inner")[0];
+        for (i = 0; i < image_links.length; i++) {
+            div = document.createElement("div");
+            div.classList.add("carousel-item");
+            if (i == 0) {
+                div.classList.add("active");
+            }
+            img = document.createElement("img");
+            img.setAttribute("src", image_links[i]);
+            img.setAttribute("alt", "Image " + (i + 1));
+            div.appendChild(img);
+            carousel_inner.appendChild(div);
+        }
+
         bhk_refs.innerHTML = bhk;
         type_refs.innerHTML = type;
         rent_refs.innerHTML = "₹" + rent + " /month";
@@ -312,32 +334,6 @@
                     console.log(error);
                 });
         }
-    }
-
-
-    carousel_indicators = document.getElementsByClassName("carousel-indicators")[0];
-    for (i = 0; i < image_links.length; i++) {
-        li = document.createElement("li");
-        li.setAttribute("data-target", "#myCarousel");
-        li.setAttribute("data-slide-to", i);
-        if (i == 0) {
-            li.classList.add("active");
-        }
-        carousel_indicators.appendChild(li);
-    }
-
-    carousel_inner = document.getElementsByClassName("carousel-inner")[0];
-    for (i = 0; i < image_links.length; i++) {
-        div = document.createElement("div");
-        div.classList.add("carousel-item");
-        if (i == 0) {
-            div.classList.add("active");
-        }
-        img = document.createElement("img");
-        img.setAttribute("src", image_links[i]);
-        img.setAttribute("alt", "Image " + (i + 1));
-        div.appendChild(img);
-        carousel_inner.appendChild(div);
     }
 
     delete_btn = document.getElementById("delete_btn");
