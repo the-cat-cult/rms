@@ -244,11 +244,10 @@
                     security_deposit = response.data.Property.securityDeposit || 0
                     verified = response.data.Property.verified || false
 
-                    console.log(response.data.Property.images)
-
                     response.data.Property.images.forEach((image) => {
                         image_links.push(window.location.origin + "/api/image/" + image)
                     })
+
 
                     let verifiedElement = document.getElementById("verified")
                     if (verifiedElement) {
