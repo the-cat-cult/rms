@@ -1,12 +1,40 @@
 import mongoose from "mongoose";
 import Property from "../models/properties.js";
 import Images from "../models/images.js";
-import * as fs from "fs";
-import path from "path";
 
-let __dirname = path.resolve(path.dirname(''));
+export async function createProperty(req, res) {
+    const files = req.files;
 
-export function createProperty(req, res) {
+    if (!files) {
+        return res.status(400).json({
+            success: false,
+            message: 'No file uploaded'
+        });
+    }
+
+    const images = [];
+
+    for (const file of files) {
+
+        if (images.length >= 10) {
+            break;
+        }
+
+        const image = new Images({
+            _id: new mongoose.Types.ObjectId(),
+            ownerId: req.user._id,
+            image: {
+                data: file.buffer,
+                contentType: 'image/jpeg'
+            }
+        });
+
+        let savedImage = await image.save()
+        if (savedImage) {
+            images.push(savedImage._id);
+        }
+    }
+
     const property = new Property({
         _id: new mongoose.Types.ObjectId(),
         address: req.body.addr,
@@ -16,7 +44,8 @@ export function createProperty(req, res) {
         rent: req.body.rent,
         securityDeposit: req.body.secdep,
         age: req.body.age,
-        ownerId: req.user._id
+        ownerId: req.user._id,
+        images: images
     })
 
     return property

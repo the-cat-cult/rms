@@ -216,16 +216,25 @@
 
             console.log(rent)
 
-            axios.post("/api/addProperty", {
-                    addr: address,
-                    ptype: type,
-                    bhk: bhk,
-                    location: propertyLocation,
-                    lat: 0,
-                    long: 0,
-                    rent: rent,
-                    secdep: sd,
-                    age: age,
+            let formData = new FormData();
+            let files = document.getElementById('upload_images_route').files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+
+            formData.append('addr', address);
+            formData.append('ptype', type);
+            formData.append('bhk', bhk);
+            formData.append('location', propertyLocation);
+            formData.append('rent', rent);
+            formData.append('secdep', sd);
+            formData.append('age', age);
+
+
+            axios.post("/api/addProperty", formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
                 })
                 .then(function(response) {
                     console.log(response);
@@ -261,11 +270,7 @@
 
             display_list = document.getElementById('add-image')
             for (let i = 0; i < URL_list.length; i++) {
-                if (display_list.childElementCount > 5) {
-                    display_list.style.overflow = "auto";
-                } else {
-                    display_list.style.overflow = "hidden";
-                }
+                display_list.style.overflow = "scroll";
 
                 let img = document.createElement('img');
                 img.src = URL_list[i];
@@ -353,19 +358,19 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
-        
+
         h1,
         h2 {
             font-weight: 600;
         }
-        
+
         #theme-icon:hover {
             cursor: pointer;
             animation: rotation 2s infinite linear;
             /* Tooltip */
             position: relative;
         }
-        
+
         @keyframes rotation {
             from {
                 transform: rotate(0deg);
@@ -375,18 +380,18 @@
             }
         }
         /* Remove spinner from input field */
-        
+
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
         }
-        
+
         #add-image {
             color-scheme: dark;
             border: 1px dashed #585858;
             overflow: scroll;
         }
-        
+
         .hover_delete:hover {
             filter: brightness(0.8);
         }

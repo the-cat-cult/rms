@@ -1,6 +1,12 @@
 import express from "express";
 
-import { createBooking, getAllBookings, getOneBooking, updateBookingStatus, deleteBooking } from '../controllers/bookings.js'
+import {
+    createBooking,
+    getAllBookings,
+    getOneBooking,
+    updateBookingStatus,
+    deleteBooking
+} from '../controllers/bookings.js'
 import {
     createProperty,
     getAllProperties,
@@ -28,7 +34,7 @@ import {
     updateUser,
     deleteUser,
 } from '../controllers/user.js'
-import { ownerSignUp, generateOTP, login, singOut, checkAuth } from '../controllers/authenitcation.js'
+import {ownerSignUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
 import multerImages from '../middleware/multer-images.js'
 
@@ -48,7 +54,7 @@ router.get('/isAuthenticated', authentication(["admin", "owner", "tenant"]), che
 
 //create entity routes
 router.get('/addBooking', authentication(["tenant"]), createBooking);
-router.post('/addProperty', authentication(["owner"]), createProperty);
+router.post('/addProperty', authentication(["owner"]), multerImages, createProperty);
 router.post("/addTenant", authentication(["admin"]), createTenant);
 router.post("/addUser", authentication(["admin"]), createUser);
 
