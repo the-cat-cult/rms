@@ -77,7 +77,7 @@
                             console.log(properties[i])
                             card_data.push({
                                 'id': properties[i]._id,
-                                'image': 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + (i),
+                                'image': build_image_url(properties[i].images[0], i),
                                 'title': properties[i].propertyType,
                                 'address': properties[i].address,
                                 'rent': properties[i].rent,
@@ -93,6 +93,12 @@
                 .catch(function(error) {
                     console.log(error);
                 });
+        }
+
+        function build_image_url(image_name, i) {
+            if(image_name == null || image_name === "")
+                return 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + (i)
+            return window.location.origin + "/api/image/" + image_name
         }
 
 
@@ -162,6 +168,7 @@
             let card_img = document.createElement("img");
             card_img.src = image;
             card_img.className = "card-img-top";
+            card_img.style = "height: 200px; object-fit: cover;";
             card_img.alt = "Property Image";
 
             let card_body = document.createElement("div");
