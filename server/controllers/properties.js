@@ -415,7 +415,6 @@ export function getFile(req, res) {
 
     Images.findOne({_id: imageId})
         .then((image) => {
-            console.log(image.image.data)
             if (!image) {
                 return res.status(400).json({
                     success: false,

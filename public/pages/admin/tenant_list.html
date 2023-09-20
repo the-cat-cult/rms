@@ -106,7 +106,6 @@
                 axios.get('/api/listAllTenants')
                     .then(function(response) {
                         if (response.data.success) {
-                            console.log(response.data)
                             let default_data = []
                             let tenants = response.data.Tenant;
                             for (let i = 0; i < tenants.length; i++) {
@@ -125,7 +124,6 @@
                             build_list(default_data);
                             original_list = default_data;
                         } else {
-                            console.log(response.data);
                             alert("Error fetching tenants");
                         }
                     })
