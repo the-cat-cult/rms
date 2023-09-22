@@ -81,14 +81,13 @@
         <style>
             .filter-section {
                 border-radius: 10px;
-                padding: 20px;
                 margin-top: 20px;
             }
             
             .list-group {
                 max-height: 700px;
                 margin-bottom: 10px;
-                overflow-y: scroll;
+                overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
             }
         </style>
@@ -158,15 +157,18 @@
                     .then(function(response) {
                         if (response.data.success) {
                             default_data = []
-                            for (let i = 0; i < response.data.Property.length; i++) {
+                            received_data = response.data.Property;
+                            for (let i = 0; i < received_data.length; i++) {
                                 default_data.push({
-                                    "name": response.data.Property[i].name,
-                                    "address": response.data.Property[i].address,
-                                    "rent": response.data.Property[i].rent,
-                                    "propertyType": response.data.Property[i].propertyType,
-                                    "bhk": response.data.Property[i].bhk,
-                                    "id": response.data.Property[i]._id,
-                                    "link": "/pages/owner/property_view.html?propertyId=" + response.data.Property[i]._id
+                                    "name": received_data[i].name,
+                                    "address": received_data[i].address,
+                                    "rent": received_data[i].rent,
+                                    "propertyType": received_data[i].propertyType,
+                                    "location": received_data[i].location,
+                                    "securityDeposit": received_data[i].securityDeposit,
+                                    "bhk": received_data[i].bhk,
+                                    "id": received_data[i]._id,
+                                    "link": "/pages/owner/property_view.html?propertyId=" + received_data[i]._id,
                                 })
 
                             }
@@ -186,6 +188,11 @@
                 list.innerHTML = "";
 
                 for (var i = 0; i < default_data.length; i++) {
+                    right = default_data[i]['bhk'] + " " + default_data[i]['propertyType'] + " for rent in " + default_data[i]['location']
+                    secondary = "₹" + default_data[i]['rent'] + "/m + SD : ₹" + default_data[i]['securityDeposit']
+                    primary = default_data[i]['address']
+
+
                     var item = document.createElement("a");
                     item.setAttribute("href", default_data[i]["link"]);
                     item.setAttribute("class", "list-group-item list-group-item-action");
@@ -196,26 +203,28 @@
 
                     var h5 = document.createElement("h5");
                     h5.setAttribute("class", "mb-1");
-                    h5.innerHTML = "₹" + default_data[i]["rent"]
+                    h5.innerHTML = primary;
 
                     var small = document.createElement("small");
-                    small.innerHTML = default_data[i]["bhk"];
+                    small.setAttribute("class", "text-primary");
+                    // Monospace font
+                    small.setAttribute("style", "font-family: 'Courier New', Courier, monospace;");
+
+                    small.innerHTML = default_data[i]["id"];
 
                     div1.appendChild(h5);
                     div1.appendChild(small);
 
                     var p = document.createElement("p");
-                    p.setAttribute("class", "mb-1");
-                    p.innerHTML = default_data[i]["address"];
+                    p.setAttribute("class", "mb-1 text-success");
+                    p.innerHTML = secondary;
 
                     var small2 = document.createElement("small");
-                    small2.setAttribute("class", "text-primary");
-                    small2.innerHTML = default_data[i]["id"];
+                    small2.innerHTML = right;
 
                     item.appendChild(div1);
                     item.appendChild(p);
                     item.appendChild(small2);
-
                     list.appendChild(item);
                 }
             }
@@ -226,7 +235,6 @@
                         .then(function(response) {
                             console.log(response);
                             localStorage.clear();
-                            alert("Signed Out")
                             window.location.href = "/";
                         })
                         .catch(function(error) {
@@ -251,15 +259,9 @@
                 if (theme == "dark") {
                     document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
                     document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
-
-                    document.getElementById("subtext").classList.remove("text-white");
-                    document.getElementById("subtext").classList.add("text-primary");
                 } else {
                     document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
                     document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
-
-                    document.getElementById("subtext").classList.remove("text-primary");
-                    document.getElementById("subtext").classList.add("text-white");
                 }
             }
         </script>
@@ -271,7 +273,6 @@
     #theme-icon:hover {
         cursor: pointer;
         animation: rotation 2s infinite linear;
-        /* Tooltip */
         position: relative;
     }
     

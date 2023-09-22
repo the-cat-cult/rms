@@ -287,6 +287,11 @@
         }
 
         carousel_inner = document.getElementsByClassName("carousel-inner")[0];
+
+
+        if (image_links.length == 0) {
+            image_links.push("https://placehold.jp/45/0595d3/ffffff/3000x2000.png?text=No%20images%20uploaded")
+        }
         for (i = 0; i < image_links.length; i++) {
             div = document.createElement("div");
             div.classList.add("carousel-item");

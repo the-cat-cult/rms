@@ -77,11 +77,12 @@
                             console.log(properties[i])
                             card_data.push({
                                 'id': properties[i]._id,
-                                'image': build_image_url(properties[i].images[0], i),
+                                'bhk': properties[i].bhk,
                                 'title': properties[i].propertyType,
+                                'image': build_image_url(properties[i].images[0], properties[i].bhk + " " + properties[i].propertyType),
                                 'address': properties[i].address,
                                 'rent': properties[i].rent,
-                                'link': '/pages/owner/property_view.html?propertyId=' + properties[i]._id
+                                'link': '/pages/owner/property_view.html?propertyId=' + properties[i]._id,
                             })
                         }
 
@@ -96,8 +97,8 @@
         }
 
         function build_image_url(image_name, i) {
-            if(image_name == null || image_name === "")
-                return 'https://dummyimage.com/600x400/000/fff.png&text=Property+' + (i)
+            if (image_name == null || image_name === "")
+                return 'https://placehold.jp/25/0595d3/ffffff/600x400.png?text=' + i
             return window.location.origin + "/api/image/" + image_name
         }
 
