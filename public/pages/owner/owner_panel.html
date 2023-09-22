@@ -51,7 +51,7 @@
 
 
         <div class="row row-cols-1 row-cols-md-3 g-4 mb-5" id="card-list">
-
+            <!-- Cards will be added here -->
         </div>
 
     </div>
@@ -59,6 +59,25 @@
     <script>
         name = localStorage.getItem("name");
         name_refs = document.getElementsByName("name")
+
+
+        // Fetch verification status of the owner
+        verified = false;
+
+
+
+
+        // Add property button
+        add_property = document.getElementById("add_property");
+        if (verified) {
+            add_property.disabled = false;
+        } else {
+            add_property.disabled = true;
+            add_property.innerHTML = "Verify your account";
+        }
+
+
+
         for (let i = 0; i < name_refs.length; i++) {
             name_refs[i].innerHTML = name;
         }
@@ -69,12 +88,10 @@
         function get_properties() {
             axios.get("/api/listAllPropertiesByUser")
                 .then(function(response) {
-                    console.log(response)
                     if (response.data.success) {
                         let properties = response.data.Properties;
                         let card_data = []
                         for (let i = 0; i < properties.length; i++) {
-                            console.log(properties[i])
                             card_data.push({
                                 'id': properties[i]._id,
                                 'bhk': properties[i].bhk,
@@ -105,35 +122,46 @@
 
         function build_card(card_list) {
 
-            let no_of_cards = card_list.length
+            if (verified) {
 
-            if (no_of_cards == 0) {
-                let cl = document.getElementById("card-list");
-                let col_div = document.createElement("div");
-                col_div.className = "col";
-                let card_div = document.createElement("div");
-                card_div.className = "card";
-                card_div.style = "height: 400px";
-                let card_body = document.createElement("div");
-                card_body.className = "card-body";
-                let add_symbol = document.createElement("p");
-                add_symbol.className = "card-text";
-                add_symbol.innerHTML = "+";
-                // Place in the middle of the card
-                add_symbol.style = "position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px;";
-                card_body.appendChild(add_symbol);
-                card_div.appendChild(card_body);
+                let no_of_cards = card_list.length
 
-                add_prop = document.createElement("a");
-                add_prop.href = "/pages/owner/add_property.html";
-                add_prop.appendChild(card_div);
+                if (no_of_cards == 0) {
+                    let cl = document.getElementById("card-list");
+                    let col_div = document.createElement("div");
+                    col_div.className = "col";
+                    let card_div = document.createElement("div");
+                    card_div.className = "card";
+                    card_div.style = "height: 400px";
+                    let card_body = document.createElement("div");
+                    card_body.className = "card-body";
+                    let add_symbol = document.createElement("p");
+                    add_symbol.className = "card-text";
+                    add_symbol.innerHTML = "+";
+                    // Place in the middle of the card
+                    add_symbol.style = "position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px;";
+                    card_body.appendChild(add_symbol);
+                    card_div.appendChild(card_body);
 
-                col_div.appendChild(add_prop);
-                cl.appendChild(col_div);
-            } else {
-                for (let counter = 0; counter < no_of_cards; counter++) {
-                    create_card(card_list[counter]['id'], card_list[counter]['image'], card_list[counter]['title'], card_list[counter]['address'], card_list[counter]['rent'], card_list[counter]['link']);
+                    add_prop = document.createElement("a");
+                    add_prop.href = "/pages/owner/add_property.html";
+                    add_prop.appendChild(card_div);
+
+                    col_div.appendChild(add_prop);
+                    cl.appendChild(col_div);
+                } else {
+                    for (let counter = 0; counter < no_of_cards; counter++) {
+                        create_card(card_list[counter]['id'], card_list[counter]['image'], card_list[counter]['title'], card_list[counter]['address'], card_list[counter]['rent'], card_list[counter]['link']);
+                    }
                 }
+            } else {
+                main_container = document.getElementsByClassName("container")[0];
+                let message = document.createElement("h1");
+                message.classList.add("text-muted");
+                message.innerHTML = "Please verify your account to add properties";
+                message.style = "text-align: center; margin-top: 100px; margin-bottom: 100px;";
+                main_container.appendChild(message);
+                main_container.removeChild(document.getElementById("card-list"));
             }
         }
 

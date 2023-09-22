@@ -159,7 +159,7 @@
         })
 
         var timeleft = 60;
-        var expire_countdown = 300;
+        var expire_countdown = 299;
 
         function countdown() {
             var downloadTimer = setInterval(function() {
@@ -250,7 +250,7 @@
 
         function resend_route() {
             sendOTP();
-            expire_countdown = 300;
+            expire_countdown = 299;
             timeleft = 60;
             countdown();
             expire_otp();
