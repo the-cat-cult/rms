@@ -35,6 +35,14 @@
     </header>
 
     <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mt-3">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="../admin/admin_panel.html">Admin Panel</a></li>
+                <li class="breadcrumb-item"><a href="../admin/tenant_list.html">Tenants</a></li>
+                <li class="breadcrumb-item active tenant_name" aria-current="page"></li>
+            </ol>
+        </nav>
         <div class="mt-5">
             <!-- Two columns, one containing tenant details and one containing an edit button and a delete profile button -->
             <div class="row">
@@ -91,6 +99,9 @@
                 .then(function(response) {
                     if (response.data.success) {
                         document.getElementsByClassName("tenant_name")[0].innerHTML = response.data.Tenant.name;
+                        document.getElementsByClassName("tenant_name")[1].innerHTML = response.data.Tenant.name;
+
+
                         document.getElementsByClassName("phone_number")[0].innerHTML = response.data.Tenant.mobileNumber;
                         document.getElementsByClassName("allocation")[0].innerHTML = "Allocated: " + response.data.Tenant.allocationStatus;
                         userId = response.data.Tenant._id
