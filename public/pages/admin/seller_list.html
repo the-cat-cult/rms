@@ -34,19 +34,31 @@
     <div class="container">
         <div class="filter-section mb-3 mt-5">
             <div class="row">
-                <!-- 4 columns -->
                 <div class="col-sm-4 col-12">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Search</span>
-                        <input type="text" class="form-control" placeholder="Search by Name" aria-label="Search by Name" aria-describedby="basic-addon1" id="search">
-                    </div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="../admin/admin_panel.html">Admin Panel</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Sellers</li>
+                        </ol>
+                    </nav>
                 </div>
                 <div class="col-sm-4 col-12">
                 </div>
                 <div class="col-sm-4 col-12">
                     <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon2">Search</span>
-                        <input type="text" class="form-control" placeholder="Search by Name" aria-label="Search by Name" aria-describedby="basic-addon1" id="search2">
+                        <input type="text" class="form-control" id="search">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</button>
+
+                        <ul class="dropdown-menu dropdown-menu-end" id="dropdown">
+                            <li><a class="dropdown-item" href="javascript:showAll();">All</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="javascript:showVerified();">Verified</a></li>
+                            <li><a class="dropdown-item" href="javascript:showUnverified();">Unverified</a></li>
+                        </ul>
+
                     </div>
                 </div>
             </div>
@@ -204,7 +216,7 @@
             // Create list item, containing Name, phone number, and two radio buttons
             let list_item = document.createElement("li");
             list_item.classList.add("list-group-item");
-
+            list_item.classList.add("p-3");
             let row = document.createElement("div");
             row.classList.add("row");
 
@@ -212,7 +224,7 @@
             col1.classList.add("col-12", "col-md-6", "col-lg-6");
 
             let col2 = document.createElement("div");
-            col2.classList.add("col-12", "col-md-5", "col-lg-5");
+            col2.classList.add("col-12", "col-md-5", "col-lg-5", "align-self-center");
 
             let col3 = document.createElement("div");
             col3.classList.add("col-12", "col-md-1", "col-lg-1", "align-self-center");
@@ -223,6 +235,7 @@
 
             let phone = document.createElement("p");
             phone.classList.add("mb-0");
+            phone.classList.add("text-primary");
             phone.innerHTML = data[i].phone;
 
             let verified = document.createElement("p");
@@ -279,9 +292,64 @@
         }
     }
 
+    showVerified = function() {
+        let list = document.getElementById("seller-list");
+        let items = list.getElementsByTagName("li");
+        for (let i = 0; i < items.length; i++) {
+            let verified = items[i].getElementsByTagName("p")[1];
+            if (verified.innerHTML == "Verified") {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+    }
+
+    showUnverified = function() {
+        let list = document.getElementById("seller-list");
+        let items = list.getElementsByTagName("li");
+        for (let i = 0; i < items.length; i++) {
+            let verified = items[i].getElementsByTagName("p")[1];
+            if (verified.innerHTML == "Not Verified") {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+    }
+
+    showAll = function() {
+        let list = document.getElementById("seller-list");
+        let items = list.getElementsByTagName("li");
+        for (let i = 0; i < items.length; i++) {
+            items[i].style.display = "";
+        }
+    }
+
+    document.getElementById("dropdown").addEventListener("click", function(event) {
+        event.stopPropagation();
+    });
+
+    document.getElementById("search").addEventListener("keyup", function() {
+        let input = document.getElementById("search").value.toUpperCase();
+        let list = document.getElementById("seller-list");
+        let items = list.getElementsByTagName("li");
+        for (let i = 0; i < items.length; i++) {
+            let name = items[i].getElementsByTagName("h5")[0].innerHTML.toUpperCase();
+            if (name.indexOf(input) > -1) {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+    });
+
     onload = function() {
         generate_list();
     }
 </script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 
 </html>
