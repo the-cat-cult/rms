@@ -34,240 +34,244 @@
                 </div>
             </div>
 
-                <div class="col-4 mt-5">
-                    <button type="button" id="edit" class="btn btn-primary btn-block w-50" onclick="edit()">Edit Profile</button>
-                    <div class="mt-3"></div>
-                    <button type="button" id="delete" class="btn btn-outline-danger btn-block w-50" onclick="delete_tenant()">Delete Profile</button>
-
-                </div>
-            </div>
-
-            <!-- Spacer -->
-            <div class="mt-5"></div>
-
-            <div class="container list-group mb-5" id="preference-list">
-
-                <div id="iter-elements">
-
-                </div>
+            <div class="col-4 mt-5">
+                <button type="button" id="edit" class="btn btn-primary btn-block w-50" onclick="edit()">Edit Profile</button>
+                <div class="mt-3"></div>
+                <button type="button" id="delete" class="btn btn-outline-danger btn-block w-50" onclick="delete_tenant()">Delete Profile</button>
 
             </div>
-            <!-- <a href="#" class="list-group-item list-group-item-action flex-column align-items-start" id="Preference 1" data-toggle="modal" data-target="#preferenceModal">
+        </div>
+
+        <!-- Spacer -->
+        <div class="mt-5"></div>
+
+        <div class="container list-group mb-5" id="preference-list">
+
+            <div id="iter-elements">
+
+            </div>
+
+        </div>
+        <!-- <a href="#" class="list-group-item list-group-item-action flex-column align-items-start" id="Preference 1" data-toggle="modal" data-target="#preferenceModal">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">Preference 1</h5><small>Priority 1</small>
                     <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p><small class="text-muted">Rent: 10000</small><small class="text-muted">Security Deposit: 10000</small></div>
             </a> -->
 
-            <!-- Allocate button -->
-            <div class="container">
-                <button type="button" class="btn btn-primary btn-block w-25 mb-5" disabled onclick="allocate()" id="allocate">Allocate</button>
-                <!-- Reset selection -->
-                <button type="button" class="btn btn-outline-danger btn-block w-25 mb-5" disabled onclick="reset()" id="reset">Reset Selection</button>
-            </div>
+        <!-- Allocate button -->
+        <div class="container">
+            <button type="button" class="btn btn-primary btn-block w-25 mb-5" disabled onclick="allocate()" id="allocate">Allocate</button>
+            <!-- Reset selection -->
+            <button type="button" class="btn btn-outline-danger btn-block w-25 mb-5" disabled onclick="reset()" id="reset">Reset Selection</button>
         </div>
+    </div>
 
-        <script>
+    <script>
+        function getTenantIdFromParam() {
+            let url = new URL(window.location.href);
+            return url.searchParams.get("tenantId");
+        }
 
-            function getTenantIdFromParam() {
-                let url = new URL(window.location.href);
-                return url.searchParams.get("tenantId");
-            }
+        let userId = null;
 
-            let userId = null;
-
-            function getTenant() {
-                axios.get("/api/getTenant?tenant_id=" + getTenantIdFromParam())
-                    .then(function (response) {
-                        console.log(response);
-                        if (response.data.success) {
-                            console.log(response.data);
-                            document.getElementsByClassName("tenant_name")[0].innerHTML = response.data.Tenant.name;
-                            document.getElementsByClassName("phone_number")[0].innerHTML = response.data.Tenant.mobileNumber;
-                            document.getElementsByClassName("personal_number")[0].innerHTML = response.data.Tenant.pnum;
-                            document.getElementsByClassName("rank")[0].innerHTML = response.data.Tenant.rank;
-                            document.getElementsByClassName("allocation")[0].innerHTML = "Allocated: " + response.data.Tenant.allocationStatus;
-                            userId = response.data.Tenant._id
-                            get_preferences(response.data.Tenant._id);
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            }
-
-            preference_list = document.getElementById("iter-elements");
-            let property_data = []
-
-            function get_preferences(id) {
-                axios.post("/api/listAllBookings", {userId: id})
-                    .then(function (response) {
-                        console.log(response);
-                        if (response.data.success) {
-                            let preferences_array = response.data.Booking;
-                            populate_preferences(preferences_array);
-                            property_data = preferences_array
-
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            }
-
-            var current_selection = null;
-
-            function populate_preferences(preferences) {
-                // Add each preference to the list in preference_list
-                if (preferences != null) {
-                    for (var preference in preferences) {
-                        // Create a new list item
-                        var new_preference = document.createElement("a");
-                        new_preference.setAttribute("href", "#");
-                        new_preference.setAttribute("name", "preference");
-                        new_preference.setAttribute("class", "list-group-item list-group-item-action flex-column align-items-start");
-                        new_preference.setAttribute("id", preferences[preference].propertyId._id);
-
-                        // Create a new div for the preference
-                        var preference_div = document.createElement("div");
-                        preference_div.setAttribute("class", "d-flex w-100 justify-content-between");
-
-                        // Create a new p for the address
-                        var preference_address = document.createElement("p");
-                        preference_address.setAttribute("class", "mb-1");
-                        address = preferences[preference].propertyId.address
-
-                        // If the address is too long, truncate it
-                        if (address.length > 50) {
-                            address = address.substring(0, 50) + "...";
-                        }
-
-                        // If address is too short, add a few spaces to make it look better
-                        if (address.length < 50) {
-                            address = address + " ".repeat(50 - address.length);
-                        }
-                        preference_address.innerHTML = address;
-
-                        // Create a new small for the rent
-                        var preference_rent = document.createElement("small");
-                        preference_rent.setAttribute("class", "text-muted");
-                        preference_rent.innerHTML = "Rent: " + preferences[preference].propertyId.rent
-
-                        // Create a new small for the security deposit
-                        var preference_sd = document.createElement("small");
-                        preference_sd.setAttribute("class", "text-muted");
-                        preference_sd.innerHTML = "Security Deposit: " + preferences[preference].propertyId.securityDeposit
-
-                        // Add the address, rent and security deposit to the div
-                        preference_div.appendChild(preference_address);
-                        preference_div.appendChild(preference_rent);
-                        preference_div.appendChild(preference_sd);
-
-                        // Add the div to the list item
-                        new_preference.appendChild(preference_div);
-
-                        // Add the list item to the list
-                        preference_list.appendChild(new_preference);
+        function getTenant() {
+            axios.get("/api/getTenant?tenant_id=" + getTenantIdFromParam())
+                .then(function(response) {
+                    console.log(response);
+                    if (response.data.success) {
+                        console.log(response.data);
+                        document.getElementsByClassName("tenant_name")[0].innerHTML = response.data.Tenant.name;
+                        document.getElementsByClassName("phone_number")[0].innerHTML = response.data.Tenant.mobileNumber;
+                        document.getElementsByClassName("personal_number")[0].innerHTML = response.data.Tenant.pnum;
+                        document.getElementsByClassName("rank")[0].innerHTML = response.data.Tenant.rank;
+                        document.getElementsByClassName("allocation")[0].innerHTML = "Allocated: " + response.data.Tenant.allocationStatus;
+                        userId = response.data.Tenant._id
+                        get_preferences(response.data.Tenant._id);
                     }
-                    // Add a spacer
-                    var spacer = document.createElement("div");
-                    spacer.setAttribute("class", "mt-5");
-                    preference_list.appendChild(spacer);
-                } else {
-                    // Display a message saying that there are no preferences to display
-                    var no_preferences = document.createElement("h2");
-                    no_preferences.setAttribute("class", "text-muted mb-5");
-                    no_preferences.innerHTML = "You have no preferences to display.";
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        }
 
-                    preference_list.appendChild(no_preferences);
+        preference_list = document.getElementById("iter-elements");
+        let property_data = []
 
+        function get_preferences(id) {
+            axios.post("/api/listAllBookings", {
+                    userId: id
+                })
+                .then(function(response) {
+                    console.log(response);
+                    if (response.data.success) {
+                        let preferences_array = response.data.Booking;
+                        populate_preferences(preferences_array);
+                        property_data = preferences_array
+
+                    }
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        }
+
+        var current_selection = null;
+
+        function populate_preferences(preferences) {
+            // Add each preference to the list in preference_list
+            if (preferences != null) {
+                for (var preference in preferences) {
+                    // Create a new list item
+                    var new_preference = document.createElement("a");
+                    new_preference.setAttribute("href", "#");
+                    new_preference.setAttribute("name", "preference");
+                    new_preference.setAttribute("class", "list-group-item list-group-item-action flex-column align-items-start");
+                    new_preference.setAttribute("id", preferences[preference].propertyId._id);
+
+                    // Create a new div for the preference
+                    var preference_div = document.createElement("div");
+                    preference_div.setAttribute("class", "d-flex w-100 justify-content-between");
+
+                    // Create a new p for the address
+                    var preference_address = document.createElement("p");
+                    preference_address.setAttribute("class", "mb-1");
+                    address = preferences[preference].propertyId.address
+
+                    // If the address is too long, truncate it
+                    if (address.length > 50) {
+                        address = address.substring(0, 50) + "...";
+                    }
+
+                    // If address is too short, add a few spaces to make it look better
+                    if (address.length < 50) {
+                        address = address + " ".repeat(50 - address.length);
+                    }
+                    preference_address.innerHTML = address;
+
+                    // Create a new small for the rent
+                    var preference_rent = document.createElement("small");
+                    preference_rent.setAttribute("class", "text-muted");
+                    preference_rent.innerHTML = "Rent: " + preferences[preference].propertyId.rent
+
+                    // Create a new small for the security deposit
+                    var preference_sd = document.createElement("small");
+                    preference_sd.setAttribute("class", "text-muted");
+                    preference_sd.innerHTML = "Security Deposit: " + preferences[preference].propertyId.securityDeposit
+
+                    // Add the address, rent and security deposit to the div
+                    preference_div.appendChild(preference_address);
+                    preference_div.appendChild(preference_rent);
+                    preference_div.appendChild(preference_sd);
+
+                    // Add the div to the list item
+                    new_preference.appendChild(preference_div);
+
+                    // Add the list item to the list
+                    preference_list.appendChild(new_preference);
                 }
+                // Add a spacer
+                var spacer = document.createElement("div");
+                spacer.setAttribute("class", "mt-5");
+                preference_list.appendChild(spacer);
+            } else {
+                // Display a message saying that there are no preferences to display
+                var no_preferences = document.createElement("h2");
+                no_preferences.setAttribute("class", "text-muted mb-5");
+                no_preferences.innerHTML = "You have no preferences to display.";
+
+                preference_list.appendChild(no_preferences);
+
+            }
 
 
-                var preferencesElement = document.getElementsByName("preference");
-                preferencesElement.forEach(function (preference) {
-                    preference.addEventListener("click", function () {
-                        preferencesElement.forEach(function (preference) {
-                            preference.classList.remove("active");
-                        });
-
-                        preference.classList.add("active");
-                        current_selection = preference.id;
-
-                        document.getElementById("allocate").disabled = false;
-
-                        document.getElementById("reset").disabled = false;
+            var preferencesElement = document.getElementsByName("preference");
+            preferencesElement.forEach(function(preference) {
+                preference.addEventListener("click", function() {
+                    preferencesElement.forEach(function(preference) {
+                        preference.classList.remove("active");
                     });
+
+                    preference.classList.add("active");
+                    current_selection = preference.id;
+
+                    document.getElementById("allocate").disabled = false;
+
+                    document.getElementById("reset").disabled = false;
                 });
+            });
 
-                console.log(current_selection)
+            console.log(current_selection)
 
+        }
+
+
+        function allocate() {
+            console.log(current_selection);
+            if (confirm("Are you sure you want to allocate this property?")) {
+                let body = {
+                    "propertyId": current_selection,
+                    "userId": userId
+                };
+                axios.patch("/api/updateBookingStatus", body)
+                    .then(function(response) {
+                        console.log(response);
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
             }
+        }
 
+        function reset() {
+            // Remove the active class from all preferences
+            var preferences = document.getElementsByName("preference");
 
-            function allocate() {
-                console.log(current_selection);
-                if (confirm("Are you sure you want to allocate this property?")) {
-                    let body = {"propertyId": current_selection, "userId": userId};
-                    axios.patch("/api/updateBookingStatus", body)
-                        .then(function (response) {
-                            console.log(response);
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-                }
+            preferences.forEach(function(preference) {
+                preference.classList.remove("active");
+            });
+
+            // Disable the allocate button
+            document.getElementById("allocate").disabled = true;
+
+            // Disable the reset button
+            document.getElementById("reset").disabled = true;
+        }
+
+        function edit() {
+            window.location.href = "/pages/admin/edit_tenant.html?tenant_id=" + getTenantIdFromParam();
+        }
+
+        function delete_tenant() {
+            if (confirm("Are you sure you want to delete?")) {
+                axios.get("/api/deleteTenantById?tenant_id=" + getTenantIdFromParam())
+                    .then(function(response) {
+                        console.log(response);
+                        if (response.data.success) {
+                            alert("Tenant deleted successfully");
+                            sign_out()
+                        }
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
             }
+        }
 
-            function reset() {
-                // Remove the active class from all preferences
-                var preferences = document.getElementsByName("preference");
-
-                preferences.forEach(function(preference) {
-                    preference.classList.remove("active");
-                });
-
-                // Disable the allocate button
-                document.getElementById("allocate").disabled = true;
-
-                // Disable the reset button
-                document.getElementById("reset").disabled = true;
+        function sign_out() {
+            if (confirm("Are you sure you want to sign out?")) {
+                axios.post('/api/signOut')
+                    .then(function(response) {
+                        console.log(response);
+                        localStorage.clear();
+                        // alert("Signed Out")
+                        window.location.href = "/";
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                    });
             }
-
-            function edit() {
-                window.location.href = "/pages/admin/edit_tenant.html?tenant_id=" + getTenantIdFromParam();
-            }
-
-            function delete_tenant() {
-                if(confirm("Are you sure you want to delete?")) {
-                    axios.get("/api/deleteTenantById?tenant_id=" + getTenantIdFromParam())
-                        .then(function (response) {
-                            console.log(response);
-                            if (response.data.success) {
-                                alert("Tenant deleted successfully");
-                                sign_out()
-                            }
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-                }
-            }
-
-            function sign_out() {
-                if (confirm("Are you sure you want to sign out?")) {
-                    axios.post('/api/signOut')
-                        .then(function (response) {
-                            console.log(response);
-                            localStorage.clear();
-                            alert("Signed Out")
-                            window.location.href = "/";
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
-                }
-            }
-        </script>
+        }
+    </script>
     </div>
 
     <footer class="mt-5">
