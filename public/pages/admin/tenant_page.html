@@ -38,19 +38,22 @@
         <div class="mt-5">
             <!-- Two columns, one containing tenant details and one containing an edit button and a delete profile button -->
             <div class="row">
-                <div class="col-4" id="person-card">
-                    <h1 class="tenant_name">...</h1>
-                    <span class="phone_number">XXXXXXXXXX</span><br>
-                    <span class="allocation">...</span>
+                <div class="col-12" id="person-card">
+                    <h1 class="tenant_name"></h1>
+                    <span class="phone_number"></span><br>
+                    <span class="allocation"></span>
+
+                    <div class="row mt-3">
+                        <div class="col-lg-3 col-sm-12 col-md-4">
+                            <button type="button" id="edit" class="btn btn-primary btn-block w-100" onclick="edit()">Edit Profile</button>
+                        </div>
+                        <div class="col-lg-3 col-sm-12 col-md-4 mt-sm-3 mt-md-0 mt-lg-0 mt-3">
+                            <button type="button" id="delete" class="btn btn-outline-danger btn-block w-100" onclick="delete_tenant()">Delete Profile</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-4 mt-5">
-                <button type="button" id="edit" class="btn btn-primary btn-block w-50" onclick="edit()">Edit Profile</button>
-                <div class="mt-3"></div>
-                <button type="button" id="delete" class="btn btn-outline-danger btn-block w-50" onclick="delete_tenant()">Delete Profile</button>
-
-            </div>
         </div>
 
         <!-- Spacer -->
@@ -63,17 +66,15 @@
             </div>
 
         </div>
-        <!-- <a href="#" class="list-group-item list-group-item-action flex-column align-items-start" id="Preference 1" data-toggle="modal" data-target="#preferenceModal">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">Preference 1</h5><small>Priority 1</small>
-                    <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p><small class="text-muted">Rent: 10000</small><small class="text-muted">Security Deposit: 10000</small></div>
-            </a> -->
 
-        <!-- Allocate button -->
-        <div class="container">
-            <button type="button" class="btn btn-primary btn-block w-25 mb-5" disabled onclick="allocate()" id="allocate">Allocate</button>
-            <!-- Reset selection -->
-            <button type="button" class="btn btn-outline-danger btn-block w-25 mb-5" disabled onclick="reset()" id="reset">Reset Selection</button>
+
+        <div class="row" id="allocation-buttons">
+            <div class="col-lg-3 col-sm-12 col-md-4">
+                <button type="button" class="btn btn-primary btn-block w-100" disabled onclick="allocate()" id="allocate">Allocate</button>
+            </div>
+            <div class="col-lg-3 col-sm-12 col-md-4 mt-sm-3 mt-md-0 mt-lg-0 mt-3">
+                <button type="button" class="btn btn-outline-danger btn-block w-100" disabled onclick="reset()" id="reset">Reset Selection</button>
+            </div>
         </div>
     </div>
 
@@ -88,9 +89,7 @@
         function getTenant() {
             axios.get("/api/getTenant?tenant_id=" + getTenantIdFromParam())
                 .then(function(response) {
-                    console.log(response);
                     if (response.data.success) {
-                        console.log(response.data);
                         document.getElementsByClassName("tenant_name")[0].innerHTML = response.data.Tenant.name;
                         document.getElementsByClassName("phone_number")[0].innerHTML = response.data.Tenant.mobileNumber;
                         document.getElementsByClassName("allocation")[0].innerHTML = "Allocated: " + response.data.Tenant.allocationStatus;
@@ -111,7 +110,6 @@
                     userId: id
                 })
                 .then(function(response) {
-                    console.log(response);
                     if (response.data.success) {
                         let preferences_array = response.data.Booking;
                         populate_preferences(preferences_array);
@@ -128,7 +126,7 @@
 
         function populate_preferences(preferences) {
             // Add each preference to the list in preference_list
-            if (preferences != null) {
+            if (preferences.length > 0) {
                 for (var preference in preferences) {
                     // Create a new list item
                     var new_preference = document.createElement("a");
@@ -182,6 +180,9 @@
                 var spacer = document.createElement("div");
                 spacer.setAttribute("class", "mt-5");
                 preference_list.appendChild(spacer);
+
+                var allocate_buttons = document.getElementById("allocation-buttons");
+
             } else {
                 // Display a message saying that there are no preferences to display
                 var no_preferences = document.createElement("h2");
@@ -189,6 +190,9 @@
                 no_preferences.innerHTML = "You have no preferences to display.";
 
                 preference_list.appendChild(no_preferences);
+
+                var allocate_buttons = document.getElementById("allocation-buttons");
+                allocate_buttons.style.display = "none";
 
             }
 
@@ -209,22 +213,17 @@
                 });
             });
 
-            console.log(current_selection)
-
         }
 
 
         function allocate() {
-            console.log(current_selection);
             if (confirm("Are you sure you want to allocate this property?")) {
                 let body = {
                     "propertyId": current_selection,
                     "userId": userId
                 };
                 axios.patch("/api/updateBookingStatus", body)
-                    .then(function(response) {
-                        console.log(response);
-                    })
+                    .then(function(response) {})
                     .catch(function(error) {
                         console.log(error);
                     });
@@ -254,7 +253,6 @@
             if (confirm("Are you sure you want to delete?")) {
                 axios.get("/api/deleteTenantById?tenant_id=" + getTenantIdFromParam())
                     .then(function(response) {
-                        console.log(response);
                         if (response.data.success) {
                             alert("Tenant deleted successfully");
                             sign_out()
@@ -270,9 +268,7 @@
             if (confirm("Are you sure you want to sign out?")) {
                 axios.post('/api/signOut')
                     .then(function(response) {
-                        console.log(response);
                         localStorage.clear();
-                        // alert("Signed Out")
                         window.location.href = "/";
                     })
                     .catch(function(error) {
@@ -313,22 +309,6 @@
         
         #person-card {
             padding: 40px;
-            border: 1px solid #0000;
-            border-radius: 12px;
-            background: linear-gradient(#131219, #131219) padding-box, linear-gradient( var(--angle), #c9c9c9, #687aff) border-box;
-            animation: 8s rotate linear infinite;
-        }
-        
-        @keyframes rotate {
-            to {
-                --angle: 360deg;
-            }
-        }
-        
-        @property --angle {
-            syntax: "<angle>";
-            initial-value: 0deg;
-            inherits: false;
         }
     </style>
 
