@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>START : Seller List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" type="image/gif" sizes="16x16">
+</head>
+
+<body data-bs-theme="dark">
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-md-2 mx-lg-5 mx-sm-0" href="/">
+                    <img src="/assets/icons/START Logo-01.svg" alt="START Home" height="40">
+                </a>
+
+                <div class="d-flex mx-sm-0 mx-lg-5 mx-md-2">
+                    <button type="button" class="btn btn-outline-danger" onclick="sign_out()">Sign Out</button>
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="filter-section mb-3 mt-5">
+            <div class="row">
+                <!-- 4 columns -->
+                <div class="col-sm-4 col-12">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">Search</span>
+                        <input type="text" class="form-control" placeholder="Search by Name" aria-label="Search by Name" aria-describedby="basic-addon1" id="search">
+                    </div>
+                </div>
+                <div class="col-sm-4 col-12">
+                </div>
+                <div class="col-sm-4 col-12">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon2">Search</span>
+                        <input type="text" class="form-control" placeholder="Search by Name" aria-label="Search by Name" aria-describedby="basic-addon1" id="search2">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- List of sellers -->
+        <ul class="list-group" id="seller-list">
+
+        </ul>
+    </div>
+
+</body>
+
+<style>
+    .list-group {
+        max-height: 700px;
+        margin-bottom: 10px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    h1,
+    h2,
+    h5 {
+        font-weight: 600;
+    }
+    
+    #theme-icon:hover {
+        cursor: pointer;
+        animation: rotation 2s infinite linear;
+    }
+    
+    @keyframes rotation {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(359deg);
+        }
+    }
+</style>
+
+<script>
+    function sign_out() {
+        if (confirm("Are you sure you want to sign out?")) {
+            axios.post('/api/signOut')
+                .then(function(response) {
+                    console.log(response);
+                    localStorage.clear();
+                    window.location.href = "/";
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        }
+    }
+
+    function toggleTheme() {
+
+        var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+        if (theme == "dark") {
+            document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+            document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+        } else {
+            document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+            document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+        }
+    }
+
+    function generate_list() {
+        seller_list = document.getElementById("seller-list");
+
+        let data = [{
+            "id": 1,
+            "name": "John Smith",
+            "phone": "1234567890",
+            "verified": true
+        }, {
+            "id": 2,
+            "name": "Mary Johnson",
+            "phone": "9876543210",
+            "verified": false
+        }, {
+            "id": 3,
+            "name": "Robert Brown",
+            "phone": "4567890123",
+            "verified": true
+        }, {
+            "id": 4,
+            "name": "Linda Davis",
+            "phone": "8765432109",
+            "verified": false
+        }, {
+            "id": 5,
+            "name": "Michael Wilson",
+            "phone": "2345678901",
+            "verified": true
+        }, {
+            "id": 6,
+            "name": "Jennifer Lee",
+            "phone": "7654321098",
+            "verified": true
+        }, {
+            "id": 7,
+            "name": "William Martinez",
+            "phone": "3456789012",
+            "verified": false
+        }, {
+            "id": 8,
+            "name": "Elizabeth Taylor",
+            "phone": "6543210987",
+            "verified": true
+        }, {
+            "id": 9,
+            "name": "David Anderson",
+            "phone": "7890123456",
+            "verified": false
+        }, {
+            "id": 10,
+            "name": "Sarah Hall",
+            "phone": "5678901234",
+            "verified": true
+        }, {
+            "id": 11,
+            "name": "Jennifer Lee",
+            "phone": "7654321098",
+            "verified": true
+        }, {
+            "id": 12,
+            "name": "William Martinez",
+            "phone": "3456789012",
+            "verified": false
+        }, {
+            "id": 13,
+            "name": "Elizabeth Taylor",
+            "phone": "6543210987",
+            "verified": true
+        }, {
+            "id": 14,
+            "name": "David Anderson",
+            "phone": "7890123456",
+            "verified": false
+        }, {
+            "id": 15,
+            "name": "Sarah Hall",
+            "phone": "5678901234",
+            "verified": true
+        }];
+
+        for (let i = 0; i < data.length; i++) {
+            // Create list item, containing Name, phone number, and two radio buttons
+            let list_item = document.createElement("li");
+            list_item.classList.add("list-group-item");
+
+            let row = document.createElement("div");
+            row.classList.add("row");
+
+            let col1 = document.createElement("div");
+            col1.classList.add("col-12", "col-md-6", "col-lg-6");
+
+            let col2 = document.createElement("div");
+            col2.classList.add("col-12", "col-md-5", "col-lg-5");
+
+            let col3 = document.createElement("div");
+            col3.classList.add("col-12", "col-md-1", "col-lg-1", "align-self-center");
+
+            let name = document.createElement("h5");
+            name.classList.add("mb-0");
+            name.innerHTML = data[i].name;
+
+            let phone = document.createElement("p");
+            phone.classList.add("mb-0");
+            phone.innerHTML = data[i].phone;
+
+            let verified = document.createElement("p");
+            verified.id = "verified-" + data[i].id;
+            verified.classList.add("mb-0");
+            verified.classList.add(data[i].verified ? "text-success" : "text-danger");
+            verified.innerHTML = data[i].verified ? "Verified" : "Not Verified";
+
+
+            let switcher = document.createElement("div");
+            switcher.classList.add("form-check", "form-switch");
+
+            let inp_switch = document.createElement("input");
+            inp_switch.classList.add("form-check-input");
+            inp_switch.setAttribute("type", "checkbox");
+            inp_switch.setAttribute("role", "switch");
+            inp_switch.setAttribute("id", "inp_switch-" + data[i].id);
+            if (data[i].verified) {
+                inp_switch.setAttribute("checked", "");
+            }
+
+            // Event listener for switch
+            inp_switch.addEventListener("change", function() {
+                if (this.checked) {
+                    document.getElementById("verified-" + data[i].id).innerHTML = "Verified";
+                    document.getElementById("verified-" + data[i].id).classList.remove("text-danger");
+                    document.getElementById("verified-" + data[i].id).classList.add("text-success");
+                    // Send request to server to update verification status
+
+                } else {
+                    document.getElementById("verified-" + data[i].id).innerHTML = "Not Verified";
+                    document.getElementById("verified-" + data[i].id).classList.remove("text-success");
+                    document.getElementById("verified-" + data[i].id).classList.add("text-danger");
+                    // Send request to server to update verification status
+
+                }
+            });
+
+
+            switcher.appendChild(inp_switch);
+            // Append elements to list item
+            col1.appendChild(name);
+            col1.appendChild(phone);
+            col2.appendChild(verified);
+            col3.appendChild(switcher);
+
+            row.appendChild(col1);
+            row.appendChild(col2);
+            row.appendChild(col3);
+
+            list_item.appendChild(row);
+
+            seller_list.appendChild(list_item);
+        }
+    }
+
+    onload = function() {
+        generate_list();
+    }
+</script>
+
+</html>
