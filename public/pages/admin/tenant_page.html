@@ -11,25 +11,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <!-- Import css -->
-    <link rel="stylesheet" href="/pages/admin/tenant_page.css">
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" type="image/gif" sizes="16x16">
+
 
 </head>
 
-<body class="tenant_page" onload="getTenant()">
+<body class="tenant_page" onload="getTenant()" data-bs-theme="dark">
 
-    <header class="mb-5">
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-md-2 mx-lg-5 mx-sm-0" href="/">
+                    <img src="/assets/icons/START Logo-01.svg" alt="START Home" height="40">
+                </a>
+
+                <div class="d-flex mx-sm-0 mx-lg-5 mx-md-2">
+                    <button type="button" class="btn btn-outline-danger" onclick="sign_out()">Sign Out</button>
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
+                </div>
+            </div>
+        </nav>
     </header>
 
-    <div class="container" height="100%">
-        <div class="mt-5 mx-5">
+    <div class="container">
+        <div class="mt-5">
             <!-- Two columns, one containing tenant details and one containing an edit button and a delete profile button -->
             <div class="row">
-                <div class="col-8">
-                    <h1 class="tenant_name mt-5">...</h1>
+                <div class="col-4" id="person-card">
+                    <h1 class="tenant_name">...</h1>
                     <span class="phone_number">XXXXXXXXXX</span><br>
-                    <span class="personal_number">XXXXXX-X</span><br>
-                    <span class="rank">...</span><br>
                     <span class="allocation">...</span>
                 </div>
             </div>
@@ -82,8 +93,6 @@
                         console.log(response.data);
                         document.getElementsByClassName("tenant_name")[0].innerHTML = response.data.Tenant.name;
                         document.getElementsByClassName("phone_number")[0].innerHTML = response.data.Tenant.mobileNumber;
-                        document.getElementsByClassName("personal_number")[0].innerHTML = response.data.Tenant.pnum;
-                        document.getElementsByClassName("rank")[0].innerHTML = response.data.Tenant.rank;
                         document.getElementsByClassName("allocation")[0].innerHTML = "Allocated: " + response.data.Tenant.allocationStatus;
                         userId = response.data.Tenant._id
                         get_preferences(response.data.Tenant._id);
@@ -276,6 +285,66 @@
 
     <footer class="mt-5">
     </footer>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        h1,
+        h2,
+        h5 {
+            font-weight: 600;
+        }
+        
+        #theme-icon:hover {
+            cursor: pointer;
+            animation: rotation 2s infinite linear;
+        }
+        
+        @keyframes rotation {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(359deg);
+            }
+        }
+        
+        #person-card {
+            padding: 40px;
+            border: 1px solid #0000;
+            border-radius: 12px;
+            background: linear-gradient(#131219, #131219) padding-box, linear-gradient( var(--angle), #c9c9c9, #687aff) border-box;
+            animation: 8s rotate linear infinite;
+        }
+        
+        @keyframes rotate {
+            to {
+                --angle: 360deg;
+            }
+        }
+        
+        @property --angle {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+        }
+    </style>
+
+    <script>
+        function toggleTheme() {
+
+            var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+            if (theme == "dark") {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+            } else {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+            }
+        }
+    </script>
 
 
     <!-- Include Bootstrap JS and jQuery -->

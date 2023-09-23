@@ -11,6 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" type="image/gif" sizes="16x16">
+
 </head>
 
 <body onload="getProperties()" data-bs-theme="dark">
@@ -22,7 +25,7 @@
                     <img src="/assets/icons/START Logo-01.svg" alt="START Home" height="40">
                 </a>
                 <div class="d-flex">
-                    <button type="button" class="btn btn-outline-primary" onclick="sign_out()">Sign Out</button>
+                    <button type="button" class="btn btn-outline-danger" onclick="sign_out()">Sign Out</button>
                     <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
                 </div>
             </div>
@@ -39,6 +42,7 @@
                     <label for="bhk" class="form-label">House</label>
                     <select class="form-select" aria-label="BHK Selection" id="BHK">
                     <option></option>
+                    <option value="All" selected>All</option>
                     <option value="1 BHK">1 BHK</option>
                     <option value="1.5 BHK">1.5 BHK</option>
                     <option value="2 BHK">2 BHK</option>
@@ -96,15 +100,10 @@
         <script>
             let default_data = []
 
-            // current_user = "Jignesh";
-            // document.getElementById("profile_name").innerHTML = current_user;
-
             //listen to bhk, minRent, and rest and if typing then search
-            document.getElementById("BHK").addEventListener("keyup", function(event) {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    getProperties();
-                }
+            document.getElementById("BHK").addEventListener("click", function(event) {
+                event.preventDefault();
+                getProperties();
             });
 
             document.getElementById("min").addEventListener("keyup", function(event) {
@@ -137,7 +136,12 @@
 
                 let query = {}
 
+
+
                 if (bhk) {
+                    if (bhk == "All") {
+                        bhk = ""
+                    }
                     query.bhk = bhk;
                 }
 
