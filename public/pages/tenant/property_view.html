@@ -16,22 +16,20 @@
 
 </head>
 
-<body onload="get_property_data()">
+<body onload="load_seq()" data-bs-theme="dark">
     <!-- Header -->
     <header>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
                 <a class="navbar-brand mx-4" href="/">
-                    <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="30">
+                    <img src="/assets/icons/START Logo-01.svg" alt="START Home" height="40">
                 </a>
-                <!-- Profile Page navigation button on the right side -->
-                <div class="d-flex mx-5">
-                    <!-- Sign out button -->
-                    <button type="button" class="btn btn-outline-primary mx-3" onclick="sign_out()">Sign Out</button>
+                <div class="d-flex">
+                    <button type="button" class="btn btn-outline-primary" onclick="sign_out()">Sign Out</button>
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
                 </div>
             </div>
         </nav>
-
     </header>
     <!-- Carousel -->
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -53,32 +51,40 @@
     </div>
 
     <div class="container">
-        <!-- A card with details of rent and address -->
-        <div class="d-flex justify-content-around align-items-baseline">
-            <div class="details">
-                <!-- Details of the apartment -->
-                <h1 class="mt-5">
-                    <span id="bhk"></span> BHK <span id="type"></span>
-                </h1>
+        <div class="clearfix">
 
-
-                <h4 class="mt-3" id="status"></h4>
-                <h5 class="mt-3">Rent</h5>
-                <h2 id="rent"></h2>
-                <h5 class="mt-3">Address</h5>
-                <h3 id="address"></h3>
-                <h5 class="mt-3">security Deposit</h5>
-                <h3 id="security_deposit"></h3>
-            </div>
-
+            <iframe frameborder="0" scrolling="no" marginheight="0" marginwidth="0" class="float-end rounded" id="map-embed"></iframe>
 
             <div class="buttons">
                 <!-- Add preference button -->
                 <button type="button" class="btn btn-outline-primary mt-5 btn-lg" onclick="add_to_pref()" id="add_to_pref">
-                Add property to preference
-            </button>
+                        Add property to Preferences
+                    </button>
             </div>
 
+            <!-- Details of the apartment -->
+            <div class="details">
+
+
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mt-3" id="breadcrumbs">
+                        <li class="breadcrumb-item"><a id="home" href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a id="home-panel" href="/pages/tenant_page_ts.html">Tenant</a></li>
+                        <li class="breadcrumb-item"><a id="property-list" href="/pages/property_list.html">Properties</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" id="prop-id"></li>
+                    </ol>
+                </nav>
+                <h1 class="mt-5">
+                    <span id="bhk"></span> <span id="type"></span>
+                </h1>
+                <h4 class="mt-3" id="status"></h4>
+                <h5 class="mt-3 text-muted">Rent</h5>
+                <h2 id="rent"></h2>
+                <h5 class="mt-3 text-muted">Address</h5>
+                <h3 id="address"></h3>
+                <h5 class="mt-3 text-muted">Security Deposit</h5>
+                <h3 id="security_deposit"></h3>
+            </div>
         </div>
     </div>
 
@@ -118,13 +124,27 @@
     h1 {
         font-weight: 600;
         font-size: 45px;
-        color: rgb(53, 53, 53);
     }
     
     h4 {
         font-weight: 400;
         font-size: 20px;
-        color: rgb(53, 53, 53);
+    }
+    
+    #theme-icon:hover {
+        cursor: pointer;
+        animation: rotation 2s infinite linear;
+        /* Tooltip */
+        position: relative;
+    }
+    
+    @keyframes rotation {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(359deg);
+        }
     }
 </style>
 
@@ -139,17 +159,22 @@
     let rent = 0;
     let security_deposit = 0;
 
+    let lat = 0;
+    let lng = 0;
+
     function getPropertyId() {
         let url = new URL(window.location.href);
         return url.searchParams.get("propertyId");
     }
+
+    let prop_id = document.getElementById("prop-id");
+    prop_id.innerHTML = getPropertyId();
 
     function get_property_data() {
         axios.post("/api/getPropertyById", {
                 pid: getPropertyId()
             })
             .then(function(response) {
-                console.log(response);
                 if (response.data.success) {
                     bhk = response.data.Property.bhk
                     type = response.data.Property.propertyType
@@ -157,6 +182,11 @@
                     rent = response.data.Property.rent
                     security_deposit = response.data.Property.securityDeposit
                     verified = response.data.Property.verified
+
+
+                    // Latitude and Longitude
+                    lat = response.data.Property.lat || 0
+                    lng = response.data.Property.long || 0
 
                     response.data.Property.images.forEach((image) => {
                         image_links.push(window.location.origin + "/api/image/" + image)
@@ -171,6 +201,21 @@
             });
     }
 
+    // Map
+    let map_embed = document.getElementById("map-embed");
+
+    map_embed.setAttribute("src", "https://maps.google.com/maps?q=" + lat + "," + lng + "&hl=en;z=14&output=embed");
+
+    function resize_map() {
+        if (window.innerWidth < 768) {
+            map_embed.classList.add("w-100");
+        } else {
+            map_embed.classList.remove("w-100");
+            map_embed.classList.add("w-25");
+        }
+    }
+
+    window.addEventListener("resize", resize_map);
 
     if (address.length > 50) {
         address = address.substring(0, 50) + "...";
@@ -197,6 +242,11 @@
         }
 
         carousel_inner = document.getElementsByClassName("carousel-inner")[0];
+
+        if (image_links.length == 0) {
+            image_links.push("https://placehold.jp/45/0595d3/ffffff/3000x2000.png?text=No%20images%20uploaded")
+        }
+
         for (i = 0; i < image_links.length; i++) {
             div = document.createElement("div");
             div.classList.add("carousel-item");
@@ -213,7 +263,7 @@
         bhk_refs.innerHTML = bhk;
         type_refs.innerHTML = type;
         rent_refs.innerHTML = "₹" + rent + " /month";
-        security_deposit_refs.innerHTML = "₹" + security_deposit + " /month";
+        security_deposit_refs.innerHTML = "₹" + security_deposit;
         address_refs.innerHTML = address;
         if (verified) {
             status_refs.classList.add("badge");
@@ -232,7 +282,6 @@
         if (confirm("Are you sure you want to sign out?")) {
             axios.post('/api/signOut')
                 .then(function(response) {
-                    console.log(response);
                     localStorage.clear();
                     // alert("Signed Out")
                     window.location.href = "/";
@@ -248,6 +297,33 @@
             window.location.href = "/api/addBooking?propertyId=" + getPropertyId()
         }
     }
+
+
+    function toggleTheme() {
+        var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+        var theme_bg = document.getElementById("theme_bg");
+        var navbar = document.getElementById("navbar");
+        if (theme == "dark") {
+            document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+            document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+
+            document.getElementById("subtext").classList.remove("text-white");
+            document.getElementById("subtext").classList.add("text-primary");
+        } else {
+            document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+            document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+
+            document.getElementById("subtext").classList.remove("text-primary");
+            document.getElementById("subtext").classList.add("text-white");
+        }
+    }
+
+    function load_seq() {
+        get_property_data();
+        resize_map();
+    }
+
+    window.onload = load_seq;
 </script>
 
 
