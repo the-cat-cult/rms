@@ -201,7 +201,6 @@
             }, 1000);
         }
 
-
         var phone = getPhoneNumber();
         // Change element with id phone_number to the phone number
         document.getElementById("phone_number").innerHTML = phone;
@@ -249,12 +248,8 @@
 
 
         function resend_route() {
-            sendOTP();
-            expire_countdown = 299;
-            timeleft = 60;
-            countdown();
-            expire_otp();
-            document.getElementById("resend").disabled = true;
+            // Refresh page
+            window.location.href = "otp.html?phoneNumber=" + getPhoneNumber();
         }
     </script>
 
