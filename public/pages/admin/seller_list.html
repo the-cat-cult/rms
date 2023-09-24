@@ -43,20 +43,21 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="col-sm-12 col-md-1 col-lg-2">
+                <div class="col-sm-12 col-md-3 col-lg-3 mb-sm-2 mb-md-0 mb-lg-0 mb-2">
+                    <input type="number" class="form-control" id="search_num" placeholder="Phone Number">
                 </div>
-                <div class="col-sm-12 col-md-6 col-lg-4">
+                <div class="col-sm-12 col-md-4 col-lg-3">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" id="search">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</button>
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Verification Status</button>
 
                         <ul class="dropdown-menu dropdown-menu-end" id="dropdown">
                             <li><a class="dropdown-item" href="javascript:showAll();">All</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="javascript:showVerified();">Verified</a></li>
-                            <li><a class="dropdown-item" href="javascript:showUnverified();">Unverified</a></li>
+                            <li><a class="dropdown-item text-success" href="javascript:showVerified();">Verified</a></li>
+                            <li><a class="dropdown-item text-danger" href="javascript:showUnverified();">Unverified</a></li>
                         </ul>
 
                     </div>
@@ -102,6 +103,12 @@
         to {
             transform: rotate(359deg);
         }
+    }
+    /* Spinner */
+    
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
     }
 </style>
 
@@ -334,9 +341,25 @@
         let input = document.getElementById("search").value.toUpperCase();
         let list = document.getElementById("seller-list");
         let items = list.getElementsByTagName("li");
+
         for (let i = 0; i < items.length; i++) {
             let name = items[i].getElementsByTagName("h5")[0].innerHTML.toUpperCase();
             if (name.indexOf(input) > -1) {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+    });
+
+    document.getElementById("search_num").addEventListener("keyup", function() {
+        let input = document.getElementById("search_num").value;
+        let list = document.getElementById("seller-list");
+        let items = list.getElementsByTagName("li");
+
+        for (let i = 0; i < items.length; i++) {
+            let phone = items[i].getElementsByTagName("p")[0].innerHTML;
+            if (phone.indexOf(input) > -1) {
                 items[i].style.display = "";
             } else {
                 items[i].style.display = "none";
