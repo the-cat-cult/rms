@@ -31,15 +31,10 @@ function create_header() {
     doc.setFillColor("#2b3035");
     doc.rect(0, 0, 210, 35, "F");
 
-    // doc.setFont(Font, primaryFontWeight);
-    // doc.setFontSize(titleFontSize);
-    // doc.setTextColor(tertiaryColor);
-    // doc.text("START", 15, 15);
-
-    // Image
-    var img = new Image();
-    img.src = "https://www.hollywoodreporter.com/wp-content/uploads/2012/12/img_logo_blue.jpg";
-    doc.addImage(img, "SVG", 15, 15, 50, 50);
+    doc.setFont(Font, primaryFontWeight);
+    doc.setFontSize(titleFontSize);
+    doc.setTextColor(tertiaryColor);
+    doc.text("START", 15, 15);
 }
 
 function create_body() {

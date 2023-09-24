@@ -62,6 +62,16 @@
                     </div>
                 </div>
                 <!-- Details of the apartment -->
+
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mt-3" id="breadcrumbs">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item">
+                            <a id="main-panel"></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page" id="prop-id"></li>
+                    </ol>
+                </nav>
                 <h1 class="mt-5">
                     <span id="bhk"></span> <span id="type"></span>
                 </h1>
@@ -130,25 +140,53 @@
         return url.searchParams.get("propertyId");
     }
 
-    if (localStorage.getItem("role") === "admin") {
-        // document.getElementById("verified-box").innerHTML = "<input type=\"checkbox\" class=\"custom-control-input\" id=\"verified\">\n" +
-        //     "<label class=\"custom-control-label\" for=\"verified\">Verified</label>"
+    let prop_id = document.getElementById("prop-id")
+    prop_id.innerHTML = getPropertyId()
 
-        // document.getElementById("verified").addEventListener('change', function() {
-        //     verified = this.checked
-        //     build_data()
-        //     axios.post("/api/setVerificationStatus", {
-        //             verified: this.checked,
-        //             pid: getPropertyId()
-        //         })
-        //         .then(function(response) {
-        //             console.log(response);
-        //         })
-        //         .catch(function(error) {
-        //             alert("Could not change verification status")
-        //         });
 
-        // });
+    let role = localStorage.getItem("role")
+
+    if (role === "owner") {
+        // Bread crumbs
+        let main_panel = document.getElementById("main-panel")
+        main_panel.innerHTML = "Main Panel"
+        main_panel.href = "/pages/owner/owner_panel.html"
+
+        let prop_id = document.getElementById("prop-id")
+        prop_id.innerHTML = getPropertyId()
+    }
+
+
+
+
+    if (role === "admin") {
+
+        // Bread crumbs
+        let breadcrumbs = document.getElementById("breadcrumbs")
+        while (breadcrumbs.firstChild) {
+            breadcrumbs.removeChild(breadcrumbs.firstChild);
+        }
+        let li = document.createElement("li")
+        li.classList.add("breadcrumb-item")
+        li.innerHTML = "<a href='/'>Home</a>"
+        breadcrumbs.appendChild(li)
+
+        li = document.createElement("li")
+        li.classList.add("breadcrumb-item")
+        li.innerHTML = "<a href='/pages/admin/admin_panel.html'>Admin Panel</a>"
+        breadcrumbs.appendChild(li)
+
+        li = document.createElement("li")
+        li.classList.add("breadcrumb-item")
+        li.innerHTML = "<a href='/pages/admin/property_list.html'>Properties</a>"
+        breadcrumbs.appendChild(li)
+
+        li = document.createElement("li")
+        li.classList.add("breadcrumb-item")
+        li.classList.add("active")
+        li.innerHTML = getPropertyId()
+        breadcrumbs.appendChild(li)
+
 
         verified_box = document.getElementById("verified-box")
 
@@ -184,12 +222,35 @@
         verify_btn.classList.add("mb-2")
         verify_btn.classList.add("float-end")
         verify_btn.innerHTML = "Verify Property"
+        verify_btn.disabled = true
+        verify_btn.id = "verify_btn"
         verify_btn.addEventListener("click", handleVerification)
         verified_box.appendChild(x_coord)
         verified_box.appendChild(y_coord)
         verified_box.appendChild(get_coordinates_btn)
         verified_box.appendChild(verify_btn)
 
+
+        // Coordinate Input
+
+        x_coord = document.getElementById("x_coord")
+        y_coord = document.getElementById("y_coord")
+
+        x_coord.addEventListener("input", function() {
+            if (x_coord.value !== "" && y_coord.value !== "") {
+                verify_btn.disabled = false
+            } else {
+                verify_btn.disabled = true
+            }
+        })
+
+        y_coord.addEventListener("input", function() {
+            if (x_coord.value !== "" && y_coord.value !== "") {
+                verify_btn.disabled = false
+            } else {
+                verify_btn.disabled = true
+            }
+        })
     }
 
     function get_coordinates() {

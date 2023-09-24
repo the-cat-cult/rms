@@ -48,7 +48,7 @@
             <!-- BHK Dropdown -->
             <div class="row">
                 <div class="col-md-2">
-                    <label for="bhk" class="form-label">House</label>
+                    <label for="BHK" class="form-label">House</label>
                     <select class="form-select" aria-label="BHK Selection" id="BHK">
                     <option></option>
                     <option value="All" selected>All</option>
@@ -65,8 +65,8 @@
 
                 <!-- Rent Range in a double slider-->
                 <div class="col-md-4">
-                    <label for="rent" class="form-label">Rent</label>
-                    <div class="row">
+                    <label class="form-label" for="rent">Rent</label>
+                    <div class="row" id="rent">
                         <div class="col-md-6 mt-lg-0 mt-md-0 mb-md-0 mb-lg-0">
                             <input type="text" class="form-control" placeholder="Min" id="min">
                         </div>
@@ -156,10 +156,26 @@
 
                 if (minRent) {
                     query.minRent = minRent;
+                    if (maxRent) {
+                        if (parseInt(minRent) > parseInt(maxRent)) {
+                            alert("Min rent cannot be greater than max rent");
+                            return;
+                        }
+                    } else {
+                        maxRent = 10000000
+                    }
                 }
 
                 if (maxRent) {
                     query.maxRent = maxRent;
+                    if (minRent) {
+                        if (parseInt(minRent) > parseInt(maxRent)) {
+                            alert("Min rent cannot be greater than max rent");
+                            return;
+                        }
+                    } else {
+                        minRent = 0
+                    }
                 }
 
                 if (area) {
@@ -204,7 +220,6 @@
                     right = default_data[i]['bhk'] + " " + default_data[i]['propertyType'] + " for rent in " + default_data[i]['location']
                     secondary = "₹" + default_data[i]['rent'] + "/m + SD : ₹" + default_data[i]['securityDeposit']
                     primary = default_data[i]['address']
-
 
                     var item = document.createElement("a");
                     item.setAttribute("href", default_data[i]["link"]);
