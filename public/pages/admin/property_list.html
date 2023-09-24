@@ -81,6 +81,13 @@
                     <label for="address" class="form-label">Area</label>
                     <input type="text" class="form-control" placeholder="Area" id="address">
                 </div>
+
+                <!-- ID Search Field -->
+                <div class="col-md-3">
+                    <label for="id-search" class="form-label">Search ID</label>
+                    <input type="text" class="form-control" placeholder="ID" id="id-search">
+                </div>
+
             </div>
         </div>
 
@@ -278,6 +285,19 @@
             max = document.getElementById("max");
 
             address = document.getElementById("address");
+
+            document.getElementById("id-search").addEventListener("keyup", function(event) {
+                val = document.getElementById("id-search").value;
+                // Search in default_data
+                if (val) {
+                    let filtered_data = default_data.filter(function(item) {
+                        return item.id.includes(val);
+                    });
+                    generate_list(filtered_data);
+                } else {
+                    generate_list(default_data);
+                }
+            });
 
 
             function toggleTheme() {
