@@ -11,30 +11,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <link rel="icon" href="/assets/icons/START Logo-01.svg" sizes="any" type="image/x-icon">
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" type="image/gif" sizes="16x16">
 
 </head>
 
-<body onload="getProperties()">
+<body onload="getProperties()" data-bs-theme="dark">
     <!-- Header -->
     <header>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
                 <a class="navbar-brand mx-4" href="/">
-                    <img src="/assets/Start-icon-01.svg" alt="Bootstrap" height="30">
+                    <img src="/assets/icons/START Logo-01.svg" alt="START Home" height="40">
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    </ul>
-                </div>
-
-
-                <!-- Sign Out button -->
-                <div class="d-flex mx-5">
-                    <button type="button" class="btn btn-outline-primary mx-3" onclick="sign_out()">Sign Out</button>
+                <div class="d-flex">
+                    <button type="button" class="btn btn-outline-danger" onclick="sign_out()">Sign Out</button>
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
                 </div>
             </div>
         </nav>
@@ -43,13 +35,23 @@
 
     <!-- Body -->
     <div class="container">
+
+
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mt-3">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="../pages/tenant_page_ts.html">Home Panel</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Properties</li>
+            </ol>
+        </nav>
         <div class="filter-section mb-3">
             <!-- BHK Dropdown -->
             <div class="row">
                 <div class="col-md-2">
-                    <label for="bhk" class="form-label">House</label>
+                    <label for="BHK" class="form-label">House</label>
                     <select class="form-select" aria-label="BHK Selection" id="BHK">
                     <option></option>
+                    <option value="All" selected>All</option>
                     <option value="1 BHK">1 BHK</option>
                     <option value="1.5 BHK">1.5 BHK</option>
                     <option value="2 BHK">2 BHK</option>
@@ -63,12 +65,12 @@
 
                 <!-- Rent Range in a double slider-->
                 <div class="col-md-4">
-                    <label for="rent" class="form-label">Rent</label>
-                    <div class="row">
-                        <div class="col-md-6">
+                    <label class="form-label" for="rent">Rent</label>
+                    <div class="row" id="rent">
+                        <div class="col-md-6 mt-lg-0 mt-md-0 mb-md-0 mb-lg-0">
                             <input type="text" class="form-control" placeholder="Min" id="min">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mt-lg-0 mt-md-0 mt-3 mb-md-0 mb-lg-0 mb-3">
                             <input type="text" class="form-control" placeholder="Max" id="max">
                         </div>
                     </div>
@@ -91,16 +93,14 @@
 
         <style>
             .filter-section {
-                background-color: #F2F2F2;
                 border-radius: 10px;
-                padding: 20px;
                 margin-top: 20px;
             }
             
             .list-group {
                 max-height: 700px;
                 margin-bottom: 10px;
-                overflow-y: scroll;
+                overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
             }
         </style>
@@ -109,11 +109,10 @@
         <script>
             let default_data = []
 
-            document.getElementById("BHK").addEventListener("keyup", function(event) {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    getProperties();
-                }
+            //listen to bhk, minRent, and rest and if typing then search
+            document.getElementById("BHK").addEventListener("click", function(event) {
+                event.preventDefault();
+                getProperties();
             });
 
             document.getElementById("min").addEventListener("keyup", function(event) {
@@ -146,16 +145,37 @@
 
                 let query = {}
 
+
+
                 if (bhk) {
+                    if (bhk == "All") {
+                        bhk = ""
+                    }
                     query.bhk = bhk;
                 }
 
                 if (minRent) {
                     query.minRent = minRent;
+                    if (maxRent) {
+                        if (parseInt(minRent) > parseInt(maxRent)) {
+                            alert("Min rent cannot be greater than max rent");
+                            return;
+                        }
+                    } else {
+                        maxRent = 10000000
+                    }
                 }
 
                 if (maxRent) {
                     query.maxRent = maxRent;
+                    if (minRent) {
+                        if (parseInt(minRent) > parseInt(maxRent)) {
+                            alert("Min rent cannot be greater than max rent");
+                            return;
+                        }
+                    } else {
+                        minRent = 0
+                    }
                 }
 
                 if (area) {
@@ -166,14 +186,17 @@
                     .then(function(response) {
                         if (response.data.success) {
                             default_data = []
-                            for (let i = 0; i < response.data.Property.length; i++) {
+                            received_data = response.data.Property;
+                            for (let i = 0; i < received_data.length; i++) {
                                 default_data.push({
-                                    "name": response.data.Property[i].name,
-                                    "address": response.data.Property[i].address,
-                                    "rent": response.data.Property[i].rent,
-                                    "propertyType": response.data.Property[i].propertyType,
-                                    "bhk": response.data.Property[i].bhk,
-                                    "id": response.data.Property[i]._id,
+                                    "name": received_data[i].name,
+                                    "address": received_data[i].address,
+                                    "rent": received_data[i].rent,
+                                    "propertyType": received_data[i].propertyType,
+                                    "location": received_data[i].location,
+                                    "securityDeposit": received_data[i].securityDeposit,
+                                    "bhk": received_data[i].bhk,
+                                    "id": received_data[i]._id,
                                     "link": "/pages/tenant/property_view.html?propertyId=" + response.data.Property[i]._id
                                 })
 
@@ -194,6 +217,10 @@
                 list.innerHTML = "";
 
                 for (var i = 0; i < default_data.length; i++) {
+                    right = default_data[i]['bhk'] + " " + default_data[i]['propertyType'] + " for rent in " + default_data[i]['location']
+                    secondary = "₹" + default_data[i]['rent'] + "/m + SD : ₹" + default_data[i]['securityDeposit']
+                    primary = default_data[i]['address']
+
                     var item = document.createElement("a");
                     item.setAttribute("href", default_data[i]["link"]);
                     item.setAttribute("class", "list-group-item list-group-item-action");
@@ -204,26 +231,28 @@
 
                     var h5 = document.createElement("h5");
                     h5.setAttribute("class", "mb-1");
-                    h5.innerHTML = "₹" + default_data[i]["rent"]
+                    h5.innerHTML = primary;
 
                     var small = document.createElement("small");
-                    small.innerHTML = default_data[i]["bhk"];
+                    small.setAttribute("class", "text-primary");
+                    // Monospace font
+                    small.setAttribute("style", "font-family: 'Courier New', Courier, monospace;");
+
+                    small.innerHTML = default_data[i]["id"];
 
                     div1.appendChild(h5);
                     div1.appendChild(small);
 
                     var p = document.createElement("p");
-                    p.setAttribute("class", "mb-1");
-                    p.innerHTML = default_data[i]["address"];
+                    p.setAttribute("class", "mb-1 text-success");
+                    p.innerHTML = secondary;
 
                     var small2 = document.createElement("small");
-                    small2.setAttribute("class", "text-primary");
-                    small2.innerHTML = default_data[i]["id"];
+                    small2.innerHTML = right;
 
                     item.appendChild(div1);
                     item.appendChild(p);
                     item.appendChild(small2);
-
                     list.appendChild(item);
                 }
             }
@@ -234,7 +263,6 @@
                         .then(function(response) {
                             console.log(response);
                             localStorage.clear();
-                            // alert("Signed Out")
                             window.location.href = "/";
                         })
                         .catch(function(error) {
@@ -250,8 +278,40 @@
             max = document.getElementById("max");
 
             address = document.getElementById("address");
+
+
+            function toggleTheme() {
+                var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+                var theme_bg = document.getElementById("theme_bg");
+                var navbar = document.getElementById("navbar");
+                if (theme == "dark") {
+                    document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+                    document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+                } else {
+                    document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+                    document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+                }
+            }
         </script>
     </div>
 
 
 </body>
+<style>
+    #theme-icon:hover {
+        cursor: pointer;
+        animation: rotation 2s infinite linear;
+        position: relative;
+    }
+    
+    @keyframes rotation {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(359deg);
+        }
+    }
+</style>
+
+</html>
