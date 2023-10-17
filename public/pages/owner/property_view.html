@@ -132,6 +132,8 @@
     let bhk = "...";
     let type = "...";
     let verified = false;
+    let xcoord = 0;
+    let ycoord = 0;
 
     let image_links = [];
 
@@ -258,6 +260,7 @@
         navigator.geolocation.getCurrentPosition(function(position) {
             x_coord.value = position.coords.latitude
             y_coord.value = position.coords.longitude
+            verify_btn.disabled = false
         });
     }
 
@@ -304,6 +307,10 @@
                     rent = response.data.Property.rent || 0
                     security_deposit = response.data.Property.securityDeposit || 0
                     verified = response.data.Property.verified || false
+                    xcoord = response.data.Property.lat || 0
+                    ycoord = response.data.Property.long || 0
+
+                    console.log(response.data.Property)
 
                     response.data.Property.images.forEach((image) => {
                         image_links.push(window.location.origin + "/api/image/" + image)
@@ -337,6 +344,11 @@
 
     function build_data() {
         let carousel_indicators = document.getElementsByClassName("carousel-indicators")[0];
+
+        //x and y coord
+        x_coord.value = xcoord
+        y_coord.value = ycoord
+
         for (i = 0; i < image_links.length; i++) {
             li = document.createElement("li");
             li.setAttribute("data-target", "#myCarousel");

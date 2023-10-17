@@ -102,6 +102,8 @@ export function getAllPropertiesByUser(req, res) {
 export function setVerificationStatus(req, res) {
     let verified = req.body.verified;
     let propertyId = req.body.pid;
+    let x_coord = req.body.x_coord;
+    let y_coord = req.body.y_coord;
     if (verified === undefined) {
         return res.status(400).json({
             success: false,
@@ -109,7 +111,7 @@ export function setVerificationStatus(req, res) {
         });
     }
 
-    Property.findOneAndUpdate({_id: propertyId}, {$set: {verified: verified}})
+    Property.findOneAndUpdate({_id: propertyId}, {$set: {verified: verified, lat: x_coord, long: y_coord}})
         .then((updatedProperty) => {
             return res.status(200).json({
                 success: true,
