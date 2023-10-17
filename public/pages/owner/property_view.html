@@ -82,6 +82,10 @@
                 <h3 id="address"></h3>
                 <h5 class="mt-3 text-muted">Security Deposit</h5>
                 <h3 id="security_deposit"></h3>
+
+                <div id="owner_details">
+
+                </div>
             </div>
         </div>
     </div>
@@ -276,7 +280,7 @@
                 y_coord: y_coord.value
             })
             .then(function(response) {
-                console.log(response);
+                // console.log(response);
                 alert("Property Verified")
                 window.location.reload()
             })
@@ -310,7 +314,8 @@
                     xcoord = response.data.Property.lat || 0
                     ycoord = response.data.Property.long || 0
 
-                    console.log(response.data.Property)
+                    owner_name = response.data.Property.ownerId.name || "Anonymous"
+                    owner_no = response.data.Property.ownerId.mobileNumber || "0000000000"
 
                     response.data.Property.images.forEach((image) => {
                         image_links.push(window.location.origin + "/api/image/" + image)
@@ -396,13 +401,35 @@
             status_refs.classList.add("text-bg-warning");
             status_refs.innerHTML = "Not Verified";
         }
+
+        let owner_data = document.getElementById("owner_details");
+
+        let card = document.createElement("div");
+        card.classList.add("rounded");
+        card.classList.add("bg-info-subtle");
+        card.classList.add("p-3");
+        card.classList.add("mt-2");
+        card.classList.add("mb-2");
+        card.innerHTML = "Owner Name";
+
+        let ownerName = document.createElement("h1");
+        ownerName.innerHTML = owner_name;
+
+        let ownerNumber = document.createElement("h2");
+        ownerNumber.innerHTML = owner_no;
+
+        card.appendChild(ownerName);
+        card.appendChild(ownerNumber);
+
+        owner_data.appendChild(card);
+
     }
 
     function sign_out() {
         if (confirm("Are you sure you want to sign out?")) {
             axios.post('/api/signOut')
                 .then(function(response) {
-                    console.log(response);
+                    // console.log(response);
                     localStorage.clear();
                     // alert("Signed Out")
                     window.location.href = "/";
