@@ -22,7 +22,11 @@ const propertiesSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    ownerId: mongoose.Schema.Types.ObjectId,
+    ownerId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }],
     verified: {
         type: Boolean,
         default: false

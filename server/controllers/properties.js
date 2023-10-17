@@ -5,6 +5,13 @@ import Images from "../models/images.js";
 export async function createProperty(req, res) {
     const files = req.files;
 
+    if (!req.user.verified) {
+        return res.status(400).json({
+            success: false,
+            message: 'User not verified'
+        });
+    }
+
     if (!files) {
         return res.status(400).json({
             success: false,
@@ -67,7 +74,18 @@ export async function createProperty(req, res) {
 
 export function getAllProperties(req, res) {
     Property.find({vacancyStatus: true})
+        .populate('ownerId')
         .then((allProperty) => {
+
+            allProperty = allProperty.filter((property) => {
+                return property.ownerId.verified === true;
+            });
+
+            allProperty = allProperty.map((property) => {
+                property.ownerId = property.ownerId._id;
+                return property;
+            });
+
             return res.status(200).json({
                 success: true,
                 message: 'A list of all Properties',
@@ -84,6 +102,14 @@ export function getAllProperties(req, res) {
 }
 
 export function getAllPropertiesByUser(req, res) {
+
+    if(!req.user.verified) {
+        return res.status(400).json({
+            success: false,
+            message: 'User not verified'
+        });
+    }
+
     Property.find({ownerId: req.user._id})
         .then((allProperty) => {
             return res.status(200).json({
@@ -129,28 +155,21 @@ export function setVerificationStatus(req, res) {
 
 }
 
-export function getOneProperty(req, res) {
-    Property.findOne({_id: req.body.pid})
-        .then((oneProperty) => {
-            return res.status(200).json({
-                success: true,
-                message: 'Result',
-                Property: oneProperty,
-            });
-        })
-        .catch((err) => {
-            res.status(500).json({
-                success: false,
-                message: 'Server error. Please try again.',
-                error: err.message,
-            });
-        });
-}
-
 export function getPropertyById(req, res) {
 
     Property.findOne({_id: req.body.pid})
+        .populate('ownerId')
         .then((oneProperty) => {
+
+            if (oneProperty.ownerId.verified === false) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Owner not verified',
+                });
+            }
+
+            oneProperty.ownerId = oneProperty.ownerId._id;
+
             return res.status(200).json({
                 success: true,
                 message: 'Result',
@@ -183,13 +202,25 @@ export function getPropertiesByFilters(req, res) {
         query.location = area;
     }
 
-    Property.find(query).then((properties) => {
-        return res.status(200).json({
-            success: true,
-            message: 'Result',
-            Property: properties.filter(propertiesData => propertiesData.vacancyStatus === true),
-        });
-    }).catch((err) => {
+    Property.find(query)
+        .populate('ownerId')
+        .then((properties) => {
+
+            properties = properties.filter((property) => {
+                return property.ownerId.verified === true && property.vacancyStatus === true;
+            });
+
+            properties = properties.map((property) => {
+                property.ownerId = property.ownerId._id;
+                return property;
+            });
+
+            return res.status(200).json({
+                success: true,
+                message: 'Result',
+                Property: properties,
+            });
+        }).catch((err) => {
         res.status(400).json({
             success: false,
             message: 'Filters failed',
@@ -204,6 +235,13 @@ export async function updateProperty(req, res) {
     let updateProp = {_id: req.body.pid}
 
     if (req.user.role !== "admin") {
+        if (!req.user.verified) {
+            return res.status(400).json({
+                success: false,
+                message: 'User not verified'
+            });
+        }
+
         updateProp.ownerId = req.user._id;
         delete updateObject.verified
         delete updateObject.lat
@@ -227,6 +265,14 @@ export async function updateProperty(req, res) {
 }
 
 export async function deleteProperty(req, res) {
+    if (req.user.role !== "admin") {
+        if (!req.user.verified) {
+            return res.status(400).json({
+                success: false,
+                message: 'User not verified'
+            });
+        }
+    }
     Property.findOneAndDelete({_id: req.body.pid, ownerId: req.user._id})
         .then((oneProperty) => {
             return res.status(200).json({
@@ -249,6 +295,15 @@ export async function uploadFiles(req, res) {
 
     const files = req.files;
     const propertyId = req.body.propertyId;
+
+    if (req.user.role !== "admin") {
+        if (!req.user.verified) {
+            return res.status(400).json({
+                success: false,
+                message: 'User not verified'
+            });
+        }
+    }
 
     if (!propertyId) {
         return res.status(400).json({
