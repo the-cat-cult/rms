@@ -72,34 +72,6 @@ export async function createProperty(req, res) {
         });
 }
 
-export function getAllProperties(req, res) {
-    Property.find({vacancyStatus: true})
-        .populate('ownerId')
-        .then((allProperty) => {
-
-            allProperty = allProperty.filter((property) => {
-                return property.ownerId.verified === true;
-            });
-
-            allProperty = allProperty.map((property) => {
-                property.ownerId = property.ownerId._id;
-                return property;
-            });
-
-            return res.status(200).json({
-                success: true,
-                message: 'A list of all Properties',
-                Properties: allProperty,
-            });
-        })
-        .catch((err) => {
-            res.status(500).json({
-                success: false,
-                message: 'Server error. Please try again.',
-                error: err.message,
-            });
-        });
-}
 
 export function getAllPropertiesByUser(req, res) {
 
@@ -168,6 +140,13 @@ export function getPropertyById(req, res) {
                 });
             }
 
+            if (oneProperty.verified === false && req.user.role === 'tenant') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Property not verified',
+                });
+            }
+
             oneProperty.ownerId = oneProperty.ownerId._id;
 
             return res.status(200).json({
@@ -204,11 +183,15 @@ export function getPropertiesByFilters(req, res) {
 
     Property.find(query)
         .populate('ownerId')
+        .lean()
         .then((properties) => {
 
-            properties = properties.filter((property) => {
-                return property.ownerId.verified === true && property.vacancyStatus === true;
-            });
+            if(req.user.role !== 'admin') {
+                properties = properties.filter((property) => {
+                    console.log(property.ownerId)
+                    return property.ownerId.verified === true && property.vacancyStatus === true && property.verified === true;
+                });
+            }
 
             properties = properties.map((property) => {
                 property.ownerId = property.ownerId._id;

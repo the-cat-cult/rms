@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import User from "../models/user.js";
 import Tenant from "../models/tenant.js";
+import Properties from "../models/properties.js";
+import Bookings from "../models/bookings.js";
 
 export async function createUser(req, res) {
 
@@ -101,6 +103,32 @@ export function verifyUser(req, res) {
 
     User.findOneAndUpdate({mobileNumber: mobileNumber}, {verified: verified})
         .then((oneUser) => {
+
+            if (!verified) {
+                Properties
+                    .find({ownerId: oneUser._id})
+                    .populate('ownerId')
+                    .then((allProperties) => {
+                        allProperties.forEach((property) => {
+                            Bookings.deleteMany({propertyId: property._id})
+                                .then((result) => {
+                                    console.log('Deleted bookings of unverified user');
+                                })
+                                .catch((err) => {
+                                    console.log('Error in deleting bookings of unverified user');
+                                });
+                        });
+                        Properties.deleteMany({ownerId: oneUser._id})
+                            .then((result) => {
+                                console.log('Deleted properties of unverified user');
+                            })
+                            .catch((err) => {
+                                console.log('Error in deleting properties of unverified user');
+                            });
+                    })
+            }
+
+
             return res.status(200).json({
                 success: true,
                 message: verified ? 'User verified' : 'User unverified',
@@ -119,7 +147,7 @@ export function verifyUser(req, res) {
 export function getOneUser(req, res) {
     let mobileNumber = req.user.mobileNumber;
 
-    if(req.user.role === 'admin'){
+    if (req.user.role === 'admin') {
         mobileNumber = req.body.mobileNumber;
     }
 
@@ -143,7 +171,7 @@ export function getOneUser(req, res) {
 export async function updateUser(req, res) {
     let mobileNumber = req.user.mobileNumber;
 
-    if(req.user.role === 'admin'){
+    if (req.user.role === 'admin') {
         mobileNumber = req.body.mobileNumber;
     }
 
@@ -167,7 +195,7 @@ export async function updateUser(req, res) {
 export function deleteUser(req, res) {
     let mobileNumber = req.user.mobileNumber;
 
-    if(req.user.role === 'admin'){
+    if (req.user.role === 'admin') {
         mobileNumber = req.body.mobileNumber;
     }
 

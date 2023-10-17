@@ -11,6 +11,17 @@ export async function createBooking(req, res) {
     let tenantId = req.user._id;
     let propertyId = req.query.propertyId;
 
+    //if propertyId is unverified
+    if(tenantId === undefined || propertyId === undefined) {
+        return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
+    }
+
+    //if property is unverified, return 500
+    let property = await Properties.findOne({_id: propertyId})
+    if(property.verified === false) {
+        return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
+    }
+
     //check if there are existing bookings for propertyId
     try {
         const existingBookings = await Booking.find({propertyId: propertyId})
@@ -97,13 +108,21 @@ export async function updateBookingStatus(req, res) {
     Booking.findOneAndUpdate({propertyId: propertyId, tenantId: tenantId}, {allotmentStatus: true})
         .then(async (updatedBooking) => {
 
+            let property = await Properties.findOne({_id: propertyId})
+
+            if (property.verified === false) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Property not verified',
+                });
+            }
+
+            property.vacancyStatus = false
+            await property.save()
+
             let tenant = await Tenant.findOne({_id: tenantId})
             tenant.allocationStatus = "yes"
             await tenant.save()
-
-            let property = await Properties.findOne({_id: propertyId})
-            property.vacancyStatus = false
-            await property.save()
 
             return res.status(200).json({
                 success: true,
