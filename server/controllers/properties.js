@@ -168,21 +168,8 @@ export function getPropertyById(req, res) {
 
 export function getPropertiesByFilters(req, res) {
     const {bhk, minRent, maxRent, area} = req.body;
-    let query = {};
-    if (bhk) {
-        query.bhk = bhk;
-    }
-    if (minRent) {
-        query.rent = {$gte: minRent};
-    }
-    if (maxRent) {
-        query.rent = {$lte: maxRent};
-    }
-    if (area) {
-        query.location = area;
-    }
 
-    Property.find(query)
+    Property.find()
         .populate('ownerId')
         .lean()
         .then((properties) => {
@@ -193,6 +180,24 @@ export function getPropertiesByFilters(req, res) {
                     return property.ownerId.verified === true && property.vacancyStatus === true && property.verified === true;
                 });
             }
+
+            properties = properties.filter((property) => {
+                let condition = true;
+                if (bhk !== undefined && bhk !== '') {
+                    condition = condition && property.bhk === bhk;
+                }
+                if (minRent !== undefined) {
+                    condition = condition && property.rent >= parseInt(minRent);
+                }
+                if (maxRent !== undefined) {
+                    condition = condition && property.rent <= parseInt(maxRent);
+                }
+                if (area !== undefined) {
+                    //check if contains
+                    condition = condition && property.address.toLowerCase().includes(area.toLowerCase());
+                }
+                return condition;
+            });
 
             return res.status(200).json({
                 success: true,

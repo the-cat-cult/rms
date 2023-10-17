@@ -200,6 +200,9 @@ export function deleteUser(req, res) {
 
     User.findOneAndDelete({mobileNumber: mobileNumber})
         .then((oneUser) => {
+
+            //TODO: Delete all properties and bookings of this user
+
             return res.status(200).json({
                 success: true,
                 message: 'Deleted User',

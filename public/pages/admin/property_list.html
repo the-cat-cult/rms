@@ -116,31 +116,24 @@
         <script>
             let default_data = []
 
-            //listen to bhk, minRent, and rest and if typing then search
-            document.getElementById("BHK").addEventListener("click", function(event) {
+            document.getElementById("BHK").addEventListener("change", function(event) {
                 event.preventDefault();
                 getProperties();
             });
 
-            document.getElementById("min").addEventListener("keyup", function(event) {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    getProperties();
-                }
+            document.getElementById("min").addEventListener("input", function(event) {
+                event.preventDefault();
+                getProperties();
             });
 
-            document.getElementById("max").addEventListener("keyup", function(event) {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    getProperties();
-                }
+            document.getElementById("max").addEventListener("input", function(event) {
+                event.preventDefault();
+                getProperties();
             });
 
-            document.getElementById("address").addEventListener("keyup", function(event) {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    getProperties();
-                }
+            document.getElementById("address").addEventListener("input", function(event) {
+                event.preventDefault();
+                getProperties();
             });
 
             function getProperties() {
@@ -162,27 +155,11 @@
                 }
 
                 if (minRent) {
-                    query.minRent = minRent;
-                    if (maxRent) {
-                        if (parseInt(minRent) > parseInt(maxRent)) {
-                            alert("Min rent cannot be greater than max rent");
-                            return;
-                        }
-                    } else {
-                        maxRent = 10000000
-                    }
+                    query.minRent = parseInt(minRent)
                 }
 
                 if (maxRent) {
-                    query.maxRent = maxRent;
-                    if (minRent) {
-                        if (parseInt(minRent) > parseInt(maxRent)) {
-                            alert("Min rent cannot be greater than max rent");
-                            return;
-                        }
-                    } else {
-                        minRent = 0
-                    }
+                    query.maxRent = parseInt(maxRent);
                 }
 
                 if (area) {
