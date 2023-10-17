@@ -131,9 +131,10 @@ export function getPropertyById(req, res) {
 
     Property.findOne({_id: req.body.pid})
         .populate('ownerId')
+        .lean()
         .then((oneProperty) => {
 
-            if (oneProperty.ownerId.verified === false) {
+            if (oneProperty.ownerId.verified === false && req.user.role === 'tenant') {
                 return res.status(400).json({
                     success: false,
                     message: 'Owner not verified',
@@ -146,8 +147,6 @@ export function getPropertyById(req, res) {
                     message: 'Property not verified',
                 });
             }
-
-            oneProperty.ownerId = oneProperty.ownerId._id;
 
             return res.status(200).json({
                 success: true,
@@ -192,11 +191,6 @@ export function getPropertiesByFilters(req, res) {
                     return property.ownerId.verified === true && property.vacancyStatus === true && property.verified === true;
                 });
             }
-
-            properties = properties.map((property) => {
-                property.ownerId = property.ownerId._id;
-                return property;
-            });
 
             return res.status(200).json({
                 success: true,

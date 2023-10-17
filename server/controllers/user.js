@@ -107,7 +107,6 @@ export function verifyUser(req, res) {
             if (!verified) {
                 Properties
                     .find({ownerId: oneUser._id})
-                    .populate('ownerId')
                     .then((allProperties) => {
                         allProperties.forEach((property) => {
                             Bookings.deleteMany({propertyId: property._id})
