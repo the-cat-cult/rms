@@ -77,6 +77,45 @@ export function getAllUsers(req, res) {
         });
 }
 
+export function getAllSellers(req, res) {
+    User.find({isAdmin: false})
+        .then((allUser) => {
+            return res.status(200).json({
+                success: true,
+                message: 'A list of all Sellers',
+                User: allUser,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error. Please try again.',
+                error: err.message,
+            });
+        });
+}
+
+export function verifyUser(req, res) {
+    let mobileNumber = req.body.mobileNumber;
+    let verified = req.body.verified;
+
+    User.findOneAndUpdate({mobileNumber: mobileNumber}, {verified: verified})
+        .then((oneUser) => {
+            return res.status(200).json({
+                success: true,
+                message: verified ? 'User verified' : 'User unverified',
+                User: oneUser,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error. Please try again.',
+                error: err.message,
+            });
+        });
+}
+
 export function getOneUser(req, res) {
     let mobileNumber = req.user.mobileNumber;
 

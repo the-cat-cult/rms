@@ -32,7 +32,7 @@ import {
     getAllUsers,
     getOneUser,
     updateUser,
-    deleteUser,
+    deleteUser, getAllSellers, verifyUser,
 } from '../controllers/user.js'
 import {ownerSignUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
@@ -73,6 +73,7 @@ router.get('/listAllProperties', authentication(["admin", "tenant"]), getAllProp
 router.get('/listAllPropertiesByUser', authentication(["owner"]), getAllPropertiesByUser)
 router.post('/listAllPropertiesByFilter', authentication(["admin", "tenant"]), getPropertiesByFilters)
 router.post('/listAllBookings', authentication(["admin", "tenant"]), getAllBookings)
+router.get('/listAllSellers', authentication(["admin"]), getAllSellers)
 
 //update entity
 router.patch('/updateUser', authentication(["admin", "owner"]), updateUser)
@@ -80,6 +81,7 @@ router.patch('/updateTenant', authentication(["admin", "tenant"]), updateTenant)
 router.patch('/updateProperty', authentication(["admin", "owner"]), updateProperty)
 router.patch('/updateBookingStatus', authentication(["admin"]), updateBookingStatus)
 router.post('/setVerificationStatus', authentication("admin"), setVerificationStatus)
+router.post('/verifyUser', authentication(["admin"]), verifyUser)
 
 //delete entity
 router.delete('/deleteUser', authentication(["admin", "owner"]), deleteUser)

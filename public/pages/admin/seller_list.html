@@ -139,85 +139,9 @@
         }
     }
 
-    function generate_list() {
-        seller_list = document.getElementById("seller-list");
+    function generate_list(data) {
 
-        let data = [{
-            "id": 1,
-            "name": "John Smith",
-            "phone": "1234567890",
-            "verified": true
-        }, {
-            "id": 2,
-            "name": "Mary Johnson",
-            "phone": "9876543210",
-            "verified": false
-        }, {
-            "id": 3,
-            "name": "Robert Brown",
-            "phone": "4567890123",
-            "verified": true
-        }, {
-            "id": 4,
-            "name": "Linda Davis",
-            "phone": "8765432109",
-            "verified": false
-        }, {
-            "id": 5,
-            "name": "Michael Wilson",
-            "phone": "2345678901",
-            "verified": true
-        }, {
-            "id": 6,
-            "name": "Jennifer Lee",
-            "phone": "7654321098",
-            "verified": true
-        }, {
-            "id": 7,
-            "name": "William Martinez",
-            "phone": "3456789012",
-            "verified": false
-        }, {
-            "id": 8,
-            "name": "Elizabeth Taylor",
-            "phone": "6543210987",
-            "verified": true
-        }, {
-            "id": 9,
-            "name": "David Anderson",
-            "phone": "7890123456",
-            "verified": false
-        }, {
-            "id": 10,
-            "name": "Sarah Hall",
-            "phone": "5678901234",
-            "verified": true
-        }, {
-            "id": 11,
-            "name": "Jennifer Lee",
-            "phone": "7654321098",
-            "verified": true
-        }, {
-            "id": 12,
-            "name": "William Martinez",
-            "phone": "3456789012",
-            "verified": false
-        }, {
-            "id": 13,
-            "name": "Elizabeth Taylor",
-            "phone": "6543210987",
-            "verified": true
-        }, {
-            "id": 14,
-            "name": "David Anderson",
-            "phone": "7890123456",
-            "verified": false
-        }, {
-            "id": 15,
-            "name": "Sarah Hall",
-            "phone": "5678901234",
-            "verified": true
-        }];
+        let seller_list = document.getElementById("seller-list");
 
         for (let i = 0; i < data.length; i++) {
             // Create list item, containing Name, phone number, and two radio buttons
@@ -243,10 +167,10 @@
             let phone = document.createElement("p");
             phone.classList.add("mb-0");
             phone.classList.add("text-primary");
-            phone.innerHTML = data[i].phone;
+            phone.innerHTML = data[i].mobileNumber;
 
             let verified = document.createElement("p");
-            verified.id = "verified-" + data[i].id;
+            verified.id = "verified-" + data[i]._id;
             verified.classList.add("mb-0");
             verified.classList.add(data[i].verified ? "text-success" : "text-danger");
             verified.innerHTML = data[i].verified ? "Verified" : "Not Verified";
@@ -259,7 +183,7 @@
             inp_switch.classList.add("form-check-input");
             inp_switch.setAttribute("type", "checkbox");
             inp_switch.setAttribute("role", "switch");
-            inp_switch.setAttribute("id", "inp_switch-" + data[i].id);
+            inp_switch.setAttribute("id", "inp_switch-" + data[i]._id);
             if (data[i].verified) {
                 inp_switch.setAttribute("checked", "");
             }
@@ -267,16 +191,33 @@
             // Event listener for switch
             inp_switch.addEventListener("change", function() {
                 if (this.checked) {
-                    document.getElementById("verified-" + data[i].id).innerHTML = "Verified";
-                    document.getElementById("verified-" + data[i].id).classList.remove("text-danger");
-                    document.getElementById("verified-" + data[i].id).classList.add("text-success");
-                    // Send request to server to update verification status
-
+                    axios.post('/api/verifyUser', {
+                            verified: true,
+                            mobileNumber: data[i].mobileNumber
+                        })
+                        .then(function(response) {
+                            document.getElementById("verified-" + data[i]._id).innerHTML = "Verified";
+                            document.getElementById("verified-" + data[i]._id).classList.remove("text-danger");
+                            document.getElementById("verified-" + data[i]._id).classList.add("text-success");
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                            alert("Error verifying user")
+                        });
                 } else {
-                    document.getElementById("verified-" + data[i].id).innerHTML = "Not Verified";
-                    document.getElementById("verified-" + data[i].id).classList.remove("text-success");
-                    document.getElementById("verified-" + data[i].id).classList.add("text-danger");
-                    // Send request to server to update verification status
+                    axios.post('/api/verifyUser', {
+                            verified: false,
+                            mobileNumber: data[i].mobileNumber
+                        })
+                        .then(function(response) {
+                            document.getElementById("verified-" + data[i]._id).innerHTML = "Not Verified";
+                            document.getElementById("verified-" + data[i]._id).classList.remove("text-success");
+                            document.getElementById("verified-" + data[i]._id).classList.add("text-danger");
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                            alert("Error verifying user")
+                        });
 
                 }
             });
@@ -368,7 +309,14 @@
     });
 
     onload = function() {
-        generate_list();
+        axios.get('/api/listAllSellers')
+            .then(function(response) {
+                console.log(response);
+                generate_list(response.data.User || []);
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
     }
 </script>
 
