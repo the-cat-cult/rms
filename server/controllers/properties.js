@@ -273,6 +273,7 @@ export async function deleteProperty(req, res) {
             });
         }
     }
+
     Property.findOneAndDelete({_id: req.body.pid, ownerId: req.user._id})
         .then((oneProperty) => {
             return res.status(200).json({
@@ -378,6 +379,15 @@ export function deleteFile(req, res) {
 
     let propertyId = req.body.propertyId;
     let imageId = req.body.imageId;
+
+    if (req.user.role !== "admin") {
+        if (!req.user.verified) {
+            return res.status(400).json({
+                success: false,
+                message: 'User not verified'
+            });
+        }
+    }
 
     if (!propertyId) {
         return res.status(400).json({
