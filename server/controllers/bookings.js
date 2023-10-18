@@ -16,7 +16,9 @@ export async function createBooking(req, res) {
         return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
     }
 
-    if(req.user.allocatedProperty !== null || req.user.allocationStatus === 'yes') {
+    console.log(req.user)
+
+    if(req.user.allocationStatus === 'yes') {
         return res.sendFile(path.join(__dirname + '/public/pages/allocated.html'));
     }
 
