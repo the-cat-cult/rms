@@ -405,33 +405,6 @@
         }
     </style>
 
-    <script>
-        document.getElementById('confirmButton').addEventListener('click', function() {
-
-            console.log(rent)
-
-            axios.patch("/api/updateProperty", {
-                    pid: getPropertyId(),
-                    address: address,
-                    propertyType: type,
-                    bhk: bhk,
-                    location: propertyLocation,
-                    lat: 0,
-                    long: 0,
-                    rent: parseInt(rent),
-                    securityDeposit: parseInt(sd),
-                    age: parseInt(age),
-                })
-                .then(function(response) {
-                    console.log(response);
-                    window.location.href = "/"
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-        });
-    </script>
-
     <!-- Include Bootstrap JS and jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
