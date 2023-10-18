@@ -64,6 +64,7 @@ export function getAllBookings(req, res) {
     }
 
     Booking.find({tenantId: userId})
+        .populate('propertyId')
         .then(async (allBooking) => {
             await Booking.populate(allBooking, {path: 'propertyId', model: 'Property'})
             return res.status(200).json({
