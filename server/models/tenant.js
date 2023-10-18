@@ -13,6 +13,10 @@ const tenantSchema = new mongoose.Schema({
         type: String,
         enum: ['no', 'yes'],
         default: 'no'
+    },
+    allocatedProperty: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Property',
     }
 }, {collection: "tenants"});
 export default mongoose.model('Tenant', tenantSchema);

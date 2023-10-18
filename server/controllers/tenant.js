@@ -109,12 +109,13 @@ export async function getOneTenantById(req, res) {
     }
 
     Tenant.findOne({ _id: id })
+        .populate('allocatedProperty')
         .then(async (oneTenant) => {
-
             let bookings = await Bookings.find({tenantId: id});
             if (bookings.length === 0) {
                 console.log('No bookings found', bookings)
                 oneTenant.allocationStatus = 'no'
+                oneTenant.allocatedProperty = null
                 oneTenant.save()
             }
 
@@ -141,6 +142,7 @@ export function getOneTenant(req, res) {
     }
 
     Tenant.findOne({ mobileNumber: mobileNumber })
+        .populate('allocatedProperty')
         .then((oneTenant) => {
             return res.status(200).json({
                 success: true,

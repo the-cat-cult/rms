@@ -16,6 +16,10 @@ export async function createBooking(req, res) {
         return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
     }
 
+    if(req.user.allocatedProperty !== null) {
+        return res.sendFile(path.join(__dirname + '/public/pages/allocated.html'));
+    }
+
     //if property is unverified, return 500
     let property = await Properties.findOne({_id: propertyId})
     if(property.verified === false) {
@@ -24,7 +28,7 @@ export async function createBooking(req, res) {
 
     //check if there are existing bookings for propertyId
     try {
-        const existingBookings = await Booking.find({propertyId: propertyId})
+        const existingBookings = await Booking.find({propertyId: propertyId, tenantId: tenantId})
 
         if(existingBookings.length !== 0) {
             return res.sendFile(path.join(__dirname + '/public/pages/tenant/existing_booking.html'));
@@ -106,7 +110,15 @@ export async function updateBookingStatus(req, res) {
     let tenantId = new mongoose.Types.ObjectId(req.body.userId);
     let propertyId =  new mongoose.Types.ObjectId(req.body.propertyId)
 
-    Booking.findOneAndUpdate({propertyId: propertyId, tenantId: tenantId}, {allotmentStatus: true})
+    let otherBookings = await Booking.find({propertyId: propertyId, allotmentStatus: true, tenantId: {$ne: tenantId}})
+    if(otherBookings.length !== 0) {
+        return res.status(400).json({
+            success: false,
+            message: 'Property already booked',
+        });
+    }
+
+    Booking.findOne({propertyId: propertyId, tenantId: tenantId})
         .then(async (updatedBooking) => {
 
             let property = await Properties.findOne({_id: propertyId})
@@ -123,7 +135,14 @@ export async function updateBookingStatus(req, res) {
 
             let tenant = await Tenant.findOne({_id: tenantId})
             tenant.allocationStatus = "yes"
+            tenant.allocatedProperty = propertyId
             await tenant.save()
+
+            updatedBooking.allotmentStatus = true
+            updatedBooking.save()
+
+            await Booking.deleteMany({propertyId: propertyId, tenantId: {$ne: tenantId}})
+            await Booking.deleteMany({tenantId: tenantId, propertyId: {$ne: propertyId}})
 
             return res.status(200).json({
                 success: true,
@@ -142,8 +161,31 @@ export async function updateBookingStatus(req, res) {
 
 export async function deleteBooking(req, res) {
 
-    Booking.findOneAndDelete({propertyId: new mongoose.Types.ObjectId(req.body.propertyId), tenantId: req.user._id})
+    Booking.findOne({propertyId: new mongoose.Types.ObjectId(req.body.propertyId), tenantId: req.user._id})
         .then((oneBooking) => {
+
+            if(oneBooking.allotmentStatus === true) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Already allocated',
+                });
+            }
+
+            oneBooking.remove()
+
+            Properties.findOne({_id: new mongoose.Types.ObjectId(req.body.propertyId)})
+                .then((property) => {
+                    property.vacancyStatus = true
+                    property.save()
+                })
+                .catch((err) => {
+                    res.status(500).json({
+                        success: false,
+                        message: 'Server error. Please try again.',
+                        error: err.message,
+                    });
+                });
+
             return res.status(200).json({
                 success: true,
                 message: 'Deleted Booking',

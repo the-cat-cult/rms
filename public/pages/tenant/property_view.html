@@ -188,6 +188,8 @@
                     lat = response.data.Property.lat || 0
                     lng = response.data.Property.long || 0
 
+                    map_embed.setAttribute("src", "https://maps.google.com/maps?q=" + lat + "," + lng + "&hl=en;z=14&output=embed");
+
                     response.data.Property.images.forEach((image) => {
                         image_links.push(window.location.origin + "/api/image/" + image)
                     })

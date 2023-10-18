@@ -49,7 +49,8 @@
                 <div class="col-12" id="person-card">
                     <h1 class="tenant_name"></h1>
                     <span class="phone_number"></span><br>
-                    <span class="allocation"></span>
+                    <span class="allocation"></span><br>
+                    <span class="allocated_address"></span>
 
                     <div class="row mt-3">
                         <div class="col-lg-3 col-sm-12 col-md-4">
@@ -97,6 +98,7 @@
         function getTenant() {
             axios.get("/api/getTenant?tenant_id=" + getTenantIdFromParam())
                 .then(function(response) {
+                    console.log(response)
                     if (response.data.success) {
                         document.getElementsByClassName("tenant_name")[0].innerHTML = response.data.Tenant.name;
                         document.getElementsByClassName("tenant_name")[1].innerHTML = response.data.Tenant.name;
@@ -104,6 +106,12 @@
 
                         document.getElementsByClassName("phone_number")[0].innerHTML = response.data.Tenant.mobileNumber;
                         document.getElementsByClassName("allocation")[0].innerHTML = "Allocated: " + response.data.Tenant.allocationStatus;
+
+                        if(response.data.Tenant.allocationStatus == 'yes'){
+                            let allocatedProperty = response.data.Tenant.allocatedProperty;
+                            document.getElementsByClassName("allocated_address")[0].innerHTML = "Address: " + allocatedProperty.address + ", " + allocatedProperty.bhk + ", " + allocatedProperty.propertyType;
+                        }
+
                         userId = response.data.Tenant._id
                         get_preferences(response.data.Tenant._id);
                     }
@@ -234,7 +242,10 @@
                     "userId": userId
                 };
                 axios.patch("/api/updateBookingStatus", body)
-                    .then(function(response) {})
+                    .then(function(response) {
+                        //reload page
+                        window.location.reload();
+                    })
                     .catch(function(error) {
                         console.log(error);
                     });
