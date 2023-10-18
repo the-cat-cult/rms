@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Tenant from "../models/tenant.js";
 import User from "../models/user.js";
+import Bookings from "../models/bookings.js";
 
 export async function createTenant(req, res) {
 
@@ -108,7 +109,15 @@ export async function getOneTenantById(req, res) {
     }
 
     Tenant.findOne({ _id: id })
-        .then((oneTenant) => {
+        .then(async (oneTenant) => {
+
+            let bookings = await Bookings.find({tenantId: id});
+            if (bookings.length === 0) {
+                console.log('No bookings found', bookings)
+                oneTenant.allocationStatus = 'no'
+                oneTenant.save()
+            }
+
             return res.status(200).json({
                 success: true,
                 message: 'Result',
