@@ -96,15 +96,29 @@
                     event.target.classList.remove("btn-outline-secondary");
                     event.target.classList.add("btn-outline-success");
                 }
+            }
 
-
+            if (document.getElementById("name").value.length > 0 && document.getElementById("phone_number").value.length > 0 && document.querySelector(".active").innerHTML.length > 0) {
+                document.querySelector(".btn-primary").disabled = false;
+            } else {
+                document.querySelector(".btn-primary").disabled = true;
             }
         });
 
 
         // Keep submit button disabled until all fields are filled
         document.getElementById("name").addEventListener("keyup", function() {
-            if (document.getElementById("name").value.length > 0 && document.getElementById("phone_number").value.length > 0) {
+
+            // Check if type is selected
+            var selection = false;
+            var buttons = document.getElementById("type-selection").getElementsByTagName("button");
+            for (var i = 0; i < buttons.length; i++) {
+                if (buttons[i].classList.contains("active")) {
+                    selection = true;
+                }
+            }
+
+            if (document.getElementById("name").value.length > 0 && document.getElementById("phone_number").value.length > 0 && selection == true) {
                 document.querySelector(".btn-primary").disabled = false;
             } else {
                 document.querySelector(".btn-primary").disabled = true;
@@ -159,7 +173,7 @@
                 document.getElementById("phone_number").value = document.getElementById("phone_number").value.slice(0, -1);
             }
 
-            if (document.getElementById("name").value.length > 0 && document.getElementById("phone_number").value.length == 10) {
+            if (document.getElementById("name").value.length > 0 && document.getElementById("phone_number").value.length == 10 && document.querySelector(".active").innerHTML.length > 0) {
                 document.querySelector(".btn-primary").disabled = false;
             } else {
                 document.querySelector(".btn-primary").disabled = true;
