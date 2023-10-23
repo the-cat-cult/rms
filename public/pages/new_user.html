@@ -32,6 +32,11 @@
         <h1>Hi! I see this is your first time in here &#x1f973;</h1>
         <h2>Let's set you up with a new account...</h2>
         <form id="loginForm" class="mt-5">
+            <div class="input-group mb-3" id="type-selection">
+                <button class="btn btn-outline-secondary" type="button">Tenant</button>
+                <button class="btn btn-outline-secondary" type="button">Homeowner</button>
+            </div>
+
             <div class="form-group">
                 <!-- Full Name floating label -->
                 <div class="form-floating mb-3 w-50" id="name_div">
@@ -59,6 +64,44 @@
     </div>
 
     <script>
+        // Handle type selection
+        document.getElementById("type-selection").addEventListener("click", function(event) {
+            if (event.target.tagName == "BUTTON") {
+                // Remove active class from all buttons
+                var buttons = document.getElementById("type-selection").getElementsByTagName("button");
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].classList.remove("active");
+                }
+                // Add active class to the clicked button
+                event.target.classList.add("active");
+
+
+                // If 'Tenant' is selected, change from btn-outline-secondary to btn-outline-primary, else btn-outline-success
+                if (event.target.innerHTML == "Tenant") {
+
+                    for (var i = 0; i < buttons.length; i++) {
+                        buttons[i].classList.remove("btn-outline-success");
+                        buttons[i].classList.add("btn-outline-primary");
+                    }
+
+                    event.target.classList.remove("btn-outline-secondary");
+                    event.target.classList.add("btn-outline-primary");
+                } else {
+
+                    for (var i = 0; i < buttons.length; i++) {
+                        buttons[i].classList.remove("btn-outline-primary");
+                        buttons[i].classList.add("btn-outline-success");
+                    }
+
+                    event.target.classList.remove("btn-outline-secondary");
+                    event.target.classList.add("btn-outline-success");
+                }
+
+
+            }
+        });
+
+
         // Keep submit button disabled until all fields are filled
         document.getElementById("name").addEventListener("keyup", function() {
             if (document.getElementById("name").value.length > 0 && document.getElementById("phone_number").value.length > 0) {
@@ -127,6 +170,8 @@
             // Get the values from the form
             const name = document.getElementById("name").value;
             const phone_number = document.getElementById("phone_number").value;
+            const type = document.querySelector(".active").innerHTML;
+
 
             // Redirect to the success page
             window.location.href = "/pages/otp_new_user.html?name=" + name + "&phoneNumber=" + phone_number;
