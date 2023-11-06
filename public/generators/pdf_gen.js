@@ -1,5 +1,4 @@
 import { jsPDF } from "jspdf";
-import { Image } from "canvas";
 
 var doc = new jsPDF();
 

@@ -16,7 +16,7 @@ import {
     getPropertyById,
     setVerificationStatus,
     uploadFiles,
-    deleteFile, getFile
+    deleteFile, getFile, getPropertiesOfOwner
 } from '../controllers/properties.js'
 import {
     createTenant,
@@ -30,7 +30,7 @@ import {
     getAllUsers,
     getOneUser,
     updateUser,
-    deleteUser, getAllSellers, verifyUser,
+    deleteUser, getAllSellers, verifyUser, getOneOwnerById, deleteOwnerById,
 } from '../controllers/user.js'
 import {ownerSignUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
@@ -52,7 +52,7 @@ router.get('/isAuthenticated', authentication(["admin", "owner", "tenant"]), che
 
 //create entity routes
 router.get('/addBooking', authentication(["tenant"]), createBooking);
-router.post('/addProperty', authentication(["owner"]), multerImages, createProperty);
+router.post('/addProperty', authentication(["owner", "admin"]), multerImages, createProperty);
 router.post("/addTenant", authentication(["admin"]), createTenant);
 router.post("/addUser", authentication(["admin"]), createUser);
 
@@ -60,8 +60,11 @@ router.post("/addUser", authentication(["admin"]), createUser);
 router.post('/getUser', authentication(["admin", "owner"]), getOneUser)
 router.post('/getTenant', authentication(["admin", "tenant"]), getOneTenant)
 router.get('/getTenant', authentication(["admin"]), getOneTenantById)
+router.get('/getOwner', authentication(["admin"]), getOneOwnerById)
+router.get('/getPropertiesOfOwner', authentication(["admin"]), getPropertiesOfOwner)
 router.post('/getPropertyById', authentication(["owner", "tenant", "admin"]), getPropertyById)
 router.post('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
+
 
 //get list of entities
 router.get('/listAllUsers', authentication(["admin"]), getAllUsers)
@@ -85,5 +88,6 @@ router.delete('/deleteTenant', authentication(["admin", "tenant"]), deleteTenant
 router.post('/deleteProperty', authentication(["admin", "owner"]), deleteProperty)
 router.post('/deleteBooking', authentication(["tenant"]), deleteBooking)
 router.get('/deleteTenantById', authentication(["admin"]), deleteTenantById)
+router.get('/deleteOwnerById', authentication(["admin"]), deleteOwnerById)
 
 export default router;

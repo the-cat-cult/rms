@@ -1,9 +1,15 @@
 import mongoose from "mongoose";
 import Property from "../models/properties.js";
 import Images from "../models/images.js";
+import User from "../models/user.js";
 
 export async function createProperty(req, res) {
     const files = req.files;
+
+    if(req.user.role === 'admin') {
+        let ownerId = req.query.ownerId
+        req.user = await User.findOne({ _id: ownerId })
+    }
 
     if (!req.user.verified) {
         return res.status(400).json({
@@ -126,6 +132,27 @@ export function setVerificationStatus(req, res) {
             });
         });
 
+
+}
+
+export function getPropertiesOfOwner(req, res) {
+    let ownerId = req.query.owner_id;
+
+    Property.find({ownerId: ownerId})
+        .then((allProperty) => {
+            return res.status(200).json({
+                success: true,
+                message: 'A list of all Properties',
+                Properties: allProperty,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error. Please try again.',
+                error: err.message,
+            });
+        });
 
 }
 

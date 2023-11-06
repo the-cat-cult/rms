@@ -36,7 +36,7 @@ export async function ownerSignUp(req, res) {
 
     let otpRecord = await Otp.findOne({ mobileNumber: mobileNumber });
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV_OTP === 'development') {
         otpRecord = {}
         otpRecord.otp = 1234;
     }
@@ -114,7 +114,7 @@ function sendSMS(code, phone) {
 export async function generateOTP(req, res) {
     const phone = req.body.phone;
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV_OTP === 'development') {
         return res.status(201).json({
             success: true,
             message: 'OTP successfully generated',
@@ -185,7 +185,7 @@ export async function login(req, res) {
     let otpRecord = await Otp.findOne({ mobileNumber: mobileNumber });
 
     //if env is def
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV_OTP === 'development') {
         otpRecord = {}
         otpRecord.otp = 1234;
     }

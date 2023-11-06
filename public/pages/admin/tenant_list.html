@@ -152,22 +152,13 @@
                     h5.setAttribute("class", "mb-1");
                     h5.innerHTML = default_data[i]["name"];
 
-                    var small = document.createElement("small");
-                    small.innerHTML = default_data[i]["rank"];
-
                     div1.appendChild(h5);
-                    div1.appendChild(small);
-
-                    var p = document.createElement("p");
-                    p.setAttribute("class", "mb-1");
-                    p.innerHTML = default_data[i]["Unit"];
 
                     var small2 = document.createElement("small");
                     small2.setAttribute("class", "text-primary");
-                    small2.innerHTML = default_data[i]["personal_no"] + " | " + default_data[i]["ph_no"];
+                    small2.innerHTML = default_data[i]["ph_no"];
 
                     item.appendChild(div1);
-                    item.appendChild(p);
                     item.appendChild(small2);
 
                     list.appendChild(item);

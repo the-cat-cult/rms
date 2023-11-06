@@ -143,6 +143,33 @@ export function verifyUser(req, res) {
         });
 }
 
+export function getOneOwnerById(req, res) {
+    const id = req.query.owner_id
+
+    if (!id) {
+        return res.status(400).json({
+            success: false,
+            message: 'No id provided'
+        });
+    }
+
+    User.findOne({ _id: id })
+        .then((oneUser) => {
+            return res.status(200).json({
+                success: true,
+                message: 'Result',
+                User: oneUser,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error. Please try again.',
+                error: err.message,
+            });
+        });
+}
+
 export function getOneUser(req, res) {
     let mobileNumber = req.user.mobileNumber;
 
@@ -216,4 +243,33 @@ export function deleteUser(req, res) {
                 error: err.message,
             });
         });
+}
+
+export function deleteOwnerById(req, res) {
+    let id = req.query.owner_id
+
+    if (!id) {
+        return res.status(400).json({
+            success: false,
+            message: 'No id provided'
+        });
+    }
+
+    User.findOneAndDelete({ _id: id })
+        .then((oneTenant) => {
+
+            Properties.deleteMany()
+
+            return res.status(200).json({
+                success: true,
+                message: 'Deleted Owner',
+                Tenant: oneTenant,
+            });
+        }).catch((err) => {
+        res.status(500).json({
+            success: false,
+            message: 'Server error. Please try again.',
+            error: err.message,
+        });
+    });
 }
