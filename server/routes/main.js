@@ -16,7 +16,7 @@ import {
     getPropertyById,
     setVerificationStatus,
     uploadFiles,
-    deleteFile, getFile, getPropertiesOfOwner
+    deleteFile, getFile, getPropertiesOfOwner, getImagesByPropertyId
 } from '../controllers/properties.js'
 import {
     createTenant,
@@ -65,7 +65,6 @@ router.get('/getPropertiesOfOwner', authentication(["admin"]), getPropertiesOfOw
 router.post('/getPropertyById', authentication(["owner", "tenant", "admin"]), getPropertyById)
 router.post('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
 
-
 //get list of entities
 router.get('/listAllUsers', authentication(["admin"]), getAllUsers)
 router.get('/listAllTenants', authentication(["admin", "owner"]), getAllTenants)
@@ -73,11 +72,13 @@ router.get('/listAllPropertiesByUser', authentication(["owner"]), getAllProperti
 router.post('/listAllPropertiesByFilter', authentication(["admin", "tenant"]), getPropertiesByFilters)
 router.post('/listAllBookings', authentication(["admin", "tenant"]), getAllBookings)
 router.get('/listAllSellers', authentication(["admin"]), getAllSellers)
+router.get('/listAllImagesByProperty', authentication(["admin", "owner"]), getImagesByPropertyId)
+//getImagesByPropertyId
 
 //update entity
 router.patch('/updateUser', authentication(["admin", "owner"]), updateUser)
 router.patch('/updateTenant', authentication(["admin", "tenant"]), updateTenant)
-router.patch('/updateProperty', authentication(["admin", "owner"]), updateProperty)
+router.patch('/updateProperty', authentication(["admin", "owner"]), multerImages, updateProperty)
 router.patch('/updateBookingStatus', authentication(["admin"]), updateBookingStatus)
 router.post('/setVerificationStatus', authentication("admin"), setVerificationStatus)
 router.post('/verifyUser', authentication(["admin"]), verifyUser)

@@ -44,7 +44,7 @@
 
 
             <div class="container w-100 mb-5 rounded d-flex align-items-center" style="background-color: transparent; height: 250px; overflow: hidden;" id="add-image">
-                <input type="file" name="upload_images_route" type="file" id="upload_images_route" accept="image/*" multiple style="display: none;" onchange="add_image_to_array()">
+                <input type="file" name="upload_images_route" type="file" id="upload_images_route" accept="image/*" multiple style="display: none;" onchange="handleFileSelection(event)">
             </div>
 
 
@@ -157,6 +157,8 @@
         // Validate all fields
         let propertyLocation, address, bhk, type, rent, sd, age;
 
+        let uploadFiles = []
+
         function validate() {
             if (localStorage.getItem("role") !== "owner" && localStorage.getItem("role") !== "admin") {
                 window.location.href = "/"
@@ -184,12 +186,82 @@
                         bhk = document.getElementById('bhk').value = property.bhk;
                         type = document.getElementById('type').value = property.propertyType;
                         age = document.getElementById('age').value = property.age;
+
+                        append_existing_images(property.images)
                     }
                 })
                 .catch(function(error) {
                     alert("Could not fetch property info")
                 });
         }
+
+        function handleFileSelection(event) {
+            event.preventDefault()
+            add_image_to_array()
+
+            var newFiles = [];
+
+            var inputElement = event.target;
+            var selectedFiles = inputElement.files;
+
+            for (var i = 0; i < selectedFiles.length; i++) {
+                var fileName = selectedFiles[i].name;
+                var fileType = selectedFiles[i].type;
+
+                var newFile = new File([selectedFiles[i]], fileName, { type: fileType });
+                newFiles.push(newFile);
+            }
+
+            var allFiles = uploadFiles.concat(newFiles);
+
+            var customFileList = new DataTransfer();
+            allFiles.forEach(function (file) {
+                customFileList.items.add(file);
+            });
+
+            inputElement.files = customFileList.files;
+        }
+
+        function append_existing_images() {
+            let inputElement = document.getElementById('upload_images_route');
+
+            axios.get("/api/listAllImagesByProperty?propertyId=" + getPropertyId())
+                .then(function(response) {
+                    let newFiles = [];
+
+                    response.data.forEach((imageData, index) => {
+                        var uint8Array = new Uint8Array(imageData.data);
+                        var blob = new Blob([uint8Array], { type: 'image/png' });
+
+                        // Create a File object from the Blob
+                        var fileName = 'image' + index + '.png';
+                        var file = new File([blob], fileName, { type: 'image/png' });
+                        newFiles.push(file);
+                    });
+
+                    // Convert inputElement.files to an array and concatenate it with newFiles
+                    var existingFiles = Array.from(inputElement.files);
+                    var allFiles = existingFiles.concat(newFiles);
+
+                    // Create a new FileList using the modified array
+                    var customFileList = new DataTransfer();
+                    allFiles.forEach(function(file) {
+                        customFileList.items.add(file);
+                    });
+
+                    // Set input element's files property with the new FileList
+                    inputElement.files = customFileList.files;
+
+                    add_image_to_array();
+                })
+                .catch(function(error) {
+                    console.error("Error fetching images:", error);
+                    alert("Could not get images");
+                });
+        }
+
+
+
 
         function validate_form() {
             propertyLocation = document.getElementById('property_locatiom').value;
@@ -232,7 +304,7 @@
             display_list = document.getElementById('add-image')
             let files = document.getElementById('upload_images_route').files;
             // If total images present is more than 10, alert the user and don't add the images
-            if (files.length + display_list.childElementCount > 10) {
+            if (files.length > 10) {
                 alert("You can only upload a maximum of 10 images");
                 return false;
             }
@@ -241,12 +313,12 @@
         }
 
         function render_images(files) {
-            URL_list = []
-            for (let i = 0; i < Object.keys(files).length; i++) {
-                URL_list.push(URL.createObjectURL(files[i]))
+            URL_list = [];
+            for (let i = 0; i < files.length; i++) {
+                URL_list.push(URL.createObjectURL(files[i]));
             }
 
-            display_list = document.getElementById('add-image')
+            display_list = document.getElementById('add-image');
             for (let i = 0; i < URL_list.length; i++) {
                 display_list.style.overflow = "auto";
 
@@ -261,9 +333,29 @@
                 img.style.objectPosition = "center";
                 img.style.cursor = "pointer";
                 img.addEventListener('click', function() {
-                    // Remove the image from display_list
-                    display_list.removeChild(img);
-                })
+                    // Find the index of the clicked image's URL in URL_list
+                    let index = URL_list.indexOf(img.src);
+                    if (index !== -1) {
+                        // Remove the image URL from URL_list
+                        URL_list.splice(index, 1);
+                        // Remove the corresponding image element from display_list
+                        display_list.removeChild(img);
+                        // Remove the corresponding file from the input field
+                        let inputElement = document.getElementById('upload_images_route');
+                        let files = Array.from(inputElement.files);
+                        files.splice(index, 1);
+
+                        // Create a new FileList object with the modified files array
+                        let newFileList = new DataTransfer();
+                        files.forEach(function(file) {
+                            newFileList.items.add(file);
+                        });
+
+                        // Set input element's files property with the new FileList
+                        inputElement.files = newFileList.files;
+                    }
+                });
+
                 display_list.appendChild(img);
             }
         }
@@ -349,18 +441,30 @@
 
         document.getElementById('confirmButton').addEventListener('click', function() {
 
-            axios.patch("/api/updateProperty", {
-                    pid: getPropertyId(),
-                    address: address,
-                    propertyType: type,
-                    bhk: bhk,
-                    location: propertyLocation,
-                    lat: 0,
-                    long: 0,
-                    rent: parseInt(rent),
-                    securityDeposit: parseInt(sd),
-                    age: parseInt(age),
-                })
+            let formData = new FormData();
+            let files = document.getElementById('upload_images_route').files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+
+            console.log(files)
+
+            formData.append('pid', getPropertyId());
+            formData.append('address', address);
+            formData.append('propertyType', type);
+            formData.append('bhk', bhk);
+            formData.append('location', propertyLocation);
+            formData.append('lat', 0);
+            formData.append('long', 0);
+            formData.append('rent', parseInt(rent));
+            formData.append('securityDeposit', parseInt(sd));
+            formData.append('age', parseInt(age));
+
+            axios.patch("/api/updateProperty", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
                 .then(function(response) {
                     window.location.href = "/"
                 })
@@ -381,19 +485,19 @@
     body {
         font-family: 'Poppins', sans-serif;
     }
-    
+
     h1,
     h2 {
         font-weight: 600;
     }
-    
+
     #theme-icon:hover {
         cursor: pointer;
         animation: rotation 2s infinite linear;
         /* Tooltip */
         position: relative;
     }
-    
+
     @keyframes rotation {
         from {
             transform: rotate(0deg);
@@ -403,18 +507,18 @@
         }
     }
     /* Remove spinner from input field */
-    
+
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
         -webkit-appearance: none;
     }
-    
+
     #add-image {
         color-scheme: dark;
         border: 1px dashed #585858;
         overflow: auto;
     }
-    
+
     .hover_delete:hover {
         filter: brightness(0.8);
     }

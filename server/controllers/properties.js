@@ -6,9 +6,9 @@ import User from "../models/user.js";
 export async function createProperty(req, res) {
     const files = req.files;
 
-    if(req.user.role === 'admin') {
+    if (req.user.role === 'admin') {
         let ownerId = req.query.ownerId
-        req.user = await User.findOne({ _id: ownerId })
+        req.user = await User.findOne({_id: ownerId})
     }
 
     if (!req.user.verified) {
@@ -81,7 +81,7 @@ export async function createProperty(req, res) {
 
 export function getAllPropertiesByUser(req, res) {
 
-    if(!req.user.verified) {
+    if (!req.user.verified) {
         return res.status(400).json({
             success: false,
             message: 'User not verified'
@@ -201,7 +201,7 @@ export function getPropertiesByFilters(req, res) {
         .lean()
         .then((properties) => {
 
-            if(req.user.role !== 'admin') {
+            if (req.user.role !== 'admin') {
                 properties = properties.filter((property) => {
                     console.log(property.ownerId)
                     return property.ownerId.verified === true && property.vacancyStatus === true && property.verified === true;
@@ -243,6 +243,15 @@ export function getPropertiesByFilters(req, res) {
 export async function updateProperty(req, res) {
     const updateObject = req.body
 
+    const files = req.files;
+
+    if (!files) {
+        return res.status(400).json({
+            success: false,
+            message: 'No file uploaded'
+        });
+    }
+
     let updateProp = {_id: req.body.pid}
 
     if (req.user.role !== "admin") {
@@ -258,6 +267,55 @@ export async function updateProperty(req, res) {
         delete updateObject.lat
         delete updateObject.long
     }
+
+    const images = [];
+
+    for (const file of files) {
+
+        if (images.length >= 10) {
+            break;
+        }
+
+        const image = new Images({
+            _id: new mongoose.Types.ObjectId(),
+            ownerId: req.user._id,
+            image: {
+                data: file.buffer,
+                contentType: 'image/jpeg'
+            }
+        });
+
+        let savedImage = await image.save()
+        if (savedImage) {
+            images.push(savedImage._id);
+        }
+    }
+    updateObject.images = images
+
+    let properties = await Property.findOne({_id: updateObject.pid})
+
+    if (!images) {
+        return res.status(400).json({
+            success: false,
+            message: 'Images not found'
+        });
+    }
+
+    let idList = properties.images.map(image => new mongoose.Types.ObjectId(image._id))
+
+    Images.deleteMany({_id: {$in: idList}})
+        .then(result => {
+            console.log(`${result.deletedCount} images deleted successfully.`);
+            // Handle success
+        })
+        .catch(error => {
+            console.error('Error deleting images:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Server error. Please try again.',
+                error: err.message,
+            });
+        });
 
     Property.findOneAndUpdate(updateProp, {$set: updateObject})
         .then((updatedProperty) => {
@@ -276,6 +334,9 @@ export async function updateProperty(req, res) {
 }
 
 export async function deleteProperty(req, res) {
+
+    let query = {_id: req.body.pid}
+
     if (req.user.role !== "admin") {
         if (!req.user.verified) {
             return res.status(400).json({
@@ -283,9 +344,11 @@ export async function deleteProperty(req, res) {
                 message: 'User not verified'
             });
         }
+
+        query.ownerId = req.user._id
     }
 
-    Property.findOneAndDelete({_id: req.body.pid, ownerId: req.user._id})
+    Property.findOneAndDelete()
         .then((oneProperty) => {
             return res.status(200).json({
                 success: true,
@@ -500,6 +563,59 @@ export function getFile(req, res) {
 
             res.set('Content-Type', image.image.contentType);
             return res.send(image.image.data);
+        })
+        .catch((err) => {
+            return res.status(500).json({
+                success: false,
+                message: 'Error in getting image' + err
+            });
+        });
+}
+
+export async function getImagesByPropertyId(req, res) {
+
+    let propertyId = req.query.propertyId;
+
+    if (!propertyId) {
+        return res.status(400).json({
+            success: false,
+            message: 'Please attach property id'
+        });
+    }
+
+    let properties = await Property.findOne({_id: propertyId})
+    let images = properties.images
+
+    if (!images) {
+        return res.status(400).json({
+            success: false,
+            message: 'Images not found'
+        });
+    }
+
+    console.log(images)
+    let idList = images.map(image => new mongoose.Types.ObjectId(image._id))
+
+    Images.find({
+        _id: {
+            $in: idList
+        }
+    })
+        .then((image) => {
+            if (!image || image.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Images not found'
+                });
+            }
+
+            let images = []
+
+            image.forEach(imageData => {
+                images.push(imageData.image.data)
+            });
+
+            return res.send(images);
         })
         .catch((err) => {
             return res.status(500).json({
