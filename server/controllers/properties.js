@@ -245,12 +245,21 @@ export async function updateProperty(req, res) {
 
     const files = req.files;
 
-    if (!files) {
-        return res.status(400).json({
+    const requiredFields = ['pid', 'address', 'propertyType', 'bhk', 'location', 'rent', 'securityDeposit', 'age'];
+    const missingFields = requiredFields.filter(field => !updateObject[field]);
+
+    if (missingFields.length > 0) {
+        res.status(400).json({
             success: false,
-            message: 'No file uploaded'
+            message: 'Please include all fields',
         });
     }
+
+    ['rent', 'securityDeposit', 'age'].forEach(field => {
+        if (updateObject[field]) {
+            updateObject[field] = parseInt(updateObject[field]);
+        }
+    });
 
     let updateProp = {_id: req.body.pid}
 
@@ -268,69 +277,111 @@ export async function updateProperty(req, res) {
         delete updateObject.long
     }
 
+    let idList = Array.isArray(updateObject?.deletedImages)
+        ? updateObject.deletedImages.map(id => new mongoose.Types.ObjectId(id))
+        : [new mongoose.Types.ObjectId(updateObject.deletedImages)];
+
+    if (idList && idList.length !== 0) {
+        Images.deleteMany({_id: {$in: idList}})
+            .then(result => {
+                console.log(`${result.deletedCount} images deleted successfully.`);
+            })
+            .catch(error => {
+                console.error('Error deleting images:', error);
+                res.status(500).json({
+                    success: false,
+                    message: 'Server error. Please try again.',
+                    error: error.message,
+                });
+            });
+    }
+
+
     const images = [];
 
-    for (const file of files) {
+    let newImageLength = (files?.length ?? 0);
 
-        if (images.length >= 10) {
-            break;
-        }
+    let property = await Property.findOne({_id: updateObject.pid})
 
-        const image = new Images({
-            _id: new mongoose.Types.ObjectId(),
-            ownerId: req.user._id,
-            image: {
-                data: file.buffer,
-                contentType: 'image/jpeg'
-            }
-        });
-
-        let savedImage = await image.save()
-        if (savedImage) {
-            images.push(savedImage._id);
-        }
-    }
-    updateObject.images = images
-
-    let properties = await Property.findOne({_id: updateObject.pid})
-
-    if (!images) {
+    if(!property) {
         return res.status(400).json({
             success: false,
-            message: 'Images not found'
+            message: 'Error finding property. Please try again.',
+            error: error.message,
         });
     }
 
-    let idList = properties.images.map(image => new mongoose.Types.ObjectId(image._id))
+    newImageLength += (property.images?.length ?? 0)
 
-    Images.deleteMany({_id: {$in: idList}})
-        .then(result => {
-            console.log(`${result.deletedCount} images deleted successfully.`);
-            // Handle success
-        })
-        .catch(error => {
-            console.error('Error deleting images:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Server error. Please try again.',
-                error: err.message,
-            });
-        });
+    if (idList && idList.length > 0) {
+        property.images = property.images.filter(imageId => !updateObject?.deletedImages?.includes(imageId.toString()));
+    }
 
-    Property.findOneAndUpdate(updateProp, {$set: updateObject})
-        .then((updatedProperty) => {
-            return res.status(200).json({
-                success: true,
-                message: 'Object Updated'
-            });
-        })
-        .catch((err) => {
-            res.status(500).json({
-                success: false,
-                message: 'Server error. Please try again.',
-                error: err.message,
-            });
+    newImageLength -= idList.length
+
+    if(newImageLength > 10) {
+        return res.status(400).json({
+            success: false,
+            message: 'More than 10 images attached',
+            error: error.message,
         });
+    }
+
+    if(files)
+        for (const file of files) {
+
+            if (images.length >= 10) {
+                break;
+            }
+
+            const image = new Images({
+                _id: new mongoose.Types.ObjectId(),
+                ownerId: req.user._id,
+                image: {
+                    data: file.buffer,
+                    contentType: 'image/jpeg'
+                }
+            });
+
+            let savedImage = await image.save()
+            if (savedImage) {
+                images.push(savedImage._id);
+            }
+        }
+
+    property.address = updateObject.address;
+    property.propertyType = updateObject.propertyType;
+    property.bhk = updateObject.bhk;
+    property.location = updateObject.location;
+    property.rent = updateObject.rent;
+    property.securityDeposit = updateObject.securityDeposit;
+    property.age = updateObject.age;
+    property.images = property.images.concat(images);
+
+    let savedProperty;
+    try {
+        savedProperty = await property.save();
+    } catch (error) {
+        console.error('Error saving property:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error saving property. Please try again.',
+            error: error.message,
+        });
+    }
+
+    if (!savedProperty) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error saving property. Please try again.',
+        });
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: 'Property updated successfully',
+        property: savedProperty,
+    });
 }
 
 export async function deleteProperty(req, res) {

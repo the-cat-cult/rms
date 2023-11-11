@@ -21,7 +21,7 @@ export default function (req, res, next) {
         const errors = [];
 
         if (!files || files.length === 0) {
-            errors.push('No files uploaded');
+            console.log("no files uploaded")
         } else {
             for (const file of files) {
                 const allowedTypes = ['image/jpeg', 'image/png'];

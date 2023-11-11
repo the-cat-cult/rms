@@ -43,6 +43,10 @@
             <h4 class=" mb-5">Make changes to the property...</h4>
 
 
+            <h5>Existing images</h5>
+            <div class="container w-100 mb-5 rounded d-flex align-items-center" style="background-color: transparent; height: 250px; overflow: hidden; border: 1px dashed #585858" id="existing-images">
+            </div>
+
             <div class="container w-100 mb-5 rounded d-flex align-items-center" style="background-color: transparent; height: 250px; overflow: hidden;" id="add-image">
                 <input type="file" name="upload_images_route" type="file" id="upload_images_route" accept="image/*" multiple style="display: none;" onchange="handleFileSelection(event)">
             </div>
@@ -158,6 +162,7 @@
         let propertyLocation, address, bhk, type, rent, sd, age;
 
         let uploadFiles = []
+        let deletedImages = []
 
         function validate() {
             if (localStorage.getItem("role") !== "owner" && localStorage.getItem("role") !== "admin") {
@@ -222,45 +227,34 @@
             inputElement.files = customFileList.files;
         }
 
-        function append_existing_images() {
-            let inputElement = document.getElementById('upload_images_route');
+        let existingImagesLength = 0
 
-            axios.get("/api/listAllImagesByProperty?propertyId=" + getPropertyId())
-                .then(function(response) {
-                    let newFiles = [];
+        function append_existing_images(images) {
+            let existingImages = document.getElementById('existing-images');
+            existingImagesLength = images.length
 
-                    response.data.forEach((imageData, index) => {
-                        var uint8Array = new Uint8Array(imageData.data);
-                        var blob = new Blob([uint8Array], { type: 'image/png' });
-
-                        // Create a File object from the Blob
-                        var fileName = 'image' + index + '.png';
-                        var file = new File([blob], fileName, { type: 'image/png' });
-                        newFiles.push(file);
-                    });
-
-                    // Convert inputElement.files to an array and concatenate it with newFiles
-                    var existingFiles = Array.from(inputElement.files);
-                    var allFiles = existingFiles.concat(newFiles);
-
-                    // Create a new FileList using the modified array
-                    var customFileList = new DataTransfer();
-                    allFiles.forEach(function(file) {
-                        customFileList.items.add(file);
-                    });
-
-                    // Set input element's files property with the new FileList
-                    inputElement.files = customFileList.files;
-
-                    add_image_to_array();
-                })
-                .catch(function(error) {
-                    console.error("Error fetching images:", error);
-                    alert("Could not get images");
+            images.forEach(id => {
+                existingImages.style.overflow = "auto";
+                let img = document.createElement('img');
+                img.src = window.location.origin + "/api/image/" + id
+                img.style.width = "200px";
+                img.style.height = "200px";
+                img.style.margin = "10px";
+                img.classList.add("rounded");
+                img.classList.add("hover_delete");
+                img.style.objectFit = "cover";
+                img.style.objectPosition = "center";
+                img.style.cursor = "pointer";
+                img.addEventListener('click', function() {
+                    existingImages.removeChild(img);
+                    deletedImages.push(id)
+                    existingImagesLength -= 1
                 });
+                existingImages.appendChild(img);
+            })
+
+            existingImagesLength = images.length
         }
-
-
 
 
         function validate_form() {
@@ -304,7 +298,7 @@
             display_list = document.getElementById('add-image')
             let files = document.getElementById('upload_images_route').files;
             // If total images present is more than 10, alert the user and don't add the images
-            if (files.length > 10) {
+            if (files.length + existingImagesLength > 10) {
                 alert("You can only upload a maximum of 10 images");
                 return false;
             }
@@ -459,6 +453,9 @@
             formData.append('rent', parseInt(rent));
             formData.append('securityDeposit', parseInt(sd));
             formData.append('age', parseInt(age));
+            deletedImages.forEach(id => {
+                formData.append('deletedImages', id);
+            });
 
             axios.patch("/api/updateProperty", formData, {
                 headers: {
