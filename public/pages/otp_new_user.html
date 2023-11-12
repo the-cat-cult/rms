@@ -89,6 +89,18 @@
             return phone;
         }
 
+        function getType() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const type = urlParams.get('type');
+
+            if (type == null) {
+                window.location.href = "new_user.html";
+            }
+
+            return type;
+        }
+
         function sendOTP() {
             const data = {
                 "phone": getPhoneNumber()
@@ -109,11 +121,12 @@
             const data = {
                 "phone": getPhoneNumber(),
                 "otp": document.getElementById("digit1").value + document.getElementById("digit2").value + document.getElementById("digit3").value + document.getElementById("digit4").value,
-                "name": getName()
+                "name": getName(),
+                "type": getType()
             };
 
             // /api/verifyOTP -> use axios post
-            axios.post('/api/ownerSignUp', data)
+            axios.post('/api/signUp', data)
                 .then(function(response) {
                     console.log(response);
                     if (response.data.success) {

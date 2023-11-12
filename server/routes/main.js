@@ -32,7 +32,7 @@ import {
     updateUser,
     deleteUser, getAllSellers, verifyUser, getOneOwnerById, deleteOwnerById,
 } from '../controllers/user.js'
-import {ownerSignUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
+import {signUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
 import multerImages from '../middleware/multer-images.js'
 
@@ -45,7 +45,7 @@ router.get('/image/:id', authentication(['owner', 'tenant', 'admin']), getFile)
 
 //authentication
 router.post('/login', login)
-router.post('/ownerSignUp', ownerSignUp)
+router.post('/signUp', signUp)
 router.post('/generateOTP', generateOTP)
 router.post('/signOut', authentication(["admin", "owner", "tenant"]), singOut)
 router.get('/isAuthenticated', authentication(["admin", "owner", "tenant"]), checkAuth)
