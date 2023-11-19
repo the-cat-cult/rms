@@ -190,7 +190,7 @@
             axios.get("/api/deleteOwnerById?owner_id=" + getOwnerIdFromParam())
                 .then(function (response) {
                     if (response.data.success) {
-                        location.href = "pages/admin/seller_list.html"
+                        location.href = "/pages/admin/seller_list.html"
                     }
                 })
                 .catch(function (error) {

@@ -247,7 +247,7 @@
                     window.location.href = "/pages/owner/owner_panel.html"
                 })
                 .catch(function(error) {
-                    alert(error.response.data.error);
+                    alert("Could not add new property, please check if your account is verified, check if all fields are filled and make sure your image is of extension .jpg, .jpeg or .png");
                     console.log(error);
                 });
         });
