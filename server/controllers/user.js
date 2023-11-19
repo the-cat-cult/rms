@@ -44,6 +44,7 @@ export async function createUser(req, res) {
         _id: new mongoose.Types.ObjectId(),
         name: name,
         mobileNumber: mno,
+        verified: true,
         isAdmin: isAdmin || false
     })
 
