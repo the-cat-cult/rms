@@ -225,8 +225,6 @@
 
         document.getElementById('confirmButton').addEventListener('click', function() {
 
-            console.log(rent)
-
             let formData = new FormData();
             let files = document.getElementById('upload_images_route').files;
             for (let i = 0; i < files.length; i++) {
@@ -252,7 +250,7 @@
                     window.location.href = "/pages/admin/owner_page.html?owner_id=" + getOwnerIdFromParam()
                 })
                 .catch(function(error) {
-                    alert("Error in adding property. Please try again later");
+                    alert(error.response.data.error);
                     console.log(error);
                 });
         });

@@ -1,19 +1,29 @@
 import multer from "multer";
-import * as fs from "fs";
 import sharp from "sharp";
+import path from "path";
 
-//{
-//     filename: (req, file, cb) => {
-//         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-//         cb(null, file.fieldname + '-' + uniqueSuffix + '.jpg');
-//     }
-// }
+const fileFilter = (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png/;
+    const extname = filetypes.test(
+        path.extname(file.originalname).toString()
+    );
+    const mimetype = filetypes.test(file.mimetype);
 
-const upload = multer({storage: multer.memoryStorage()});
+    console.log(path.extname(file.originalname).toString(), extname, mimetype);
+
+    if (mimetype && extname) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+};
+
+const upload = multer({storage: multer.memoryStorage(), fileFilter});
 
 export default function (req, res, next) {
     upload.array('files', 10)(req, res, async (err) => {
         if (err) {
+            console.log(err)
             return res.status(400).json({error: err.message});
         }
 
@@ -22,6 +32,7 @@ export default function (req, res, next) {
 
         if (!files || files.length === 0) {
             console.log("no files uploaded")
+            return res.status(400).json({error: 'No valid files uploaded.'});
         } else {
             for (const file of files) {
                 const allowedTypes = ['image/jpeg', 'image/png'];

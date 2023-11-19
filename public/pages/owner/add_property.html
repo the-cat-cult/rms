@@ -247,7 +247,7 @@
                     window.location.href = "/pages/owner/owner_panel.html"
                 })
                 .catch(function(error) {
-                    alert("Error in adding property. Please try again later");
+                    alert(error.response.data.error);
                     console.log(error);
                 });
         });

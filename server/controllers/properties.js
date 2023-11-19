@@ -400,7 +400,19 @@ export async function deleteProperty(req, res) {
     }
 
     Property.findOneAndDelete()
-        .then((oneProperty) => {
+        .then(async (oneProperty) => {
+
+            const imageIds = oneProperty.images.map(image => new mongoose.Types.ObjectId(image));
+            const deleteQuery = { _id: { $in: imageIds } };
+
+            await Images.deleteMany(deleteQuery)
+                .then(result => {
+                    console.log(`${result.deletedCount} images deleted successfully.`);
+                })
+                .catch(error => {
+                    console.error(`Error deleting images: ${error}`);
+                });
+
             return res.status(200).json({
                 success: true,
                 message: 'Deleted Property',
@@ -635,7 +647,7 @@ export async function getImagesByPropertyId(req, res) {
     }
 
     let properties = await Property.findOne({_id: propertyId})
-    if(!properties) {
+    if (!properties) {
         return res.status(400).json({
             success: false,
             message: 'Property not found'
