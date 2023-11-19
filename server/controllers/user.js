@@ -273,3 +273,22 @@ export function deleteOwnerById(req, res) {
         });
     });
 }
+
+
+export function getAllAdmins(req, res) {
+    User.find({isAdmin: true})
+        .then((admin) => {
+            return res.status(200).json({
+                success: true,
+                message: 'A list of all Admins',
+                Admins: admin,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error. Please try again.',
+                error: err.message,
+            });
+        });
+}

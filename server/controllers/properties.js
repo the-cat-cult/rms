@@ -303,7 +303,7 @@ export async function updateProperty(req, res) {
 
     let property = await Property.findOne({_id: updateObject.pid})
 
-    if(!property) {
+    if (!property) {
         return res.status(400).json({
             success: false,
             message: 'Error finding property. Please try again.',
@@ -319,7 +319,7 @@ export async function updateProperty(req, res) {
 
     newImageLength -= idList.length
 
-    if(newImageLength > 10) {
+    if (newImageLength > 10) {
         return res.status(400).json({
             success: false,
             message: 'More than 10 images attached',
@@ -327,7 +327,7 @@ export async function updateProperty(req, res) {
         });
     }
 
-    if(files)
+    if (files)
         for (const file of files) {
 
             if (images.length >= 10) {
@@ -635,6 +635,12 @@ export async function getImagesByPropertyId(req, res) {
     }
 
     let properties = await Property.findOne({_id: propertyId})
+    if(!properties) {
+        return res.status(400).json({
+            success: false,
+            message: 'Property not found'
+        });
+    }
     let images = properties.images
 
     if (!images) {

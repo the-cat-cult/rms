@@ -48,7 +48,7 @@
                 </div>
 
                 <div class="col-sm-12 col-md-2 col-lg-2">
-                    <button type="button" class="btn btn-success" onclick="window.location.href='/pages/admin/add_tenant.html'" id="add-tenant">Add Admin</button>
+                    <button type="button" class="btn btn-success" onclick="window.location.href='/pages/admin/add_admin.html'" id="add-admin">Add Admin</button>
                 </div>
 
                 <!-- Search by Personal Number -->
@@ -99,38 +99,32 @@
 
 
         <script>
-            // current_user = "Jignesh";
-            // document.getElementById("profile_name").innerHTML = current_user;
             let original_list = []
 
-            function getTenants() {
-                axios.get('/api/listAllTenants')
+            function getAdmins() {
+                axios.get('/api/listAllAdmins')
                     .then(function(response) {
                         if (response.data.success) {
                             let default_data = []
-                            let tenants = response.data.Tenant;
-                            for (let i = 0; i < tenants.length; i++) {
-                                let tenant = tenants[i];
-                                let tenant_data = {
-                                    "name": tenant.name,
-                                    "ph_no": tenant.mobileNumber,
-                                    "rank": tenant.rank,
-                                    "personal_no": tenant.pnum,
-                                    "Unit": tenant.unit,
-                                    "Allocation": tenant.allocationStatus,
-                                    "tenantId": tenant._id
+                            let admins = response.data.Admins;
+                            for (let i = 0; i < admins.length; i++) {
+                                let admin = admins[i];
+                                let admin_data = {
+                                    "name": admin.name,
+                                    "ph_no": admin.mobileNumber,
+                                    "adminId": admin._id
                                 }
-                                default_data.push(tenant_data);
+                                default_data.push(admin_data);
                             }
                             build_list(default_data);
                             original_list = default_data;
                         } else {
-                            alert("Error fetching tenants");
+                            alert("Error fetching admins");
                         }
                     })
                     .catch(function(error) {
                         console.log(error);
-                        alert("Error fetching tenants");
+                        alert("Error fetching admins");
                     })
             }
 
@@ -140,9 +134,8 @@
                 list.innerHTML = "";
 
                 for (var i = 0; i < default_data.length; i++) {
-                    var item = document.createElement("a");
-                    item.setAttribute("href", "/pages/admin/tenant_page.html?tenantId=" + default_data[i]["tenantId"]);
-                    item.setAttribute("class", "list-group-item list-group-item-action");
+                    var item = document.createElement("div");
+                    item.setAttribute("class", "list-group-item");
                     item.setAttribute("aria-current", "true");
 
                     var div1 = document.createElement("div");
@@ -232,7 +225,7 @@
             }
 
             function resize_button() {
-                add_button = document.getElementById("add-tenant");
+                add_button = document.getElementById("add-admin");
                 if (window.innerWidth < 768) {
                     // Bring button to bottom of the page
                     add_button.setAttribute("class", "btn btn-success w-100 mb-3");
@@ -242,7 +235,7 @@
             }
 
             function load_seq() {
-                getTenants();
+                getAdmins();
                 resize_button();
             }
 

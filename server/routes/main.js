@@ -30,7 +30,7 @@ import {
     getAllUsers,
     getOneUser,
     updateUser,
-    deleteUser, getAllSellers, verifyUser, getOneOwnerById, deleteOwnerById,
+    deleteUser, getAllSellers, verifyUser, getOneOwnerById, deleteOwnerById, getAllAdmins,
 } from '../controllers/user.js'
 import {signUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
@@ -68,6 +68,7 @@ router.post('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
 //get list of entities
 router.get('/listAllUsers', authentication(["admin"]), getAllUsers)
 router.get('/listAllTenants', authentication(["admin", "owner"]), getAllTenants)
+router.get('/listAllAdmins', authentication(["admin"]), getAllAdmins)
 router.get('/listAllPropertiesByUser', authentication(["owner"]), getAllPropertiesByUser)
 router.post('/listAllPropertiesByFilter', authentication(["admin", "tenant"]), getPropertiesByFilters)
 router.post('/listAllBookings', authentication(["admin", "tenant"]), getAllBookings)
