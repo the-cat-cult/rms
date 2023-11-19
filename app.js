@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cookieParser from "cookie-parser";
+import "express-async-errors"
 
 import router from './server/routes/main.js';
 import path from "path";
@@ -13,11 +14,11 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use("/", express.static('public'))
-    // set up mongoose
+// set up mongoose
 let connectionString = process.env.NODE_ENV === 'development' ? process.env.CONNECTION_STRING_DEV : process.env.CONNECTION_STRING_PROD;
-mongoose.connect(connectionString, { dbName: process.env.DATABASE_NAME })
+mongoose.connect(connectionString, {dbName: process.env.DATABASE_NAME})
     .then(() => {
         console.log('\x1b[34m%s\x1b[0m', 'Connected to database');
         let url = 'http://localhost:8080/';
@@ -26,9 +27,10 @@ mongoose.connect(connectionString, { dbName: process.env.DATABASE_NAME })
     .catch((error) => {
         console.log('Error connecting to database', error);
     });
-// set up port
-const port = process.env.PORT || 8080;
-// set up route
+
+const __dirname = path.resolve();
+
+// Route definitions
 app.get('/', (req, res) => {
     res.status(200).json({
         message: "Welcome to the API"
@@ -37,20 +39,20 @@ app.get('/', (req, res) => {
 
 app.use('/api/', router);
 
-app.get('*', function(req, res) {
+app.get('*', function (req, res) {
     res.status(404).redirect('/pages/page_404.html');
 });
 
-const __dirname = path.resolve();
-
-
+// Global error handler
 app.use((err, req, res, next) => {
-    if (!err) {
-        return next();
-    }
+    console.error(err.stack);
 
-    return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
+    if (!res.headersSent) {
+        res.status(500).sendFile(path.join(__dirname, '/public/pages/page_500.html'));
+    }
 });
+
+const port = process.env.PORT || 8080;
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
