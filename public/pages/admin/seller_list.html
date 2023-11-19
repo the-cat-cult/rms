@@ -236,7 +236,11 @@
 
             list_item.appendChild(row);
 
-            list_item.addEventListener("click", function(event) {
+            col1.addEventListener("click", function(event) {
+                window.location.href = "/pages/admin/owner_page.html?owner_id=" + data[i]._id;
+            })
+
+            col2.addEventListener("click", function(event) {
                 window.location.href = "/pages/admin/owner_page.html?owner_id=" + data[i]._id;
             })
 
