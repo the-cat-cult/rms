@@ -194,7 +194,17 @@ export function deleteTenantById(req, res) {
     }
 
     Tenant.findOneAndDelete({ _id: id })
-        .then((oneTenant) => {
+        .then(async (oneTenant) => {
+
+            try {
+                await Bookings.deleteOne({tenantId: oneTenant._id});
+                console.log('Booking for property deleted successfully');
+            } catch (error) {
+                console.error('Error deleting bookin:', error);
+            }
+
+            await Bookings.deleteOne({tenantId: id})
+
             return res.status(200).json({
                 success: true,
                 message: 'Deleted Tenant',

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Property from "../models/properties.js";
 import Images from "../models/images.js";
 import User from "../models/user.js";
+import Bookings from "../models/bookings.js";
 
 export async function createProperty(req, res) {
     const files = req.files;
@@ -399,11 +400,11 @@ export async function deleteProperty(req, res) {
         query.ownerId = req.user._id
     }
 
-    Property.findOneAndDelete()
+    Property.findOneAndDelete(query)
         .then(async (oneProperty) => {
 
             const imageIds = oneProperty.images.map(image => new mongoose.Types.ObjectId(image));
-            const deleteQuery = { _id: { $in: imageIds } };
+            const deleteQuery = {_id: {$in: imageIds}};
 
             await Images.deleteMany(deleteQuery)
                 .then(result => {
@@ -412,6 +413,13 @@ export async function deleteProperty(req, res) {
                 .catch(error => {
                     console.error(`Error deleting images: ${error}`);
                 });
+
+            try {
+                await Bookings.deleteOne({propertyId: oneProperty._id});
+                console.log('Booking for property deleted successfully');
+            } catch (error) {
+                console.error('Error deleting bookin:', error);
+            }
 
             return res.status(200).json({
                 success: true,

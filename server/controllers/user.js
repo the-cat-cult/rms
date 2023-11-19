@@ -3,6 +3,8 @@ import User from "../models/user.js";
 import Tenant from "../models/tenant.js";
 import Properties from "../models/properties.js";
 import Bookings from "../models/bookings.js";
+import Property from "../models/properties.js";
+import Images from "../models/images.js";
 
 export async function createUser(req, res) {
 
@@ -153,7 +155,7 @@ export function getOneOwnerById(req, res) {
         });
     }
 
-    User.findOne({ _id: id })
+    User.findOne({_id: id})
         .then((oneUser) => {
             return res.status(200).json({
                 success: true,
@@ -219,7 +221,7 @@ export async function updateUser(req, res) {
 }
 
 export function deleteOwnerById(req, res) {
-    let id = req.query.owner_id
+    let id = req.query.owner_id;
 
     if (!id) {
         return res.status(400).json({
@@ -229,14 +231,45 @@ export function deleteOwnerById(req, res) {
     }
 
     User.findOneAndDelete({ _id: id })
-        .then((oneTenant) => {
+        .then(async (oneUser) => {
+            if (!oneUser) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Owner not found'
+                });
+            }
 
-            Properties.deleteMany()
+            // Fetch properties owned by the user
+            const manyProperties = await Property.find({ ownerId: oneUser._id });
 
+            for (const oneProperty of manyProperties) {
+                const imageIds = oneProperty.images.map(image => new mongoose.Types.ObjectId(image));
+                const deleteQuery = { _id: { $in: imageIds } };
+
+                await Images.deleteMany(deleteQuery)
+                    .then(result => {
+                        console.log(`${result.deletedCount} images deleted successfully.`);
+                    })
+                    .catch(error => {
+                        console.error(`Error deleting images: ${error}`);
+                    });
+
+                try {
+                    await Bookings.deleteOne({ propertyId: oneProperty._id });
+                    console.log(`Booking for property with ID: ${oneProperty._id} deleted successfully`);
+                } catch (error) {
+                    console.error('Error deleting booking:', error);
+                }
+
+                await Property.deleteOne({ _id: oneProperty._id });
+                console.log(`Property with ID: ${oneProperty._id} deleted successfully`);
+            }
+
+            // Now that all properties are processed, you can delete the user
             return res.status(200).json({
                 success: true,
                 message: 'Deleted Owner',
-                Tenant: oneTenant,
+                Tenant: oneUser,
             });
         }).catch((err) => {
         res.status(500).json({
@@ -246,6 +279,7 @@ export function deleteOwnerById(req, res) {
         });
     });
 }
+
 
 
 export function getAllAdmins(req, res) {

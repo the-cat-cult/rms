@@ -83,9 +83,9 @@ router.post('/setVerificationStatus', authentication("admin"), setVerificationSt
 router.post('/verifyUser', authentication(["admin"]), verifyUser)
 
 //delete entity
-router.post('/deleteProperty', authentication(["admin", "owner"]), deleteProperty) //Property -> images
+router.post('/deleteProperty', authentication(["admin", "owner"]), deleteProperty)
 router.post('/deleteBooking', authentication(["tenant"]), deleteBooking)
-router.get('/deleteTenantById', authentication(["admin"]), deleteTenantById) // not an admin, properties should be deleted -> clear images
-router.get('/deleteOwnerById', authentication(["admin"]), deleteOwnerById) //not an admin, properties should be deleted -> clear images
+router.get('/deleteTenantById', authentication(["admin"]), deleteTenantById)
+router.get('/deleteOwnerById', authentication(["admin"]), deleteOwnerById)
 
 export default router;
