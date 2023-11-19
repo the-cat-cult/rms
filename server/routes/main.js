@@ -22,15 +22,13 @@ import {
     createTenant,
     getAllTenants,
     getOneTenant,
-    updateTenant,
-    deleteTenant, getOneTenantById, deleteTenantById,
+    updateTenant, getOneTenantById, deleteTenantById,
 } from '../controllers/tenant.js'
 import {
     createUser,
     getAllUsers,
     getOneUser,
-    updateUser,
-    deleteUser, getAllSellers, verifyUser, getOneOwnerById, deleteOwnerById, getAllAdmins,
+    updateUser, getAllSellers, verifyUser, getOneOwnerById, deleteOwnerById, getAllAdmins,
 } from '../controllers/user.js'
 import {signUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
@@ -85,11 +83,9 @@ router.post('/setVerificationStatus', authentication("admin"), setVerificationSt
 router.post('/verifyUser', authentication(["admin"]), verifyUser)
 
 //delete entity
-router.delete('/deleteUser', authentication(["admin", "owner"]), deleteUser)
-router.delete('/deleteTenant', authentication(["admin", "tenant"]), deleteTenant)
-router.post('/deleteProperty', authentication(["admin", "owner"]), deleteProperty)
+router.post('/deleteProperty', authentication(["admin", "owner"]), deleteProperty) //Property -> images
 router.post('/deleteBooking', authentication(["tenant"]), deleteBooking)
-router.get('/deleteTenantById', authentication(["admin"]), deleteTenantById)
-router.get('/deleteOwnerById', authentication(["admin"]), deleteOwnerById)
+router.get('/deleteTenantById', authentication(["admin"]), deleteTenantById) // not an admin, properties should be deleted -> clear images
+router.get('/deleteOwnerById', authentication(["admin"]), deleteOwnerById) //not an admin, properties should be deleted -> clear images
 
 export default router;

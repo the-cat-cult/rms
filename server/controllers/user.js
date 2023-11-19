@@ -218,33 +218,6 @@ export async function updateUser(req, res) {
         });
 }
 
-export function deleteUser(req, res) {
-    let mobileNumber = req.user.mobileNumber;
-
-    if (req.user.role === 'admin') {
-        mobileNumber = req.body.mobileNumber;
-    }
-
-    User.findOneAndDelete({mobileNumber: mobileNumber})
-        .then((oneUser) => {
-
-            //TODO: Delete all properties and bookings of this user
-
-            return res.status(200).json({
-                success: true,
-                message: 'Deleted User',
-                User: oneUser,
-            });
-        })
-        .catch((err) => {
-            res.status(500).json({
-                success: false,
-                message: 'Server error. Please try again.',
-                error: err.message,
-            });
-        });
-}
-
 export function deleteOwnerById(req, res) {
     let id = req.query.owner_id
 

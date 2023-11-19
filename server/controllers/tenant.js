@@ -183,30 +183,6 @@ export async function updateTenant(req, res) {
         });
 }
 
-export function deleteTenant(req, res) {
-    let mobileNumber = req.user.mobileNumber;
-
-    if (req.user.role === 'admin') {
-        mobileNumber = req.body.mobileNumber;
-    }
-
-    Tenant.findOneAndDelete({ mobileNumber: mobileNumber })
-        .then((oneTenant) => {
-            return res.status(200).json({
-                success: true,
-                message: 'Deleted Tenant',
-                Tenant: oneTenant,
-            });
-        })
-        .catch((err) => {
-            res.status(500).json({
-                success: false,
-                message: 'Server error. Please try again.',
-                error: err.message,
-            });
-        });
-}
-
 export function deleteTenantById(req, res) {
     let id = req.query.tenant_id
 
