@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use("/", express.static('public'))
 // set up mongoose
 let connectionString = process.env.NODE_ENV === 'development' ? process.env.CONNECTION_STRING_DEV : process.env.CONNECTION_STRING_PROD;
-mongoose.connect(connectionString, {dbName: process.env.DATABASE_NAME})
+mongoose.connect(connectionString)
     .then(() => {
         console.log('\x1b[34m%s\x1b[0m', 'Connected to database');
         let url = 'http://localhost:8080/';
