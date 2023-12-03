@@ -84,6 +84,8 @@
                 <h3 id="address"></h3>
                 <h5 class="mt-3 text-muted">Security Deposit</h5>
                 <h3 id="security_deposit"></h3>
+                <h5 class="mt-3 text-muted">MoU</h5>
+                <h3 id="mou"></h3>
             </div>
         </div>
     </div>
@@ -158,6 +160,7 @@
     let address = "...";
     let rent = 0;
     let security_deposit = 0;
+    let mou = false;
 
     let lat = 0;
     let lng = 0;
@@ -182,7 +185,7 @@
                     rent = response.data.Property.rent
                     security_deposit = response.data.Property.securityDeposit
                     verified = response.data.Property.verified
-
+                    mou = response.data.Property.mou || false;
 
                     // Latitude and Longitude
                     lat = response.data.Property.lat || 0
@@ -229,7 +232,7 @@
     address_refs = document.getElementById("address");
     status_refs = document.getElementById("status");
     security_deposit_refs = document.getElementById("security_deposit");
-
+    mou_refs = document.getElementById("mou");
 
     function build_data() {
         let carousel_indicators = document.getElementsByClassName("carousel-indicators")[0];
@@ -266,6 +269,7 @@
         type_refs.innerHTML = type;
         rent_refs.innerHTML = "₹" + rent + " /month";
         security_deposit_refs.innerHTML = "₹" + security_deposit;
+        mou_refs.innerHTML = "Is MoU available: " + mou;
         address_refs.innerHTML = address;
         if (verified) {
             status_refs.classList.add("badge");
