@@ -32,7 +32,6 @@ export default function (req, res, next) {
 
         if (!files || files.length === 0) {
             console.log("no files uploaded")
-            return res.status(400).json({error: 'No valid files uploaded.'});
         } else {
             for (const file of files) {
                 const allowedTypes = ['image/jpeg', 'image/png'];

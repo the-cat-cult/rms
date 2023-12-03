@@ -196,7 +196,7 @@
                         bhk = document.getElementById('bhk').value = property.bhk;
                         type = document.getElementById('type').value = property.propertyType;
                         age = document.getElementById('age').value = property.age;
-                        mou = document.getElementById('mou').value = property.mou;
+                        mou = document.getElementById('mou').checked = property.mou;
 
                         append_existing_images(property.images)
                     }
@@ -271,7 +271,7 @@
             bhk = document.getElementById('bhk').value;
             type = document.getElementById('type').value;
             age = document.getElementById('age').value;
-            mou = document.getElementById('mou').value;
+            mou = document.getElementById('mou').checked;
 
             if(mou === undefined) {
                 mou = false;

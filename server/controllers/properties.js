@@ -19,7 +19,7 @@ export async function createProperty(req, res) {
         });
     }
 
-    if (!files) {
+    if (!files || files.length === 0) {
         return res.status(400).json({
             success: false,
             message: 'No file uploaded'
@@ -278,9 +278,25 @@ export async function updateProperty(req, res) {
         delete updateObject.long
     }
 
-    let idList = Array.isArray(updateObject?.deletedImages)
-        ? updateObject.deletedImages.map(id => new mongoose.Types.ObjectId(id))
-        : [new mongoose.Types.ObjectId(updateObject.deletedImages)];
+    let idList = []
+
+    if (updateObject.deletedImages) {
+        idList = Array.isArray(updateObject.deletedImages)
+            ? updateObject.deletedImages.map(id => new mongoose.Types.ObjectId(id))
+            : [new mongoose.Types.ObjectId(updateObject.deletedImages)];
+    }
+
+    if (idList.length === 0) {
+        if (files && files.length === 0 || !files) {
+            return res.status(400).json({
+                success: false,
+                message: 'No images attached, please attach property images',
+                error: error.message,
+            });
+        }
+    }
+
+    console.log(idList)
 
     if (idList && idList.length !== 0) {
         Images.deleteMany({_id: {$in: idList}})
@@ -289,7 +305,7 @@ export async function updateProperty(req, res) {
             })
             .catch(error => {
                 console.error('Error deleting images:', error);
-                res.status(500).json({
+                res.status(400).json({
                     success: false,
                     message: 'Server error. Please try again.',
                     error: error.message,
