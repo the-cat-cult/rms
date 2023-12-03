@@ -6,6 +6,7 @@ const propertiesSchema = new mongoose.Schema({
     address: String,
     propertyType: String,
     bhk: String,
+    mou: Boolean,
     location: String,
     lat: {
         type: Number,

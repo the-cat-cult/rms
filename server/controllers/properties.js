@@ -56,6 +56,7 @@ export async function createProperty(req, res) {
         bhk: req.body.bhk,
         location: req.body.location,
         rent: req.body.rent,
+        mou: req.body.mou,
         securityDeposit: req.body.secdep,
         age: req.body.age,
         ownerId: req.user._id,
@@ -78,7 +79,6 @@ export async function createProperty(req, res) {
             })
         });
 }
-
 
 export function getAllPropertiesByUser(req, res) {
 
@@ -358,6 +358,7 @@ export async function updateProperty(req, res) {
     property.securityDeposit = updateObject.securityDeposit;
     property.age = updateObject.age;
     property.images = property.images.concat(images);
+    property.mou = updateObject.mou;
 
     let savedProperty;
     try {
