@@ -286,13 +286,16 @@ export async function updateProperty(req, res) {
             : [new mongoose.Types.ObjectId(updateObject.deletedImages)];
     }
 
+    let property = await Property.findOne({_id: updateObject.pid})
+
     if (idList.length === 0) {
         if (files && files.length === 0 || !files) {
-            return res.status(400).json({
-                success: false,
-                message: 'No images attached, please attach property images',
-                error: error.message,
-            });
+            if (property.images == null || property.images.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'No images attached, please attach property images',
+                });
+            }
         }
     }
 
@@ -317,8 +320,6 @@ export async function updateProperty(req, res) {
     const images = [];
 
     let newImageLength = (files?.length ?? 0);
-
-    let property = await Property.findOne({_id: updateObject.pid})
 
     if (!property) {
         return res.status(400).json({

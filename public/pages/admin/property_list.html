@@ -89,6 +89,12 @@
                 </div>
 
             </div>
+            <div class="pt-3">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="mou">
+                    <label class="form-check-label" for="mou">Only properties with MoU</label>
+                </div>
+            </div>
         </div>
 
 
@@ -180,6 +186,7 @@
                                     "location": received_data[i].location,
                                     "securityDeposit": received_data[i].securityDeposit,
                                     "bhk": received_data[i].bhk,
+                                    "mou" : received_data[i].mou,
                                     "id": received_data[i]._id,
                                     "link": "/pages/owner/property_view.html?propertyId=" + received_data[i]._id,
                                 })
@@ -269,6 +276,20 @@
                 if (val) {
                     let filtered_data = default_data.filter(function(item) {
                         return item.id.includes(val);
+                    });
+                    generate_list(filtered_data);
+                } else {
+                    generate_list(default_data);
+                }
+            });
+
+            document.getElementById("mou").addEventListener("change", function(event) {
+                val = document.getElementById("mou").checked;
+                // Search in default_data
+                if (val) {
+                    let filtered_data = default_data.filter(function(item) {
+                        console.log(item)
+                        return item.mou === true
                     });
                     generate_list(filtered_data);
                 } else {
