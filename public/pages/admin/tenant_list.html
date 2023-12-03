@@ -51,10 +51,6 @@
                     <button type="button" class="btn btn-success" onclick="window.location.href='/pages/admin/add_tenant.html'" id="add-tenant">Add Tenant</button>
                 </div>
 
-                <!-- Search by Personal Number -->
-                <div class="col-sm-12 col-md-2 col-lg-2 mb-sm-2 mb-2">
-                    <input type="text" class="form-control" id="personal-number" placeholder="Personal Number">
-                </div>
                 <!-- Search by Phone Number -->
                 <div class="col-sm-12 col-md-2 col-lg-2">
                     <input type="text" class="form-control" id="phone-number" placeholder="Phone Number">
@@ -115,7 +111,6 @@
                                     "name": tenant.name,
                                     "ph_no": tenant.mobileNumber,
                                     "rank": tenant.rank,
-                                    "personal_no": tenant.pnum,
                                     "Unit": tenant.unit,
                                     "Allocation": tenant.allocationStatus,
                                     "tenantId": tenant._id
@@ -165,29 +160,10 @@
                 }
             }
 
-            document.getElementById("personal-number").addEventListener("input", function(event) {
-                search_by_personal_number(event.target.value);
-            });
-
             document.getElementById("phone-number").addEventListener("input", function(event) {
                 search_by_phone_number(event.target.value);
             });
 
-
-            //frontend search, do not change original list
-            function search_by_personal_number(personal_number) {
-                let filtered_list = original_list.filter(function(item) {
-                    if (item["personal_no"] !== undefined) {
-                        return item["personal_no"].includes(personal_number);
-                    }
-                });
-
-                if (personal_number == "") {
-                    filtered_list = original_list;
-                }
-
-                build_list(filtered_list);
-            }
 
             function search_by_phone_number(phone_number) {
                 let filtered_list = original_list.filter(function(item) {

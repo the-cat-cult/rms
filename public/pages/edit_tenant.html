@@ -44,13 +44,6 @@
                         <label for="phno">Phone Number</label>
                     </div>
                 </div>
-
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="pnum" placeholder="123456-Z" value="">
-                        <label for="pnum">Personal Number</label>
-                    </div>
-                </div>
             </div>
 
             <div class="row g-3 mb-3">
@@ -110,7 +103,7 @@
 
     </div>
     <script>
-        let name, unit, phone, pnum, rank, dor, dov;
+        let name, unit, phone, rank, dor, dov;
 
         function getTenantData() {
             axios.post('/api/getTenant')
@@ -119,7 +112,6 @@
                     name = tenantData.name;
                     unit = tenantData.unit;
                     phone = tenantData.mobileNumber;
-                    pnum = tenantData.pnum;
                     rank = tenantData.rank;
                     dor = tenantData.dateOfReporting;
                     dov = tenantData.dateOfVacation;
@@ -132,7 +124,6 @@
                     document.getElementById('name').value = name || "";
                     document.getElementById('unit').value = unit || "";
                     document.getElementById('phno').value = phone || "";
-                    document.getElementById('pnum').value = pnum || "";
                     document.getElementById('rank').value = rank || "";
                     document.getElementById('dor').value = dor || "";
                     document.getElementById('dov').value = dov || "";
@@ -147,16 +138,15 @@
             name = document.getElementById('name').value;
             unit = document.getElementById('unit').value;
             phone = document.getElementById('phno').value;
-            pnum = document.getElementById('pnum').value;
             rank = document.getElementById('rank').value;
             dor = document.getElementById('dor').value;
             dov = document.getElementById('dov').value;
 
 
-            console.log(name, unit, pnum, rank, dor, dov);
+            console.log(name, unit, rank, dor, dov);
 
             // Verify that all fields are filled
-            if (name === "" || unit === "" || pnum === "" || rank === "" || dor === "" || dov === "") {
+            if (name === "" || unit === "" || rank === "" || dor === "" || dov === "") {
                 alert("Please fill in all fields");
                 return false;
             }
@@ -173,12 +163,6 @@
                 return false;
             }
 
-            // Verify that personal number is in the format 000000-X where X is a letter, and number is of any number of digits
-            if (!pnum.match(/^\d+-[A-Z]$/)) {
-                alert("Please enter a valid personal number");
-                return false;
-            }
-
             // If all fields are valid, enable the submit button
             document.getElementById('submit_new_tenant').disabled = false;
         }
@@ -192,7 +176,6 @@
                     mobileNumber: phone,
                     rank: rank,
                     unit: unit,
-                    pnum: pnum,
                     dateOfReporting: dor,
                     dateOfVacation: dov
                 })

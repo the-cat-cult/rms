@@ -41,14 +41,7 @@
                 <div class="col-md">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="phone" placeholder="00000">
-                        <label for="pnum">Phone Number</label>
-                    </div>
-                </div>
-
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="pnum" placeholder="123456-Z">
-                        <label for="pnum">Personal Number</label>
+                        <label for="phone">Phone Number</label>
                     </div>
                 </div>
             </div>
@@ -110,19 +103,18 @@
     </div>
     <script>
         // Validate all fields
-        let name, unit, phone, pnum, rank, dor, dov;
+        let name, unit, phone, rank, dor, dov;
 
         function validate_form() {
             name = document.getElementById('name').value;
             unit = document.getElementById('unit').value;
             phone = document.getElementById('phone').value;
-            pnum = document.getElementById('pnum').value;
             rank = document.getElementById('rank').value;
             dor = document.getElementById('dor').value;
             dov = document.getElementById('dov').value;
 
             // Verify that all fields are filled
-            if (name === "" || unit === "" || pnum === "" || rank === "" || dor === "" || dov === "") {
+            if (name === "" || unit === "" || rank === "" || dor === "" || dov === "") {
                 alert("Please fill in all fields");
                 return false;
             }
@@ -136,12 +128,6 @@
             // Verify that the date of reporting is before the date of vacation
             if (dor > dov) {
                 alert("Please enter a valid date of reporting and date of vacation");
-                return false;
-            }
-
-            // Verify that personal number is in the format 000000-X where X is a letter
-            if (!pnum.match(/\d+-[A-Z]/)) {
-                alert("Please enter a valid personal number");
                 return false;
             }
 
@@ -167,7 +153,6 @@
                     mno: phone,
                     rank: rank,
                     unit: unit,
-                    pnum: pnum,
                     dor: dor,
                     dov: dov
                 })

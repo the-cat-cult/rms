@@ -40,7 +40,7 @@
 
     <!-- Body -->
     <div class="container">
-        <h1 class="mb-lg-5 mt-lg-5 mb-sm-2 mt-sm-2 mt-md-2 mt-md-2 mt-3 mb-3">Welcome Admin <span name="profile_name"></span>!</h1>
+        <h1 class="mb-lg-5 mt-lg-5 mb-sm-2 mt-sm-2 mt-md-2 mt-md-2 mt-3 mb-3">Welcome Admin!</h1>
         <div class="row row-cols-1 row-cols-md-2 g-4">
             <div class="col">
                 <div class="card h-100">
@@ -138,10 +138,6 @@
 
         <script>
             current_user = localStorage.getItem("name")
-            profile_name_refs = document.getElementsByName("profile_name");
-            for (var i = 0; i < profile_name_refs.length; i++) {
-                profile_name_refs[i].innerHTML = current_user;
-            }
 
             function sign_out() {
                 if (confirm("Are you sure you want to sign out?")) {
