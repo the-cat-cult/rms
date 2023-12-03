@@ -123,6 +123,11 @@
 
                 </div>
 
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="mou">
+                    <label class="form-check-label" for="mou">MoU</label>
+                </div>
+
             </div>
             <div class="mb-5">
                 <button type="button" class="btn btn-outline-secondary mt-3 dyna-button" onclick="validate_form()">Verify
@@ -159,7 +164,7 @@
     </div>
     <script>
         // Validate all fields
-        let propertyLocation, address, bhk, type, rent, sd, age;
+        let propertyLocation, address, bhk, type, rent, sd, age, mou;
 
         let uploadFiles = []
         let deletedImages = []
@@ -191,6 +196,7 @@
                         bhk = document.getElementById('bhk').value = property.bhk;
                         type = document.getElementById('type').value = property.propertyType;
                         age = document.getElementById('age').value = property.age;
+                        mou = document.getElementById('mou').value = property.mou;
 
                         append_existing_images(property.images)
                     }
@@ -265,6 +271,11 @@
             bhk = document.getElementById('bhk').value;
             type = document.getElementById('type').value;
             age = document.getElementById('age').value;
+            mou = document.getElementById('mou').value;
+
+            if(mou === undefined) {
+                mou = false;
+            }
 
             // Verify that all fields are filled
             if (propertyLocation === "" || address === "" || bhk === "" || type === "" || rent === "" || sd === "" || age === "") {
@@ -453,6 +464,8 @@
             formData.append('rent', parseInt(rent));
             formData.append('securityDeposit', parseInt(sd));
             formData.append('age', parseInt(age));
+            formData.append('mou', mou);
+
             deletedImages.forEach(id => {
                 formData.append('deletedImages', id);
             });
