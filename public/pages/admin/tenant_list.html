@@ -110,8 +110,6 @@
                                 let tenant_data = {
                                     "name": tenant.name,
                                     "ph_no": tenant.mobileNumber,
-                                    "rank": tenant.rank,
-                                    "Unit": tenant.unit,
                                     "Allocation": tenant.allocationStatus,
                                     "tenantId": tenant._id
                                 }
@@ -172,7 +170,7 @@
                     }
                 });
 
-                if (phone_number == "") {
+                if (phone_number === "") {
                     filtered_list = original_list;
                 }
 
@@ -198,7 +196,7 @@
             function toggleTheme() {
 
                 var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
-                if (theme == "dark") {
+                if (theme === "dark") {
                     document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
                     document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
                 } else {

@@ -5,10 +5,10 @@ import Bookings from "../models/bookings.js";
 
 export async function createTenant(req, res) {
 
-    const { name, mno, dor, dov } = req.body;
+    const { name, mno } = req.body;
 
     //validate data
-    if (!(name && mno && dor && dov)) {
+    if (!(name && mno)) {
         return res.status(400).json({
             success: false,
             message: 'All fields are required'
@@ -19,21 +19,6 @@ export async function createTenant(req, res) {
         return res.status(400).json({
             success: false,
             message: 'Mobile number should be of 10 digits'
-        });
-    }
-
-
-    if (!dor.match(/\d{4}-\d{2}-\d{2}/)) {
-        return res.status(400).json({
-            success: false,
-            message: 'Invalid date of reporting'
-        });
-    }
-
-    if (!dov.match(/\d{4}-\d{2}-\d{2}/)) {
-        return res.status(400).json({
-            success: false,
-            message: 'Invalid date of vacation'
         });
     }
 
@@ -56,11 +41,8 @@ export async function createTenant(req, res) {
 
     const tenant = new Tenant({
         _id: new mongoose.Types.ObjectId(),
-
         name: name,
         mobileNumber: mno,
-        dateOfReporting: dor,
-        dateOfVacation: dov,
     })
 
     return tenant

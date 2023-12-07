@@ -43,7 +43,6 @@
             <div class="col-8">
                 <h1 class="tenant_name mt-5">...</h1>
                 <span class="phone_number">XXXXXXXXXX</span><br>
-                <span class="rank">...</span><br>
                 <span class="allocation">...</span>
             </div>
         </div>
@@ -103,7 +102,6 @@
                 if (response.data.success) {
                     document.getElementsByClassName("tenant_name")[0].innerHTML = response.data.Tenant.name;
                     document.getElementsByClassName("phone_number")[0].innerHTML = response.data.Tenant.mobileNumber;
-                    document.getElementsByClassName("rank")[0].innerHTML = response.data.Tenant.rank || "N/A";
                     document.getElementsByClassName("allocation")[0].innerHTML = "Allocated: " + response.data.Tenant.allocationStatus;
 
                     if (response.data.Tenant.allocationStatus == "yes") {

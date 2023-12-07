@@ -55,26 +55,6 @@
                 </div>
             </div>
 
-            <div class="row g-3 mb-3">
-
-                <!-- Date of Reporting -->
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input type="date" class="form-control" id="dor" placeholder="Date of Reporting">
-                        <label for="dor">Date of Reporting</label>
-                    </div>
-
-                </div>
-
-                <!-- Date of Vacation -->
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input type="date" class="form-control" id="dov" placeholder="Date of Vacation">
-                        <label for="dov">Date of Vacation</label>
-                    </div>
-                </div>
-            </div>
-
             <div class="mb-5">
                 <button type="button" class="btn btn-outline-secondary mt-3 w-25 btn-lg" onclick="validate_form()" id="verify-data">Verify Data</button>
                 <button type="button" class="btn btn-primary mt-3 w-25 btn-lg" id="submit_new_tenant" disabled>Add Tenant</button>
@@ -120,16 +100,14 @@
 
     <script>
         // Validate all fields
-        let name, phone, dor, dov;
+        let name, phone;
 
         function validate_form() {
             name = document.getElementById('name').value;
             phone = document.getElementById('phone').value;
-            dor = document.getElementById('dor').value;
-            dov = document.getElementById('dov').value;
 
             // Verify that all fields are filled
-            if (name === "" || dor === "" || dov === "") {
+            if (name === "" || phone === "") {
                 alert("Please fill in all fields");
                 return false;
             }
@@ -137,12 +115,6 @@
             // Verify that the phone number is 10 digits
             if (isNaN(phone) || phone.length !== 10) {
                 alert("Please enter a valid phone number");
-                return false;
-            }
-
-            // Verify that the date of reporting is before the date of vacation
-            if (dor > dov) {
-                alert("Please enter a valid date of reporting and date of vacation");
                 return false;
             }
 
@@ -166,8 +138,6 @@
             axios.post('/api/addTenant', {
                     name: name,
                     mno: phone,
-                    dor: dor,
-                    dov: dov
                 })
                 .then(function(response) {
                     console.log(response);

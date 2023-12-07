@@ -33,46 +33,10 @@
 
                 <div class="col-md">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="unit" placeholder="00000" value="">
-                        <label for="unit">Unit</label>
-                    </div>
-                </div>
-
-                <div class="col-md">
-                    <div class="form-floating">
                         <input type="text" class="form-control" id="phno" placeholder="00000" value="">
                         <label for="phno">Phone Number</label>
                     </div>
                 </div>
-            </div>
-
-            <div class="row g-3 mb-3">
-
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="rank" placeholder="ABCD" value="">
-                        <label for="rank">Rank</label>
-                    </div>
-                </div>
-
-                <!-- Date of Reporting -->
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input type="date" class="form-control" id="dor" placeholder="Date of Reporting" value="">
-                        <label for="dor">Date of Reporting</label>
-                    </div>
-
-                </div>
-
-                <!-- Date of Vacation -->
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input type="date" class="form-control" id="dov" placeholder="Date of Vacation" value="">
-                        <label for="dov">Date of Vacation</label>
-                    </div>
-                </div>
-
-
             </div>
 
             <button type="button" class="btn btn-outline-secondary mt-3 w-25 mb-5" onclick="validate_form()">Verify Data
@@ -103,30 +67,19 @@
 
     </div>
     <script>
-        let name, unit, phone, rank, dor, dov;
+        let name, phone;
 
         function getTenantData() {
             axios.post('/api/getTenant')
                 .then(function(response) {
                     let tenantData = response.data.Tenant;
                     name = tenantData.name;
-                    unit = tenantData.unit;
                     phone = tenantData.mobileNumber;
-                    rank = tenantData.rank;
-                    dor = tenantData.dateOfReporting;
-                    dov = tenantData.dateOfVacation;
-                    dor = dor.split('T')[0];
-                    dov = dov.split('T')[0];
-
 
                     console.log(response.data.Tenant)
 
                     document.getElementById('name').value = name || "";
-                    document.getElementById('unit').value = unit || "";
                     document.getElementById('phno').value = phone || "";
-                    document.getElementById('rank').value = rank || "";
-                    document.getElementById('dor').value = dor || "";
-                    document.getElementById('dov').value = dov || "";
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -136,17 +89,10 @@
 
         function validate_form() {
             name = document.getElementById('name').value;
-            unit = document.getElementById('unit').value;
             phone = document.getElementById('phno').value;
-            rank = document.getElementById('rank').value;
-            dor = document.getElementById('dor').value;
-            dov = document.getElementById('dov').value;
-
-
-            console.log(name, unit, rank, dor, dov);
 
             // Verify that all fields are filled
-            if (name === "" || unit === "" || rank === "" || dor === "" || dov === "") {
+            if (name === "" || phone === "") {
                 alert("Please fill in all fields");
                 return false;
             }
@@ -154,12 +100,6 @@
             // Verify that the phone number is 10 digits
             if (phone.length !== 10) {
                 alert("Please enter a valid phone number");
-                return false;
-            }
-
-            // Verify that the date of reporting is before the date of vacation
-            if (dor > dov) {
-                alert("Please enter a valid date of reporting and date of vacation");
                 return false;
             }
 
@@ -174,10 +114,6 @@
             axios.patch('/api/updateTenant', {
                     name: name,
                     mobileNumber: phone,
-                    rank: rank,
-                    unit: unit,
-                    dateOfReporting: dor,
-                    dateOfVacation: dov
                 })
                 .then(function(response) {
                     console.log(response);

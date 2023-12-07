@@ -5,8 +5,6 @@ const tenantSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     name: String,
     mobileNumber: Number,
-    dateOfReporting: Date,
-    dateOfVacation: Date,
     allocationStatus: {
         type: String,
         enum: ['no', 'yes'],
