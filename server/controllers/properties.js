@@ -195,7 +195,7 @@ export function getPropertyById(req, res) {
 }
 
 export function getPropertiesByFilters(req, res) {
-    const {bhk, minRent, maxRent, area} = req.body;
+    const {bhk, minRent, maxRent, area, mou, houseOccupied, searchId} = req.body;
 
     Property.find()
         .populate('ownerId')
@@ -221,9 +221,23 @@ export function getPropertiesByFilters(req, res) {
                     condition = condition && property.rent <= parseInt(maxRent);
                 }
                 if (area !== undefined) {
-                    //check if contains
                     condition = condition && property.address.toLowerCase().includes(area.toLowerCase());
                 }
+                if (mou !== undefined) {
+                    condition = condition && property.mou === mou
+                }
+                if (houseOccupied !== undefined && houseOccupied !== "All") {
+                    if (houseOccupied === "Occupied") {
+                        condition = condition && property.vacancyStatus === false
+                    } else if (houseOccupied === "Unoccupied") {
+                        condition = condition && property.vacancyStatus === true
+                    }
+                }
+                if(searchId !== undefined) {
+                    condition = condition && property._id.toString().includes(searchId);
+                }
+
+
                 return condition;
             });
 

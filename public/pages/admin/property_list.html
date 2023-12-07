@@ -89,10 +89,21 @@
                 </div>
 
             </div>
-            <div class="pt-3">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="mou">
-                    <label class="form-check-label" for="mou">Only properties with MoU</label>
+            <div style="display: flex; flex-direction: row; align-items: end; gap: 20px" class="pt-3">
+                <div class="col-md-2">
+                    <label for="house-occupied" class="form-label">House occupied status</label>
+                    <select class="form-select" aria-label="House occupied" id="house-occupied">
+                        <option></option>
+                        <option value="All" selected>All</option>
+                        <option value="Occupied">Occupied</option>
+                        <option value="Unoccupied">Unoccupied</option>
+                    </select>
+                </div>
+                <div class="pt-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="mou">
+                        <label class="form-check-label" for="mou">Only properties with MoU</label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -109,7 +120,7 @@
                 border-radius: 10px;
                 margin-top: 20px;
             }
-            
+
             .list-group {
                 max-height: 700px;
                 margin-bottom: 10px;
@@ -142,16 +153,31 @@
                 getProperties();
             });
 
+            document.getElementById("mou").addEventListener("input", function(event) {
+                event.preventDefault();
+                getProperties();
+            });
+
+            document.getElementById("house-occupied").addEventListener("input", function(event) {
+                event.preventDefault();
+                getProperties();
+            });
+
+            document.getElementById("id-search").addEventListener("input", function(event) {
+                event.preventDefault();
+                getProperties();
+            });
+
             function getProperties() {
-                //const {bhk, minRent, maxRent, area, propertyId} = req.body;
                 let bhk = document.getElementById("BHK").value;
                 let minRent = document.getElementById("min").value;
                 let maxRent = document.getElementById("max").value;
                 let area = document.getElementById("address").value;
+                let mou = document.getElementById("mou").checked;
+                let houseOccupied = document.getElementById("house-occupied").value;
+                let searchId = document.getElementById("id-search").value;
 
                 let query = {}
-
-
 
                 if (bhk) {
                     if (bhk == "All") {
@@ -170,6 +196,18 @@
 
                 if (area) {
                     query.area = area;
+                }
+
+                if (mou) {
+                    query.mou = mou;
+                }
+
+                if (houseOccupied) {
+                    query.houseOccupied = houseOccupied
+                }
+
+                if(searchId) {
+                    query.searchId = searchId
                 }
 
                 axios.post("/api/listAllPropertiesByFilter", query)
@@ -262,42 +300,6 @@
                 }
             }
 
-            BHK_select = document.getElementById("BHK");
-
-            min = document.getElementById("min");
-
-            max = document.getElementById("max");
-
-            address = document.getElementById("address");
-
-            document.getElementById("id-search").addEventListener("keyup", function(event) {
-                val = document.getElementById("id-search").value;
-                // Search in default_data
-                if (val) {
-                    let filtered_data = default_data.filter(function(item) {
-                        return item.id.includes(val);
-                    });
-                    generate_list(filtered_data);
-                } else {
-                    generate_list(default_data);
-                }
-            });
-
-            document.getElementById("mou").addEventListener("change", function(event) {
-                val = document.getElementById("mou").checked;
-                // Search in default_data
-                if (val) {
-                    let filtered_data = default_data.filter(function(item) {
-                        console.log(item)
-                        return item.mou === true
-                    });
-                    generate_list(filtered_data);
-                } else {
-                    generate_list(default_data);
-                }
-            });
-
-
             function toggleTheme() {
                 var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
                 var theme_bg = document.getElementById("theme_bg");
@@ -321,7 +323,7 @@
         animation: rotation 2s infinite linear;
         position: relative;
     }
-    
+
     @keyframes rotation {
         from {
             transform: rotate(0deg);
