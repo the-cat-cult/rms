@@ -56,7 +56,7 @@ export async function createProperty(req, res) {
         bhk: req.body.bhk,
         location: req.body.location,
         rent: req.body.rent,
-        mou: req.body.mou,
+        mou: req.user.role === 'admin' ? req.body.mou : false,
         securityDeposit: req.body.secdep,
         age: req.body.age,
         ownerId: req.user._id,
@@ -276,6 +276,7 @@ export async function updateProperty(req, res) {
         delete updateObject.verified
         delete updateObject.lat
         delete updateObject.long
+        delete updateObject.mou
     }
 
     let idList = []
