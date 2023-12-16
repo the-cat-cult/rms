@@ -197,19 +197,22 @@ export function getPropertyById(req, res) {
 export async function getPropertiesByFilters(req, res) {
     const {bhk, minRent, maxRent, area, mou, houseOccupied, searchId} = req.body;
 
-    const page = req.query['page'] ?? 3;
+    const page = req.query['page'];
 
-    const options = {
+    let options = {
         populate: 'ownerId',
         lean: true,
-        offset: page,
-        limit: 10
+    };
+
+    if (page) {
+        options.offset = page;
+        options.limit = 10;
+    } else {
+        options.limit = 10000;
     }
 
     Property.paginate({}, options, (err, result) => {
-        const { docs, total, limit, offset } = result;
-
-        console.log(docs)
+        const {docs, total, limit, offset} = result;
 
         let properties = docs
 
