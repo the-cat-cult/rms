@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate';
 
 mongoose.Promise = global.Promise;
 const propertiesSchema = new mongoose.Schema({
@@ -42,4 +43,6 @@ const propertiesSchema = new mongoose.Schema({
     }],
 
 }, {collection: "properties"});
+propertiesSchema.plugin(mongoosePaginate)
+
 export default mongoose.model('Property', propertiesSchema);

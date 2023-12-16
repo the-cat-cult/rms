@@ -194,59 +194,82 @@ export function getPropertyById(req, res) {
 
 }
 
-export function getPropertiesByFilters(req, res) {
+export async function getPropertiesByFilters(req, res) {
     const {bhk, minRent, maxRent, area, mou, houseOccupied, searchId} = req.body;
 
-    Property.find()
-        .populate('ownerId')
-        .lean()
-        .then((properties) => {
+    const page = req.query['page'] ?? 3;
 
-            if (req.user.role !== 'admin') {
-                properties = properties.filter((property) => {
-                    console.log(property.ownerId)
-                    return property.ownerId.verified === true && property.vacancyStatus === true && property.verified === true;
-                });
+    const options = {
+        populate: 'ownerId',
+        lean: true,
+        offset: page,
+        limit: 10
+    }
+
+    Property.paginate({}, options, (err, result) => {
+        const { docs, total, limit, offset } = result;
+
+        console.log(docs)
+
+        let properties = docs
+
+        if (req.user.role !== 'admin') {
+            properties = properties.filter((property) => {
+                return property.ownerId.verified === true && property.vacancyStatus === true && property.verified === true;
+            });
+        }
+
+        properties = properties.filter((property) => {
+            let condition = true;
+            if (bhk !== undefined && bhk !== '') {
+                condition = condition && property.bhk === bhk;
+            }
+            if (minRent !== undefined) {
+                condition = condition && property.rent >= parseInt(minRent);
+            }
+            if (maxRent !== undefined) {
+                condition = condition && property.rent <= parseInt(maxRent);
+            }
+            if (area !== undefined) {
+                condition = condition && property.address.toLowerCase().includes(area.toLowerCase());
+            }
+            if (mou !== undefined) {
+                condition = condition && property.mou === mou
+            }
+            if (houseOccupied !== undefined && houseOccupied !== "All") {
+                if (houseOccupied === "Occupied") {
+                    condition = condition && property.vacancyStatus === false
+                } else if (houseOccupied === "Unoccupied") {
+                    condition = condition && property.vacancyStatus === true
+                }
+            }
+            if (searchId !== undefined) {
+                condition = condition && property._id.toString().includes(searchId);
             }
 
-            properties = properties.filter((property) => {
-                let condition = true;
-                if (bhk !== undefined && bhk !== '') {
-                    condition = condition && property.bhk === bhk;
-                }
-                if (minRent !== undefined) {
-                    condition = condition && property.rent >= parseInt(minRent);
-                }
-                if (maxRent !== undefined) {
-                    condition = condition && property.rent <= parseInt(maxRent);
-                }
-                if (area !== undefined) {
-                    condition = condition && property.address.toLowerCase().includes(area.toLowerCase());
-                }
-                if (mou !== undefined) {
-                    condition = condition && property.mou === mou
-                }
-                if (houseOccupied !== undefined && houseOccupied !== "All") {
-                    if (houseOccupied === "Occupied") {
-                        condition = condition && property.vacancyStatus === false
-                    } else if (houseOccupied === "Unoccupied") {
-                        condition = condition && property.vacancyStatus === true
-                    }
-                }
-                if(searchId !== undefined) {
-                    condition = condition && property._id.toString().includes(searchId);
-                }
 
+            return condition;
+        });
 
-                return condition;
-            });
+        const totalPages = Math.ceil(total / 10);
+        const hasNextPage = offset + limit < total;
+        const hasPrevPage = offset > 0;
 
-            return res.status(200).json({
-                success: true,
-                message: 'Result',
-                Property: properties,
-            });
-        }).catch((err) => {
+        return res.status(200).json({
+            success: true,
+            message: 'Result',
+            Property: properties,
+            pagination: {
+                total: total,
+                totalPages,
+                currentPage: page,
+                hasNextPage,
+                hasPrevPage,
+                nextPage: hasNextPage ? page + 1 : null,
+                prevPage: hasPrevPage ? page - 1 : null,
+            },
+        });
+    }).catch((err) => {
         res.status(400).json({
             success: false,
             message: 'Filters failed',
