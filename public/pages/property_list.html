@@ -76,26 +76,37 @@
                     </div>
                 </div>
 
-                <div class="col-md-2">
-                    <label for="mou" class="form-label">Is MoU available</label>
-                    <select class="form-select" aria-label="House occupied" id="mou">
-                        <option></option>
-                        <option value="All" selected>All</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="areaDropdown" class="form-label">Areas</label>
-                    <select class="form-select" aria-label="House occupied" id="areaDropdown">
-                        <option></option>
-                    </select>
+                <div style="display: flex; flex-direction: row; align-items: end; gap: 20px" class="pt-3">
+                    <div class="col-md-2">
+                        <label for="house-occupied" class="form-label">House occupied status</label>
+                        <select class="form-select" aria-label="House occupied" id="house-occupied">
+                            <option></option>
+                            <option value="All" selected>All</option>
+                            <option value="Occupied">Occupied</option>
+                            <option value="Unoccupied">Unoccupied</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="mou" class="form-label">Is MoU available</label>
+                        <select class="form-select" aria-label="House occupied" id="mou">
+                            <option></option>
+                            <option value="All" selected>All</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="areaDropdown" class="form-label">Areas</label>
+                        <select class="form-select" aria-label="House occupied" id="areaDropdown">
+                            <option></option>
+                        </select>
+                    </div>
                 </div>
                 <div style="display: flex; flex-direction: row; align-items: center;" class="pt-3">
                     <h6 style="padding: 0; margin: 0">
                         Total number of properties:
                     </h6>
-                    <span style="margin-left: 5px;" id="total-properties"></span>
+                    <span style="margin-left: 5px;" id="total-houses"></span>
                 </div>
             </div>
         </div>
@@ -105,6 +116,9 @@
         <div class="property-list">
             <div class="list-group" id="prop-list">
             </div>
+        </div>
+
+        <div id="pagination">
         </div>
 
         <style>
@@ -150,6 +164,11 @@
                 getProperties();
             });
 
+            document.getElementById("house-occupied").addEventListener("input", function (event) {
+                event.preventDefault();
+                getProperties();
+            });
+
             async function fetchAreas() {
                 try {
                     const response = await axios.get('/api/listAllAreas');
@@ -182,6 +201,7 @@
                 let maxRent = document.getElementById("max").value;
                 let area = document.getElementById("areaDropdown").value;
                 let mou = document.getElementById("mou").value;
+                let houseOccupied = document.getElementById("house-occupied").value;
 
                 let query = {}
                 if (bhk) {
@@ -207,27 +227,38 @@
                     query.mou = mou;
                 }
 
+                if (houseOccupied) {
+                    query.houseOccupied = houseOccupied
+                }
+
                 axios.post("/api/listAllPropertiesByFilter", query)
                     .then(function(response) {
                         if (response.data.success) {
                             default_data = []
                             received_data = response.data.Property;
-                            for (let i = 0; i < received_data.length; i++) {
-                                default_data.push({
-                                    "name": received_data[i].name,
-                                    "address": received_data[i].address,
-                                    "rent": received_data[i].rent,
-                                    "propertyType": received_data[i].propertyType,
-                                    "location": received_data[i].location,
-                                    "securityDeposit": received_data[i].securityDeposit,
-                                    "bhk": received_data[i].bhk,
-                                    "id": received_data[i]._id,
-                                    "mou" : received_data[i].mou,
-                                    "link": "/pages/tenant/property_view.html?propertyId=" + response.data.Property[i]._id
-                                })
 
+                            if(received_data !== undefined) {
+                                document.getElementById('total-houses').innerText = received_data.length
+                                for (let i = 0; i < received_data.length; i++) {
+                                    default_data.push({
+                                        "name": received_data[i].name,
+                                        "address": received_data[i].address,
+                                        "rent": received_data[i].rent,
+                                        "propertyType": received_data[i].propertyType,
+                                        "location": received_data[i].location,
+                                        "securityDeposit": received_data[i].securityDeposit,
+                                        "bhk": received_data[i].bhk,
+                                        "id": received_data[i]._id,
+                                        "mou" : received_data[i].mou,
+                                        "link": "/pages/tenant/property_view.html?propertyId=" + response.data.Property[i]._id
+                                    })
+
+                                }
+                                generatePaginatedList(default_data);
+                            } else {
+                                document.getElementById('total-houses').innerText = 0
+                                generatePaginatedList([])
                             }
-                            generate_list(default_data);
                         }
                     })
                     .catch(function(error) {
@@ -237,11 +268,102 @@
 
             }
 
+            let paginatedData = {};
+
+            function generatePaginatedList(default_data) {
+                const itemsPerPage = 10;
+                const totalItems = default_data.length;
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+                paginatedData = {};
+
+                for (let i = 0; i < totalPages; i++) {
+                    const startIndex = i * itemsPerPage;
+                    const endIndex = startIndex + itemsPerPage;
+                    paginatedData[i + 1] = default_data.slice(startIndex, endIndex);
+                }
+
+                // Display the first page by default
+                displayPage(1);
+                generatePagination(1, totalPages);
+            }
+
+            function displayPage(pageNumber) {
+                const pageData = paginatedData[pageNumber];
+                generate_list(pageData);
+            }
+
+            function generatePagination(currentPage, totalPages) {
+                currentPage = parseInt(currentPage);
+                totalPages = parseInt(totalPages);
+
+                const paginationContainer = document.getElementById('pagination');
+                paginationContainer.innerHTML = ''; // Clear previous pagination
+
+                const paginationList = document.createElement('ul');
+                paginationList.className = 'pagination justify-content-center'; // Add justify-content-center to center pagination
+
+                // Render Previous button if not at lower limit
+                if (currentPage > 1) {
+                    const firstPage = createPaginationItem(1, 'First', 1);
+                    firstPage.classList.add('page-item'); // Add Bootstrap class
+                    paginationList.appendChild(firstPage);
+
+                    const prevItem = createPaginationItem(currentPage - 1, 'Previous', '&laquo;');
+                    prevItem.classList.add('page-item'); // Add Bootstrap class
+                    paginationList.appendChild(prevItem);
+                }
+
+                // Render current page number
+                const currentItem = createPaginationItem(currentPage, null, currentPage);
+                currentItem.classList.add('page-item', 'active'); // Add Bootstrap classes
+                paginationList.appendChild(currentItem);
+
+                // Render Next button if not at upper limit
+                if (currentPage < totalPages) {
+                    const nextItem = createPaginationItem(currentPage + 1, 'Next', '&raquo;');
+                    nextItem.classList.add('page-item'); // Add Bootstrap class
+                    paginationList.appendChild(nextItem);
+
+                    const lastPageNumber = totalPages > 0 ? totalPages : 1;
+                    const lastPage = createPaginationItem(lastPageNumber, 'Last', lastPageNumber);
+                    lastPage.classList.add('page-item'); // Add Bootstrap class
+                    paginationList.appendChild(lastPage);
+                }
+
+                paginationContainer.appendChild(paginationList);
+            }
+
+            function createPaginationItem(pageNumber, label, innerHTML) {
+                const pageLink = document.createElement('button');
+                pageLink.className = 'page-link';
+                if (label) {
+                    pageLink.href = '#';
+                    pageLink.setAttribute('aria-label', label);
+                    pageLink.innerHTML = innerHTML;
+                } else {
+                    const linkText = document.createTextNode(innerHTML);
+                    pageLink.appendChild(linkText);
+                }
+
+                pageLink.addEventListener('click', () => {
+                    if (pageNumber > 0) {
+                        displayPage(pageNumber);
+                        generatePagination(pageNumber, Object.keys(paginatedData).length);
+                    }
+                });
+
+                const pageItem = document.createElement('li');
+                pageItem.appendChild(pageLink);
+
+                return pageItem;
+            }
 
             function generate_list(default_data) {
-                document.getElementById('total-properties').innerText = default_data.length
                 list = document.getElementById("prop-list");
                 list.innerHTML = "";
+
+                if(default_data === undefined) return
 
                 for (var i = 0; i < default_data.length; i++) {
                     right = default_data[i]['bhk'] + " " + default_data[i]['propertyType'] + " for rent in " + default_data[i]['location']
