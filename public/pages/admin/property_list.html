@@ -249,28 +249,35 @@
                 query.searchId = searchId
             }
 
-            axios.post("/api/listAllPropertiesByFilter")
+            axios.post("/api/listAllPropertiesByFilter", query)
                 .then(function (response) {
                     if (response.data.success) {
                         default_data = []
 
                         received_data = response.data.Property;
-                        document.getElementById('total-houses').innerText = received_data.length
-                        for (let i = 0; i < received_data.length; i++) {
-                            default_data.push({
-                                "name": received_data[i].name,
-                                "address": received_data[i].address,
-                                "rent": received_data[i].rent,
-                                "propertyType": received_data[i].propertyType,
-                                "location": received_data[i].location,
-                                "securityDeposit": received_data[i].securityDeposit,
-                                "bhk": received_data[i].bhk,
-                                "mou": received_data[i].mou,
-                                "id": received_data[i]._id,
-                                "link": "/pages/owner/property_view.html?propertyId=" + received_data[i]._id,
-                            })
+
+                        if(received_data !== undefined) {
+                            document.getElementById('total-houses').innerText = received_data.length
+                            for (let i = 0; i < received_data.length; i++) {
+                                default_data.push({
+                                    "name": received_data[i].name,
+                                    "address": received_data[i].address,
+                                    "rent": received_data[i].rent,
+                                    "propertyType": received_data[i].propertyType,
+                                    "location": received_data[i].location,
+                                    "securityDeposit": received_data[i].securityDeposit,
+                                    "bhk": received_data[i].bhk,
+                                    "mou": received_data[i].mou,
+                                    "id": received_data[i]._id,
+                                    "link": "/pages/owner/property_view.html?propertyId=" + received_data[i]._id,
+                                })
+                            }
+                            generatePaginatedList(default_data);
+                        } else {
+                            document.getElementById('total-houses').innerText = 0
+                            generatePaginatedList([])
                         }
-                        generatePaginatedList(default_data);
+
                     }
                 })
                 .catch(function (error) {
@@ -374,6 +381,8 @@
         function generate_list(default_data) {
             list = document.getElementById("prop-list");
             list.innerHTML = "";
+
+            if(default_data === undefined) return
 
             for (var i = 0; i < default_data.length; i++) {
                 right = default_data[i]['bhk'] + " " + default_data[i]['propertyType'] + " for rent in " + default_data[i]['location']
