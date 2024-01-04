@@ -273,7 +273,7 @@
         type_refs.innerHTML = type;
         rent_refs.innerHTML = "₹" + rent + " /month";
         security_deposit_refs.innerHTML = "₹" + security_deposit;
-        mou_refs.innerHTML = "Is MoU available: " + mou;
+        mou_refs.innerHTML = "Does MoU exist: " + (mou === true ? 'yes' : 'no');
         address_refs.innerHTML = address;
         if (verified) {
             status_refs.classList.add("badge");
