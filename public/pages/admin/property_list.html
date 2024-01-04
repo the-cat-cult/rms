@@ -298,9 +298,11 @@
             paginationList.appendChild(firstPage);
 
             // Render Previous button if not at lower limit
-            const prevItem = createPaginationItem(currentPage - 1, 'Previous', '&laquo;');
-            prevItem.classList.add('page-item'); // Add Bootstrap class
-            paginationList.appendChild(prevItem);
+            if (currentPage > 1) {
+                const prevItem = createPaginationItem(currentPage - 1, 'Previous', '&laquo;');
+                prevItem.classList.add('page-item'); // Add Bootstrap class
+                paginationList.appendChild(prevItem);
+            }
 
             // Render current page number
             const currentItem = createPaginationItem(currentPage, null, currentPage);
@@ -308,11 +310,14 @@
             paginationList.appendChild(currentItem);
 
             // Render Next button if not at upper limit
-            const nextItem = createPaginationItem(currentPage + 1, 'Next', '&raquo;');
-            nextItem.classList.add('page-item'); // Add Bootstrap class
-            paginationList.appendChild(nextItem);
+            if (currentPage < totalPages) {
+                const nextItem = createPaginationItem(currentPage + 1, 'Next', '&raquo;');
+                nextItem.classList.add('page-item'); // Add Bootstrap class
+                paginationList.appendChild(nextItem);
+            }
 
-            const lastPage = createPaginationItem(totalPages - 1, 'Last', totalPages - 1);
+            const lastPageNumber = totalPages > 0 ? totalPages : 1;
+            const lastPage = createPaginationItem(lastPageNumber, 'Last', lastPageNumber);
             lastPage.classList.add('page-item'); // Add Bootstrap class
             paginationList.appendChild(lastPage);
 
@@ -343,6 +348,7 @@
 
             return pageItem;
         }
+
 
 
         let paginatedData = {};
