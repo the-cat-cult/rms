@@ -88,6 +88,12 @@
                         <label class="form-check-label" for="mou">Only properties with MoU</label>
                     </div>
                 </div>
+                <div style="display: flex; flex-direction: row; align-items: center;" class="pt-3">
+                    <h6 style="padding: 0; margin: 0">
+                        Total number of properties:
+                    </h6>
+                    <span style="margin-left: 5px;" id="total-properties"></span>
+                </div>
             </div>
         </div>
 
@@ -204,6 +210,7 @@
 
 
             function generate_list(default_data) {
+                document.getElementById('total-properties').innerText = default_data.length
                 list = document.getElementById("prop-list");
                 list.innerHTML = "";
 

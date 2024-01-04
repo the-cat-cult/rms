@@ -66,6 +66,12 @@
                     </div>
                 </div>
             </div>
+            <div style="display: flex; flex-direction: row; align-items: center;" class="pt-3">
+                <h6 style="padding: 0; margin: 0">
+                    Total number of owner:
+                </h6>
+                <span style="margin-left: 5px;" id="total-owner"></span>
+            </div>
         </div>
 
         <!-- List of sellers -->
@@ -143,6 +149,7 @@
     }
 
     function generate_list(data) {
+        document.getElementById('total-owner').innerText = data.length
 
         let seller_list = document.getElementById("seller-list");
 

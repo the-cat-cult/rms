@@ -56,6 +56,12 @@
                     <input type="text" class="form-control" id="phone-number" placeholder="Phone Number">
                 </div>
             </div>
+            <div style="display: flex; flex-direction: row; align-items: center;" class="pt-3">
+                <h6 style="padding: 0; margin: 0">
+                    Total number of admins:
+                </h6>
+                <span style="margin-left: 5px;" id="total-admins"></span>
+            </div>
         </div>
 
 
@@ -112,6 +118,7 @@
                                 }
                                 default_data.push(admin_data);
                             }
+                            document.getElementById('total-admins').innerText = default_data.length
                             build_list(default_data);
                             original_list = default_data;
                         } else {
