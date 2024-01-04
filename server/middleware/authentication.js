@@ -34,6 +34,11 @@ export default function (roles) {
                     if (tenant) {
                         request.user = tenant;
                         request.user.role = "tenant";
+
+                        if(tenant.verified === false) {
+                            return response.status(412).send("Please verify your account, reach out to 1234567890 to get your account verified");
+                        }
+
                         next();
                     } else {
                         return response.status(412).send("You are not authorised to perform this action");

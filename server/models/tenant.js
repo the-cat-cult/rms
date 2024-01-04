@@ -13,6 +13,10 @@ const tenantSchema = new mongoose.Schema({
     allocatedProperty: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Property',
+    },
+    verified: {
+        type: Boolean,
+        default: false
     }
 }, {collection: "tenants"});
 export default mongoose.model('Tenant', tenantSchema);

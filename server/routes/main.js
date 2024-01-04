@@ -45,7 +45,7 @@ router.get('/image/:id', authentication(['owner', 'tenant', 'admin']), getFile)
 router.post('/login', login)
 router.post('/signUp', signUp)
 router.post('/generateOTP', generateOTP)
-router.post('/signOut', authentication(["admin", "owner", "tenant"]), singOut)
+router.post('/signOut', singOut)
 router.get('/isAuthenticated', authentication(["admin", "owner", "tenant"]), checkAuth)
 
 //create entity routes
