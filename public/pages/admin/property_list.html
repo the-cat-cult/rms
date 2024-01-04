@@ -293,12 +293,12 @@
             const paginationList = document.createElement('ul');
             paginationList.className = 'pagination justify-content-center'; // Add justify-content-center to center pagination
 
-            const firstPage = createPaginationItem(1, 'First', 1);
-            firstPage.classList.add('page-item'); // Add Bootstrap class
-            paginationList.appendChild(firstPage);
-
             // Render Previous button if not at lower limit
             if (currentPage > 1) {
+                const firstPage = createPaginationItem(1, 'First', 1);
+                firstPage.classList.add('page-item'); // Add Bootstrap class
+                paginationList.appendChild(firstPage);
+
                 const prevItem = createPaginationItem(currentPage - 1, 'Previous', '&laquo;');
                 prevItem.classList.add('page-item'); // Add Bootstrap class
                 paginationList.appendChild(prevItem);
@@ -314,12 +314,12 @@
                 const nextItem = createPaginationItem(currentPage + 1, 'Next', '&raquo;');
                 nextItem.classList.add('page-item'); // Add Bootstrap class
                 paginationList.appendChild(nextItem);
-            }
 
-            const lastPageNumber = totalPages > 0 ? totalPages : 1;
-            const lastPage = createPaginationItem(lastPageNumber, 'Last', lastPageNumber);
-            lastPage.classList.add('page-item'); // Add Bootstrap class
-            paginationList.appendChild(lastPage);
+                const lastPageNumber = totalPages > 0 ? totalPages : 1;
+                const lastPage = createPaginationItem(lastPageNumber, 'Last', lastPageNumber);
+                lastPage.classList.add('page-item'); // Add Bootstrap class
+                paginationList.appendChild(lastPage);
+            }
 
             paginationContainer.appendChild(paginationList);
         }
