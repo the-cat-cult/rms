@@ -16,7 +16,7 @@
 
 </head>
 
-<body onload="getProperties()" data-bs-theme="dark">
+<body onload="getAllData()" data-bs-theme="dark">
     <!-- Header -->
     <header>
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -76,11 +76,6 @@
                     </div>
                 </div>
 
-                <!-- Address -->
-                <div class="col-md-3">
-                    <label for="address" class="form-label">Area</label>
-                    <input type="text" class="form-control" placeholder="Area" id="address">
-                </div>
                 <div class="col-md-2">
                     <label for="mou" class="form-label">Is MoU available</label>
                     <select class="form-select" aria-label="House occupied" id="mou">
@@ -88,6 +83,12 @@
                         <option value="All" selected>All</option>
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="areaDropdown" class="form-label">Areas</label>
+                    <select class="form-select" aria-label="House occupied" id="areaDropdown">
+                        <option></option>
                     </select>
                 </div>
                 <div style="display: flex; flex-direction: row; align-items: center;" class="pt-3">
@@ -139,7 +140,7 @@
                 getProperties();
             });
 
-            document.getElementById("address").addEventListener("input", function(event) {
+            document.getElementById("areaDropdown").addEventListener("input", function(event) {
                 event.preventDefault();
                 getProperties();
             });
@@ -149,11 +150,37 @@
                 getProperties();
             });
 
+            async function fetchAreas() {
+                try {
+                    const response = await axios.get('/api/listAllAreas');
+                    const areas = response.data.Property;
+
+                    // Get the dropdown element
+                    const dropdown = document.getElementById('areaDropdown');
+
+                    // Clear existing options
+                    dropdown.innerHTML = '';
+
+                    // Populate the dropdown with areas
+                    let option = document.createElement('option');
+                    dropdown.append(option)
+                    areas.forEach((area) => {
+                        option = document.createElement('option');
+                        option.value = area;
+                        option.text = area;
+                        dropdown.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error fetching areas:', error.message);
+                }
+            }
+
+
             function getProperties() {
                 let bhk = document.getElementById("BHK").value;
                 let minRent = document.getElementById("min").value;
                 let maxRent = document.getElementById("max").value;
-                let area = document.getElementById("address").value;
+                let area = document.getElementById("areaDropdown").value;
                 let mou = document.getElementById("mou").value;
 
                 let query = {}
@@ -290,6 +317,10 @@
                     document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
                     document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
                 }
+            }
+            function getAllData() {
+                fetchAreas()
+                getProperties()
             }
         </script>
     </div>
