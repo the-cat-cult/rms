@@ -207,8 +207,6 @@
             }
         }
 
-        let page = 1
-
         function getProperties() {
             let bhk = document.getElementById("BHK").value;
             let minRent = document.getElementById("min").value;
@@ -251,9 +249,7 @@
                 query.searchId = searchId
             }
 
-            page = page ?? 1
-
-            axios.post("/api/listAllPropertiesByFilter?page=" + page, query)
+            axios.post("/api/listAllPropertiesByFilter")
                 .then(function (response) {
                     if (response.data.success) {
                         default_data = []
@@ -277,7 +273,7 @@
                             })
 
                         }
-                        generate_list(default_data);
+                        generatePaginatedList(default_data);
                     }
                 })
                 .catch(function (error) {
@@ -295,43 +291,35 @@
             paginationContainer.innerHTML = ''; // Clear previous pagination
 
             const paginationList = document.createElement('ul');
-            paginationList.className = 'pagination';
+            paginationList.className = 'pagination justify-content-center'; // Add justify-content-center to center pagination
+
+            const firstPage = createPaginationItem(1, 'First', 1);
+            firstPage.classList.add('page-item'); // Add Bootstrap class
+            paginationList.appendChild(firstPage);
 
             // Render Previous button if not at lower limit
-            if (currentPage > 1) {
-                const prevItem = createPaginationItem(currentPage - 1, 'Previous', '&laquo;');
-                paginationList.appendChild(prevItem);
-            }
-
-            // Render first page number if not at lower limit
-            if (currentPage > 2) {
-                const firstItem = createPaginationItem(1, null, 1);
-                paginationList.appendChild(firstItem);
-            }
+            const prevItem = createPaginationItem(currentPage - 1, 'Previous', '&laquo;');
+            prevItem.classList.add('page-item'); // Add Bootstrap class
+            paginationList.appendChild(prevItem);
 
             // Render current page number
             const currentItem = createPaginationItem(currentPage, null, currentPage);
+            currentItem.classList.add('page-item', 'active'); // Add Bootstrap classes
             paginationList.appendChild(currentItem);
 
-            // Render last page number if not at upper limit
-            if (currentPage < totalPages - 1) {
-                const lastItem = createPaginationItem(totalPages, null, totalPages);
-                paginationList.appendChild(lastItem);
-            }
-
             // Render Next button if not at upper limit
-            if (currentPage < totalPages) {
-                const nextItem = createPaginationItem(currentPage + 1, 'Next', '&raquo;');
-                paginationList.appendChild(nextItem);
-            }
+            const nextItem = createPaginationItem(currentPage + 1, 'Next', '&raquo;');
+            nextItem.classList.add('page-item'); // Add Bootstrap class
+            paginationList.appendChild(nextItem);
+
+            const lastPage = createPaginationItem(totalPages - 1, 'Last', totalPages - 1);
+            lastPage.classList.add('page-item'); // Add Bootstrap class
+            paginationList.appendChild(lastPage);
 
             paginationContainer.appendChild(paginationList);
         }
 
         function createPaginationItem(pageNumber, label, innerHTML) {
-            const pageItem = document.createElement('li');
-            pageItem.className = 'page-item';
-
             const pageLink = document.createElement('button');
             pageLink.className = 'page-link';
             if (label) {
@@ -344,13 +332,42 @@
             }
 
             pageLink.addEventListener('click', () => {
-                page = pageNumber
-                getProperties()
+                if (pageNumber > 0) {
+                    displayPage(pageNumber);
+                    generatePagination(pageNumber, Object.keys(paginatedData).length);
+                }
             });
 
+            const pageItem = document.createElement('li');
             pageItem.appendChild(pageLink);
 
             return pageItem;
+        }
+
+
+        let paginatedData = {};
+
+        function generatePaginatedList(default_data) {
+            const itemsPerPage = 10;
+            const totalItems = default_data.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+            paginatedData = {};
+
+            for (let i = 0; i < totalPages; i++) {
+                const startIndex = i * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                paginatedData[i + 1] = default_data.slice(startIndex, endIndex);
+            }
+
+            // Display the first page by default
+            displayPage(1);
+            generatePagination(1, totalPages);
+        }
+
+        function displayPage(pageNumber) {
+            const pageData = paginatedData[pageNumber];
+            generate_list(pageData);
         }
 
         function generate_list(default_data) {
