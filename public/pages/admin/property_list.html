@@ -254,8 +254,6 @@
                     if (response.data.success) {
                         default_data = []
 
-                        // generatePagination(response.data.pagination.currentPage, response.data.pagination.totalPages, response.data.pagination.hasPrevPage, response.data.pagination.hasNextPage)
-
                         received_data = response.data.Property;
                         document.getElementById('total-houses').innerText = received_data.length
                         for (let i = 0; i < received_data.length; i++) {
@@ -271,7 +269,6 @@
                                 "id": received_data[i]._id,
                                 "link": "/pages/owner/property_view.html?propertyId=" + received_data[i]._id,
                             })
-
                         }
                         generatePaginatedList(default_data);
                     }
@@ -281,6 +278,31 @@
                     alert("Error in fetching data")
                 });
 
+        }
+
+        let paginatedData = {};
+
+        function generatePaginatedList(default_data) {
+            const itemsPerPage = 10;
+            const totalItems = default_data.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+            paginatedData = {};
+
+            for (let i = 0; i < totalPages; i++) {
+                const startIndex = i * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                paginatedData[i + 1] = default_data.slice(startIndex, endIndex);
+            }
+
+            // Display the first page by default
+            displayPage(1);
+            generatePagination(1, totalPages);
+        }
+
+        function displayPage(pageNumber) {
+            const pageData = paginatedData[pageNumber];
+            generate_list(pageData);
         }
 
         function generatePagination(currentPage, totalPages) {
@@ -347,33 +369,6 @@
             pageItem.appendChild(pageLink);
 
             return pageItem;
-        }
-
-
-
-        let paginatedData = {};
-
-        function generatePaginatedList(default_data) {
-            const itemsPerPage = 10;
-            const totalItems = default_data.length;
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-            paginatedData = {};
-
-            for (let i = 0; i < totalPages; i++) {
-                const startIndex = i * itemsPerPage;
-                const endIndex = startIndex + itemsPerPage;
-                paginatedData[i + 1] = default_data.slice(startIndex, endIndex);
-            }
-
-            // Display the first page by default
-            displayPage(1);
-            generatePagination(1, totalPages);
-        }
-
-        function displayPage(pageNumber) {
-            const pageData = paginatedData[pageNumber];
-            generate_list(pageData);
         }
 
         function generate_list(default_data) {
