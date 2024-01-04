@@ -117,7 +117,8 @@
                                     "name": tenant.name,
                                     "ph_no": tenant.mobileNumber,
                                     "Allocation": tenant.allocationStatus,
-                                    "tenantId": tenant._id
+                                    "tenantId": tenant._id,
+                                    "verified": tenant.verified
                                 }
                                 default_data.push(tenant_data);
                             }
@@ -139,10 +140,29 @@
                 let list = document.getElementById("prop-list");
                 list.innerHTML = "";
 
-                for (var i = 0; i < default_data.length; i++) {
-                    var item = document.createElement("a");
-                    item.setAttribute("href", "/pages/admin/tenant_page.html?tenantId=" + default_data[i]["tenantId"]);
-                    item.setAttribute("class", "list-group-item list-group-item-action");
+                for (let i = 0; i < default_data.length; i++) {
+                    let list_item = document.createElement("li");
+                    list_item.setAttribute("class", "list-group-item list-group-item-action");
+                    list_item.classList.add("p-3");
+
+                    let row = document.createElement("div");
+                    row.classList.add("row");
+
+                    let col1 = document.createElement("div");
+                    col1.classList.add("col-12", "col-md-6", "col-lg-6");
+
+                    let col2 = document.createElement("div");
+                    col2.classList.add("col-12", "col-md-5", "col-lg-5", "align-self-center");
+
+                    let col3 = document.createElement("div");
+                    col3.classList.add("col-12", "col-md-1", "col-lg-1", "align-self-center");
+
+                    var item = document.createElement("div");
+                    let path = "/pages/admin/tenant_page.html?tenantId=" + default_data[i]["tenantId"]
+                    item.addEventListener("click", () => {
+                        window.location = path
+                    })
+                    item.setAttribute("class", "list-group-item-action");
                     item.setAttribute("aria-current", "true");
 
                     var div1 = document.createElement("div");
@@ -158,10 +178,76 @@
                     small2.setAttribute("class", "text-primary");
                     small2.innerHTML = default_data[i]["ph_no"];
 
+                    let verified = document.createElement("p");
+                    verified.id = "verified-" + default_data[i]._id;
+                    verified.classList.add("mb-0");
+                    verified.classList.add(default_data[i].verified ? "text-success" : "text-danger");
+                    verified.innerHTML = default_data[i].verified ? "Verified" : "Not Verified";
+
+                    let switcher = document.createElement("div");
+                    switcher.classList.add("form-check", "form-switch");
+
+                    let inp_switch = document.createElement("input");
+                    inp_switch.classList.add("form-check-input");
+                    inp_switch.setAttribute("type", "checkbox");
+                    inp_switch.setAttribute("role", "switch");
+                    inp_switch.setAttribute("id", "inp_switch-" + default_data[i]._id);
+                    if (default_data[i].verified) {
+                        inp_switch.setAttribute("checked", "");
+                    }
+
+                    // Event listener for switch
+                    inp_switch.addEventListener("change", function() {
+                        if (this.checked) {
+                            axios.post('/api/verifyTenant', {
+                                verified: true,
+                                mobileNumber: default_data[i]["ph_no"]
+                            })
+                                .then(function(response) {
+                                    console.log(response)
+                                    document.getElementById("verified-" + default_data[i]._id).innerHTML = "Verified";
+                                    document.getElementById("verified-" + default_data[i]._id).classList.remove("text-danger");
+                                    document.getElementById("verified-" + default_data[i]._id).classList.add("text-success");
+                                })
+                                .catch(function(error) {
+                                    console.log(error);
+                                    alert("Error verifying tenant")
+                                });
+                        } else {
+                            axios.post('/api/verifyTenant', {
+                                verified: false,
+                                mobileNumber: default_data[i]["ph_no"]
+                            })
+                                .then(function(response) {
+                                    console.log(response)
+                                    document.getElementById("verified-" + default_data[i]._id).innerHTML = "Not Verified";
+                                    document.getElementById("verified-" + default_data[i]._id).classList.remove("text-success");
+                                    document.getElementById("verified-" + default_data[i]._id).classList.add("text-danger");
+                                })
+                                .catch(function(error) {
+                                    console.log(error);
+                                    alert("Error verifying tenant")
+                                });
+
+                        }
+                    });
+
+                    switcher.appendChild(inp_switch);
+
                     item.appendChild(div1);
                     item.appendChild(small2);
+                    item.appendChild(switcher)
 
-                    list.appendChild(item);
+                    col1.appendChild(item);
+                    col2.appendChild(verified);
+                    col3.appendChild(switcher);
+
+                    row.appendChild(col1);
+                    row.appendChild(col2);
+                    row.appendChild(col3);
+
+                    list_item.appendChild(row);
+                    list.appendChild(list_item)
                 }
             }
 

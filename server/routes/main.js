@@ -22,7 +22,7 @@ import {
     createTenant,
     getAllTenants,
     getOneTenant,
-    updateTenant, getOneTenantById, deleteTenantById,
+    updateTenant, getOneTenantById, deleteTenantById, verifyTenant,
 } from '../controllers/tenant.js'
 import {
     createUser,
@@ -82,6 +82,7 @@ router.patch('/updateProperty', authentication(["admin", "owner"]), multerImages
 router.patch('/updateBookingStatus', authentication(["admin"]), updateBookingStatus)
 router.post('/setVerificationStatus', authentication("admin"), setVerificationStatus)
 router.post('/verifyUser', authentication(["admin"]), verifyUser)
+router.post('/verifyTenant', authentication(["admin"]), verifyTenant)
 
 //delete entity
 router.post('/deleteProperty', authentication(["admin", "owner"]), deleteProperty)

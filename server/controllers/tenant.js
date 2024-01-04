@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Tenant from "../models/tenant.js";
 import User from "../models/user.js";
 import Bookings from "../models/bookings.js";
+import Properties from "../models/properties.js";
 
 export async function createTenant(req, res) {
 
@@ -61,6 +62,42 @@ export async function createTenant(req, res) {
             })
         });
 }
+
+export function verifyTenant(req, res) {
+    let mobileNumber = req.body.mobileNumber;
+    let verified = req.body.verified;
+
+    let updateFields = {
+        verified: verified,
+    };
+
+    if (!verified) {
+        updateFields.allocationStatus = 'no';
+        updateFields.allocatedProperty = undefined;
+    }
+
+    Tenant.findOneAndUpdate({ mobileNumber: mobileNumber }, updateFields)
+        .then(async (tenant) => {
+
+            if (!verified) {
+                await cleanupOnTenantChange(tenant._id)
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: verified ? 'Tenant verified' : 'Tenant unverified',
+                Tenant: tenant,
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                success: false,
+                message: 'Server error. Please try again.',
+                error: err.message,
+            });
+        });
+}
+
 
 export function getAllTenants(req, res) {
     Tenant.find()
@@ -179,13 +216,11 @@ export function deleteTenantById(req, res) {
         .then(async (oneTenant) => {
 
             try {
-                await Bookings.deleteOne({tenantId: oneTenant._id});
+                await cleanupOnTenantChange(oneTenant._id)
                 console.log('Booking for property deleted successfully');
             } catch (error) {
-                console.error('Error deleting bookin:', error);
+                console.error('Error deleting booking:', error);
             }
-
-            await Bookings.deleteOne({tenantId: id})
 
             return res.status(200).json({
                 success: true,
@@ -199,4 +234,22 @@ export function deleteTenantById(req, res) {
                 error: err.message,
             });
         });
+}
+
+async function cleanupOnTenantChange(tenantId) {
+    try {
+        const bookings = await Bookings.find({ tenantId: tenantId });
+        for (const booking of bookings) {
+            const property = await Properties.findOne({ _id: booking.propertyId });
+
+            if (property) {
+                property.vacancyStatus = true;
+                await property.save();
+            }
+        }
+        await Bookings.deleteMany({ tenantId: tenantId });
+    } catch (error) {
+        console.error('Error during cleanup:', error.message);
+        throw error;  // Propagate the error if needed
+    }
 }
