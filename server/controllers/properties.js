@@ -223,8 +223,12 @@ export function getPropertiesByFilters(req, res) {
                 if (area !== undefined) {
                     condition = condition && property.address.toLowerCase().includes(area.toLowerCase());
                 }
-                if (mou !== undefined) {
-                    condition = condition && property.mou === mou
+                if (mou !== undefined && mou !== 'All') {
+                    if (mou === "No") {
+                        condition = condition && property.mou === false
+                    } else if (mou === "Yes") {
+                        condition = condition && property.mou === true
+                    }
                 }
                 if (houseOccupied !== undefined && houseOccupied !== "All") {
                     if (houseOccupied === "Occupied") {

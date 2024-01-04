@@ -81,12 +81,14 @@
                     <label for="address" class="form-label">Area</label>
                     <input type="text" class="form-control" placeholder="Area" id="address">
                 </div>
-
-                <div class="pt-3">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="mou">
-                        <label class="form-check-label" for="mou">Only properties with MoU</label>
-                    </div>
+                <div class="col-md-2">
+                    <label for="mou" class="form-label">Is MoU available</label>
+                    <select class="form-select" aria-label="House occupied" id="mou">
+                        <option></option>
+                        <option value="All" selected>All</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
                 </div>
                 <div style="display: flex; flex-direction: row; align-items: center;" class="pt-3">
                     <h6 style="padding: 0; margin: 0">
@@ -152,7 +154,7 @@
                 let minRent = document.getElementById("min").value;
                 let maxRent = document.getElementById("max").value;
                 let area = document.getElementById("address").value;
-                let mou = document.getElementById("mou").checked;
+                let mou = document.getElementById("mou").value;
 
                 let query = {}
                 if (bhk) {
