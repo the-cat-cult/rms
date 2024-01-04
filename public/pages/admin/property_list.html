@@ -109,6 +109,12 @@
                 </div>
             </div>
         </div>
+        <div style="display: flex; flex-direction: row; align-items: center;" class="pt-3">
+            <h6 style="padding: 0; margin: 0">
+                Total number of properties:
+            </h6>
+            <span style="margin-left: 5px;" id="total-houses"></span>
+        </div>
     </div>
 
 
@@ -225,9 +231,10 @@
                     if (response.data.success) {
                         default_data = []
 
-                        generatePagination(response.data.pagination.currentPage, response.data.pagination.totalPages, response.data.pagination.hasPrevPage, response.data.pagination.hasNextPage)
+                        // generatePagination(response.data.pagination.currentPage, response.data.pagination.totalPages, response.data.pagination.hasPrevPage, response.data.pagination.hasNextPage)
 
                         received_data = response.data.Property;
+                        document.getElementById('total-houses').innerText = received_data.length
                         for (let i = 0; i < received_data.length; i++) {
                             default_data.push({
                                 "name": received_data[i].name,
