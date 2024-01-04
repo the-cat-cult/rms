@@ -16,7 +16,7 @@ import {
     getPropertyById,
     setVerificationStatus,
     uploadFiles,
-    deleteFile, getFile, getPropertiesOfOwner, getImagesByPropertyId
+    deleteFile, getFile, getPropertiesOfOwner, getImagesByPropertyId, getAllAreas
 } from '../controllers/properties.js'
 import {
     createTenant,
@@ -68,6 +68,7 @@ router.get('/listAllUsers', authentication(["admin"]), getAllUsers)
 router.get('/listAllTenants', authentication(["admin", "owner"]), getAllTenants)
 router.get('/listAllAdmins', authentication(["admin"]), getAllAdmins)
 router.get('/listAllPropertiesByUser', authentication(["owner"]), getAllPropertiesByUser)
+router.get('/listAllAreas', authentication(["owner", "admin", "tenant"]), getAllAreas)
 router.post('/listAllPropertiesByFilter', authentication(["admin", "tenant"]), getPropertiesByFilters)
 router.post('/listAllBookings', authentication(["admin", "tenant"]), getAllBookings)
 router.get('/listAllSellers', authentication(["admin"]), getAllSellers)

@@ -3,6 +3,7 @@ import Property from "../models/properties.js";
 import Images from "../models/images.js";
 import User from "../models/user.js";
 import Bookings from "../models/bookings.js";
+import stringSimilarity from "string-similarity"
 
 export async function createProperty(req, res) {
     const files = req.files;
@@ -194,6 +195,33 @@ export function getPropertyById(req, res) {
 
 }
 
+export function getAllAreas(req, res) {
+    Property.find()
+        .then((properties) => {
+            const areasSet = new Set();
+
+            properties.forEach((property) => {
+                areasSet.add(property.location.toLowerCase());
+            });
+
+            const uniqueAreas = [...areasSet];
+
+            return res.status(200).json({
+                success: true,
+                message: 'Result',
+                Property: uniqueAreas,
+            });
+        })
+        .catch((e) => {
+            // Handle the error
+            res.status(500).json({
+                success: false,
+                message: 'Error',
+                error: e.message,
+            });
+        });
+}
+
 export function getPropertiesByFilters(req, res) {
     const {bhk, minRent, maxRent, area, mou, houseOccupied, searchId} = req.body;
 
@@ -221,7 +249,7 @@ export function getPropertiesByFilters(req, res) {
                     condition = condition && property.rent <= parseInt(maxRent);
                 }
                 if (area !== undefined) {
-                    condition = condition && property.address.toLowerCase().includes(area.toLowerCase());
+                    condition = condition && (stringSimilarity.compareTwoStrings(property.location.toLowerCase(), area.toLowerCase()) > 0.7) || property.address.toLowerCase().includes(area.toLowerCase());
                 }
                 if (mou !== undefined && mou !== 'All') {
                     if (mou === "No") {
