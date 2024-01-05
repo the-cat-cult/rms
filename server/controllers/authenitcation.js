@@ -2,7 +2,7 @@ import User from "../models/user.js";
 import Tenant from "../models/tenant.js";
 import Otp from "../models/otp.js";
 import mongoose from "mongoose";
-import unirest from 'unirest'
+import fetch from "node-fetch";
 import jwt from "jsonwebtoken";
 
 function setExpDateTime(minutes) {
@@ -133,23 +133,50 @@ export async function signUp(req, res) {
     }
 }
 
-function sendSMS(code, phone) {
-    const req = unirest("POST", "https://www.fast2sms.com/dev/bulkV2");
+async function sendSMS(code, phone) {
+    try {
+        const response = await fetch('https://www.fast2sms.com/dev/bulkV2', {
+            method: 'POST',
+            headers: {
+                Authorization: process.env.FAST2SMS_API_KEY,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                variables_values: code,
+                route: 'otp',
+                numbers: phone,
+            }),
+        });
 
-    req.headers({
-        "authorization": process.env.FAST2SMS_API_KEY,
-    });
+        // Check for the status code
+        if (response.status !== 200) {
+            const responseData = await response.json(); // Parse JSON response
+            const errorMessage = responseData ? responseData.message : 'Unknown error';
+            console.error(`Failed to send SMS. Status: ${response.status}. Error: ${errorMessage}`);
+            return {
+                status: false,
+                message: errorMessage
+            };
+        } else {
+            console.log('SMS sent successfully');
+            return {
+                status: true,
+                message: 'SMS sent successfully'
+            };
+        }
 
-    req.form({
-        "variables_values": code,
-        "route": "otp",
-        "numbers": phone,
-    });
-
-    req.end(function (res) {
-        if (res.error) throw new Error(res.error);
-    });
+    } catch (error) {
+        // Log the error message without throwing an exception
+        const errorMessage = error.message || 'Unknown error';
+        console.error('Error sending SMS:', errorMessage);
+        return {
+            status: false,
+            message: errorMessage
+        };
+    }
 }
+
+
 
 export async function generateOTP(req, res) {
     const phone = req.body.phone;
@@ -179,7 +206,15 @@ export async function generateOTP(req, res) {
 
 
     try {
-        sendSMS(code, phone);
+        let response = await sendSMS(code, phone);
+
+        if(!response.status) {
+            return res.status(500).json({
+                success: false,
+                message: response.message
+            });
+        }
+
         await otpRecord
             .save();
         return res.status(201).json({

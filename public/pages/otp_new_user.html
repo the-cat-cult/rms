@@ -112,7 +112,7 @@
                     // alert("OTP sent successfully, OTP is valid for five minutes")
                 })
                 .catch(function(error) {
-                    alert("Error sending OTP")
+                    alert(error.response.data.message ?? 'Error sending OTP')
                     console.log(error);
                 });
         }
