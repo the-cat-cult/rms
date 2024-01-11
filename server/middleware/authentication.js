@@ -36,7 +36,7 @@ export default function (roles) {
                         request.user.role = "tenant";
 
                         if(tenant.verified === false) {
-                            return response.status(412).send("Please verify your account, reach out to 1234567890 to get your account verified");
+                            return response.status(412).send("Please verify your account, reach out to 9496062045 to get your account verified. Please have your personnel number, name and rank ready for verification");
                         }
 
                         next();
