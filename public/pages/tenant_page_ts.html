@@ -116,7 +116,7 @@
                 let message = error.response.data.message ?? error.response.data
                 alert(message)
                 console.log(error);
-                if(message.includes('Please verify your account')) {
+                if(message.includes('9496062045')) {
                     axios.post('/api/signOut')
                         .then(function (response) {
                             console.log(response);
