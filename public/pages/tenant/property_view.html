@@ -254,7 +254,7 @@
             carousel_indicators.appendChild(li);
         }
 
-        if (!vacancyStatus) {
+        if (vacancyStatus) {
             vacancy_refs.classList.remove(...status_refs.classList);
             vacancy_refs.classList.add("badge");
             vacancy_refs.classList.add("rounded-pill");

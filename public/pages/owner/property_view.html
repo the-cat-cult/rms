@@ -96,7 +96,7 @@
             <div class="form-check form-switch moi-container" id="occupied-container">
                 <input class="form-check-input" type="checkbox" role="switch" id="occupied"
                        onchange="togglePropertyAllocation()">
-                <label class="form-check-label" for="occupied"> Is property allocate? </label>
+                <label class="form-check-label" for="occupied"> Is property occupied? </label>
             </div>
 
             <div id="owner_details">
@@ -286,7 +286,7 @@
         const propertyId = getPropertyId()
 
         const checkbox = document.getElementById('occupied');
-        const vacancyStatus = checkbox.checked;
+        const vacancyStatus = !checkbox.checked;
 
         try {
             const response = await axios.post('/api/setPropertyStatus', {
@@ -299,7 +299,7 @@
             if (response.data.success) {
                 alert(response.data.message)
 
-                if (!vacancyStatus) {
+                if (vacancyStatus) {
                     vacancy_refs.classList.remove(...status_refs.classList);
                     vacancy_refs.classList.add("badge");
                     vacancy_refs.classList.add("rounded-pill");
@@ -455,7 +455,7 @@
             carousel_inner.appendChild(div);
         }
 
-        occupiedStatus.checked = vacancyStatus
+        occupiedStatus.checked = !vacancyStatus
 
         bhk_refs.innerHTML = bhk;
         type_refs.innerHTML = type;
@@ -477,7 +477,7 @@
             status_refs.innerHTML = "Not Verified";
         }
 
-        if (!vacancyStatus) {
+        if (vacancyStatus) {
             vacancy_refs.classList.remove(...status_refs.classList);
             vacancy_refs.classList.add("badge");
             vacancy_refs.classList.add("rounded-pill");

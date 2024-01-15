@@ -234,7 +234,7 @@ export function getPropertiesByFilters(req, res) {
             if (req.user.role !== 'admin') {
                 properties = properties.filter((property) => {
                     console.log(property.ownerId)
-                    return property.ownerId.verified === true && property.vacancyStatus === true && property.verified === true;
+                    return property.ownerId.verified === true && property.verified === true;
                 });
             }
 
