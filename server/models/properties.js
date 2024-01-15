@@ -24,7 +24,7 @@ const propertiesSchema = new mongoose.Schema({
     age: Number,
     vacancyStatus: {
         type: Boolean,
-        default: true
+        default: false
     },
     ownerId: {
         type: mongoose.Schema.Types.ObjectId,

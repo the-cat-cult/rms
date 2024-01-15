@@ -4,6 +4,7 @@ import Images from "../models/images.js";
 import User from "../models/user.js";
 import Bookings from "../models/bookings.js";
 import stringSimilarity from "string-similarity"
+import Tenant from "../models/tenant.js";
 
 export async function createProperty(req, res) {
     const files = req.files;
@@ -735,7 +736,6 @@ export async function getImagesByPropertyId(req, res) {
         });
     }
 
-    console.log(images)
     let idList = images.map(image => new mongoose.Types.ObjectId(image._id))
 
     Images.find({
@@ -765,4 +765,52 @@ export async function getImagesByPropertyId(req, res) {
                 message: 'Error in getting image' + err
             });
         });
+}
+
+export async function togglePropertyAllocationStatus(req, res) {
+    try {
+        const { propertyId, vacancyStatus } = req.body;
+
+        const property = await Property.findById(propertyId);
+
+        if (!property) {
+            return res.status(404).json({ error: 'Property not found' });
+        }
+
+        if (vacancyStatus === false) {
+            property.vacancyStatus = false;
+        } else {
+            // If status is false, remove orphan data
+            const bookings = await Bookings.find({
+                propertyId: new mongoose.Types.ObjectId(property._id),
+                allotmentStatus: true,
+            });
+
+            // Delete all bookings tied with this property
+            for (const booking of bookings) {
+                await Bookings.findByIdAndDelete(new mongoose.Types.ObjectId(booking._id));
+            }
+
+            // Find all tenants with propertyId set to this
+            const tenants = await Tenant.find({
+                allocatedProperty: new mongoose.Types.ObjectId(property._id),
+            });
+
+            // Mark each tenant as unallocated
+            for (const tenant of tenants) {
+                tenant.allocationStatus = 'no';
+                tenant.allocatedProperty = null;
+                await tenant.save();
+            }
+
+            property.vacancyStatus = true;
+        }
+
+        await property.save();
+
+        return res.status(200).json({ message: 'Property allocation status updated successfully', success: true });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({error: 'Internal Server Error', success: true});
+    }
 }

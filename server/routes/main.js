@@ -16,7 +16,7 @@ import {
     getPropertyById,
     setVerificationStatus,
     uploadFiles,
-    deleteFile, getFile, getPropertiesOfOwner, getImagesByPropertyId, getAllAreas
+    deleteFile, getFile, getPropertiesOfOwner, getImagesByPropertyId, getAllAreas, togglePropertyAllocationStatus
 } from '../controllers/properties.js'
 import {
     createTenant,
@@ -62,6 +62,7 @@ router.get('/getOwner', authentication(["admin"]), getOneOwnerById)
 router.get('/getPropertiesOfOwner', authentication(["admin"]), getPropertiesOfOwner)
 router.post('/getPropertyById', authentication(["owner", "tenant", "admin"]), getPropertyById)
 router.post('/getBooking', authentication(["admin", "tenant"]), getOneBooking)
+router.post('/setPropertyStatus', authentication(["admin"]), togglePropertyAllocationStatus)
 
 //get list of entities
 router.get('/listAllUsers', authentication(["admin"]), getAllUsers)
