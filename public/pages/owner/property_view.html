@@ -304,13 +304,13 @@
                     vacancy_refs.classList.add("badge");
                     vacancy_refs.classList.add("rounded-pill");
                     vacancy_refs.classList.add("text-bg-success");
-                    vacancy_refs.innerHTML = "Vacant";
+                    vacancy_refs.innerHTML = "Unoccupied";
                 } else {
                     vacancy_refs.classList.remove(...status_refs.classList);
                     vacancy_refs.classList.add("badge");
                     vacancy_refs.classList.add("rounded-pill");
                     vacancy_refs.classList.add("text-bg-warning");
-                    vacancy_refs.innerHTML = "Not Vacant";
+                    vacancy_refs.innerHTML = "Occupied";
                 }
 
             } else {
@@ -482,13 +482,13 @@
             vacancy_refs.classList.add("badge");
             vacancy_refs.classList.add("rounded-pill");
             vacancy_refs.classList.add("text-bg-success");
-            vacancy_refs.innerHTML = "Vacant";
+            vacancy_refs.innerHTML = "Unoccupied";
         } else {
             vacancy_refs.classList.remove(...status_refs.classList);
             vacancy_refs.classList.add("badge");
             vacancy_refs.classList.add("rounded-pill");
             vacancy_refs.classList.add("text-bg-warning");
-            vacancy_refs.innerHTML = "Not Vacant";
+            vacancy_refs.innerHTML = "Occupied";
         }
 
         let owner_data = document.getElementById("owner_details");
