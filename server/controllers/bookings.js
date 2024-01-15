@@ -28,6 +28,10 @@ export async function createBooking(req, res) {
         return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
     }
 
+    if (property.vacancyStatus === false) {
+        return res.sendFile(path.join(__dirname + '/public/pages/not_vacant.html'));
+    }
+
     //check if there are existing bookings for propertyId
     try {
         const existingBookings = await Booking.find({propertyId: propertyId, tenantId: tenantId})

@@ -261,6 +261,7 @@
             vacancy_refs.classList.add("text-bg-success");
             vacancy_refs.innerHTML = "Unoccupied";
         } else {
+            document.getElementById('add_to_pref').style.display = 'none'
             vacancy_refs.classList.remove(...status_refs.classList);
             vacancy_refs.classList.add("badge");
             vacancy_refs.classList.add("rounded-pill");
