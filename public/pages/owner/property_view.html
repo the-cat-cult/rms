@@ -83,6 +83,7 @@
                 <span id="bhk"></span> <span id="type"></span>
             </h1>
             <h4 class="mt-3" id="status"></h4>
+            <h4 class="mt-3" id="vacancy"></h4>
             <h5 class="mt-3 text-muted">Rent</h5>
             <h2 id="rent"></h2>
             <h5 class="mt-3 text-muted">Address</h5>
@@ -297,6 +298,21 @@
 
             if (response.data.success) {
                 alert(response.data.message)
+
+                if (!vacancyStatus) {
+                    vacancy_refs.classList.remove(...status_refs.classList);
+                    vacancy_refs.classList.add("badge");
+                    vacancy_refs.classList.add("rounded-pill");
+                    vacancy_refs.classList.add("text-bg-success");
+                    vacancy_refs.innerHTML = "Vacant";
+                } else {
+                    vacancy_refs.classList.remove(...status_refs.classList);
+                    vacancy_refs.classList.add("badge");
+                    vacancy_refs.classList.add("rounded-pill");
+                    vacancy_refs.classList.add("text-bg-warning");
+                    vacancy_refs.innerHTML = "Not Vacant";
+                }
+
             } else {
                 alert("Failed to change vacancy status")
             }
@@ -387,6 +403,7 @@
     rent_refs = document.getElementById("rent");
     address_refs = document.getElementById("address");
     status_refs = document.getElementById("status");
+    vacancy_refs = document.getElementById("vacancy");
     security_deposit_refs = document.getElementById("security_deposit");
     mou_refs = document.getElementById("mou");
     const occupiedStatus = document.getElementById('occupied');
@@ -458,6 +475,20 @@
             status_refs.classList.add("rounded-pill");
             status_refs.classList.add("text-bg-warning");
             status_refs.innerHTML = "Not Verified";
+        }
+
+        if (!vacancyStatus) {
+            vacancy_refs.classList.remove(...status_refs.classList);
+            vacancy_refs.classList.add("badge");
+            vacancy_refs.classList.add("rounded-pill");
+            vacancy_refs.classList.add("text-bg-success");
+            vacancy_refs.innerHTML = "Vacant";
+        } else {
+            vacancy_refs.classList.remove(...status_refs.classList);
+            vacancy_refs.classList.add("badge");
+            vacancy_refs.classList.add("rounded-pill");
+            vacancy_refs.classList.add("text-bg-warning");
+            vacancy_refs.innerHTML = "Not Vacant";
         }
 
         let owner_data = document.getElementById("owner_details");
