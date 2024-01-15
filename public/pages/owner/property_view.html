@@ -92,7 +92,7 @@
             <h5 class="mt-3 text-muted">MoU</h5>
             <h3 id="mou"></h3>
 
-            <div class="form-check form-switch moi-container">
+            <div class="form-check form-switch moi-container" id="occupied-container">
                 <input class="form-check-input" type="checkbox" role="switch" id="occupied"
                        onchange="togglePropertyAllocation()">
                 <label class="form-check-label" for="occupied"> Is property allocate? </label>
@@ -390,9 +390,14 @@
     security_deposit_refs = document.getElementById("security_deposit");
     mou_refs = document.getElementById("mou");
     const occupiedStatus = document.getElementById('occupied');
+    const occupiedContainer = document.getElementById('occupied-container')
 
     function build_data() {
         let carousel_indicators = document.getElementsByClassName("carousel-indicators")[0];
+
+        if (role !== 'admin') {
+            occupiedContainer.style.display = "none"
+        }
 
         //x and y coord
         try {
