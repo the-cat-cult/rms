@@ -202,15 +202,19 @@ export function getAllAreas(req, res) {
             const areasSet = new Set();
 
             properties.forEach((property) => {
-                areasSet.add(property.location.toLowerCase());
+                areasSet.add(property.location.toLowerCase().trim());
             });
 
             const uniqueAreas = [...areasSet];
 
+            const uniqueAreasCapitalized = uniqueAreas.map(area => {
+                return area.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            });
+
             return res.status(200).json({
                 success: true,
                 message: 'Result',
-                Property: uniqueAreas,
+                Property: uniqueAreasCapitalized,
             });
         })
         .catch((e) => {
