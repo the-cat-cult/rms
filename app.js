@@ -21,8 +21,6 @@ let connectionString = process.env.NODE_ENV === 'development' ? process.env.CONN
 mongoose.connect(connectionString)
     .then(() => {
         console.log('\x1b[34m%s\x1b[0m', 'Connected to database');
-        let url = 'http://localhost:8080/';
-        console.log('\x1b[33m%s\x1b[0m', `Server running on ${url}`);
     })
     .catch((error) => {
         console.log('Error connecting to database', error);
@@ -53,7 +51,8 @@ app.use((err, req, res, next) => {
 });
 
 const port = process.env.PORT || 3000;
+const hostname = '127.0.0.1';
 
-app.listen(port, () => {
+app.listen(port, hostname, () => {
     console.log(`Server running on port ${port}`);
 });
