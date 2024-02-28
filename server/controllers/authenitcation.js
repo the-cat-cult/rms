@@ -4,6 +4,7 @@ import Otp from "../models/otp.js";
 import mongoose from "mongoose";
 import fetch from "node-fetch";
 import jwt from "jsonwebtoken";
+import SuperAdmin from "../models/super-admin.js";
 
 function setExpDateTime(minutes) {
     let curr = new Date()
@@ -286,6 +287,13 @@ export async function login(req, res) {
     const token = generateJWTToken(user, role);
 
     await Otp.deleteOne({mobileNumber: mobileNumber});
+    const superAdmin = await SuperAdmin.findOne({mobileNumber: mobileNumber}).exec();
+
+    let isSuperAdmin = false;
+
+    if (superAdmin) {
+        isSuperAdmin = true
+    }
 
     return res
         .cookie("user-auth-token", token, {
@@ -297,6 +305,7 @@ export async function login(req, res) {
             success: true,
             role: role,
             name: user.name,
+            isSuperAdmin: isSuperAdmin,
             message: 'Login successful'
         });
 }
