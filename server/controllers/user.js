@@ -5,6 +5,7 @@ import Properties from "../models/properties.js";
 import Bookings from "../models/bookings.js";
 import Property from "../models/properties.js";
 import Images from "../models/images.js";
+import SuperAdmin from "../models/super-admin.js";
 
 export async function createUser(req, res) {
 
@@ -231,7 +232,7 @@ export function deleteOwnerById(req, res) {
         });
     }
 
-    User.findOneAndDelete({ _id: id })
+    User.findOneAndDelete({ _id: id, isAdmin: false })
         .then(async (oneUser) => {
             if (!oneUser) {
                 return res.status(404).json({
@@ -281,7 +282,47 @@ export function deleteOwnerById(req, res) {
     });
 }
 
+export async function deleteAdminById(req, res) {
+    let id = req.query.admin_id;
 
+    if (!id) {
+        return res.status(400).json({
+            success: false,
+            message: 'No id provided'
+        });
+    }
+
+    let mobileNumber = req.user.mobileNumber;
+    const superAdmin = await SuperAdmin.findOne({mobileNumber: mobileNumber}).exec();
+
+    if (!superAdmin) {
+        return res.status(400).json({
+            success: false,
+            message: 'You are not a super admin'
+        });
+    }
+
+    User.findOneAndDelete({_id: id, isAdmin: true})
+        .then(async (oneUser) => {
+            if (!oneUser) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Owner not found'
+                });
+            }
+            return res.status(200).json({
+                success: true,
+                message: 'Deleted admin',
+                Tenant: oneUser,
+            });
+        }).catch((err) => {
+        res.status(500).json({
+            success: false,
+            message: 'Server error. Please try again.',
+            error: err.message,
+        });
+    });
+}
 
 export function getAllAdmins(req, res) {
     User.find({isAdmin: true})

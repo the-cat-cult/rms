@@ -3,7 +3,6 @@ import Property from "../models/properties.js";
 import Images from "../models/images.js";
 import User from "../models/user.js";
 import Bookings from "../models/bookings.js";
-import stringSimilarity from "string-similarity"
 import Tenant from "../models/tenant.js";
 
 export async function createProperty(req, res) {

@@ -28,7 +28,7 @@ import {
     createUser,
     getAllUsers,
     getOneUser,
-    updateUser, getAllSellers, verifyUser, getOneOwnerById, deleteOwnerById, getAllAdmins,
+    updateUser, getAllSellers, verifyUser, getOneOwnerById, deleteOwnerById, getAllAdmins, deleteAdminById,
 } from '../controllers/user.js'
 import {signUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
@@ -90,5 +90,6 @@ router.post('/deleteProperty', authentication(["admin", "owner"]), deletePropert
 router.post('/deleteBooking', authentication(["tenant"]), deleteBooking)
 router.get('/deleteTenantById', authentication(["admin"]), deleteTenantById)
 router.get('/deleteOwnerById', authentication(["admin"]), deleteOwnerById)
+router.get('/deleteAdminById', authentication(["admin"]), deleteAdminById)
 
 export default router;
