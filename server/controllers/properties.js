@@ -254,7 +254,7 @@ export function getPropertiesByFilters(req, res) {
                     condition = condition && property.rent <= parseInt(maxRent);
                 }
                 if (area !== undefined) {
-                    condition = condition && (stringSimilarity.compareTwoStrings(property.location.toLowerCase(), area.toLowerCase()) > 0.7) || property.address.toLowerCase().includes(area.toLowerCase());
+                    condition = condition && property.address.toLowerCase().includes(area.toLowerCase());
                 }
                 if (mou !== undefined && mou !== 'All') {
                     if (mou === "No") {
