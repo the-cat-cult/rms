@@ -324,11 +324,20 @@ export function singOut(req, res) {
         });
 }
 
-export function checkAuth(req, res) {
+export async function checkAuth(req, res) {
+    const superAdmin = await SuperAdmin.findOne({mobileNumber: req.user.mobileNumber}).exec();
+
+    let isSuperAdmin = false;
+
+    if (superAdmin) {
+        isSuperAdmin = true
+    }
+
     return res.status(200).json({
         success: true,
         name: req.user.name,
         role: req.user.role,
+        isSuperAdmin: isSuperAdmin,
         message: 'User is authenticated'
     });
 }
