@@ -232,7 +232,7 @@ export function deleteOwnerById(req, res) {
         });
     }
 
-    User.findOneAndDelete({ _id: id, isAdmin: false })
+    User.findOneAndDelete({_id: id, isAdmin: false})
         .then(async (oneUser) => {
             if (!oneUser) {
                 return res.status(404).json({
@@ -242,11 +242,11 @@ export function deleteOwnerById(req, res) {
             }
 
             // Fetch properties owned by the user
-            const manyProperties = await Property.find({ ownerId: oneUser._id });
+            const manyProperties = await Property.find({ownerId: oneUser._id});
 
             for (const oneProperty of manyProperties) {
                 const imageIds = oneProperty.images.map(image => new mongoose.Types.ObjectId(image));
-                const deleteQuery = { _id: { $in: imageIds } };
+                const deleteQuery = {_id: {$in: imageIds}};
 
                 await Images.deleteMany(deleteQuery)
                     .then(result => {
@@ -257,13 +257,13 @@ export function deleteOwnerById(req, res) {
                     });
 
                 try {
-                    await Bookings.deleteOne({ propertyId: oneProperty._id });
+                    await Bookings.deleteOne({propertyId: oneProperty._id});
                     console.log(`Booking for property with ID: ${oneProperty._id} deleted successfully`);
                 } catch (error) {
                     console.error('Error deleting booking:', error);
                 }
 
-                await Property.deleteOne({ _id: oneProperty._id });
+                await Property.deleteOne({_id: oneProperty._id});
                 console.log(`Property with ID: ${oneProperty._id} deleted successfully`);
             }
 
@@ -302,6 +302,13 @@ export async function deleteAdminById(req, res) {
         });
     }
 
+    if (id == req.user.id) {
+        return res.status(400).json({
+            success: false,
+            message: 'You cannot delete yourself'
+        });
+    }
+
     User.findOneAndDelete({_id: id, isAdmin: true})
         .then(async (oneUser) => {
             if (!oneUser) {
@@ -309,15 +316,6 @@ export async function deleteAdminById(req, res) {
                     success: false,
                     message: 'Owner not found'
                 });
-            }
-
-            if (mobileNumber === oneUser.mobileNumber) {
-                if (!oneUser) {
-                    return res.status(400).json({
-                        success: false,
-                        message: 'You cannot delete yourself'
-                    });
-                }
             }
 
             return res.status(200).json({

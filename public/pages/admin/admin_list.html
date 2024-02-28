@@ -76,19 +76,19 @@
                 border-radius: 10px;
                 margin-top: 20px;
             }
-            
+
             .list-group {
                 max-height: 700px;
                 margin-bottom: 10px;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
             }
-            
+
             #theme-icon:hover {
                 cursor: pointer;
                 animation: rotation 2s infinite linear;
             }
-            
+
             @keyframes rotation {
                 from {
                     transform: rotate(0deg);
@@ -131,35 +131,60 @@
                     })
             }
 
-
             function build_list(default_data) {
                 let list = document.getElementById("prop-list");
                 list.innerHTML = "";
 
                 for (var i = 0; i < default_data.length; i++) {
                     var item = document.createElement("div");
-                    item.setAttribute("class", "list-group-item");
+                    item.setAttribute("class", "list-group-item d-flex justify-content-between align-items-center");
                     item.setAttribute("aria-current", "true");
 
                     var div1 = document.createElement("div");
-                    div1.setAttribute("class", "d-flex w-100 justify-content-between");
 
                     var h5 = document.createElement("h5");
                     h5.setAttribute("class", "mb-1");
                     h5.innerHTML = default_data[i]["name"];
 
-                    div1.appendChild(h5);
-
                     var small2 = document.createElement("small");
                     small2.setAttribute("class", "text-primary");
                     small2.innerHTML = default_data[i]["ph_no"];
 
+                    div1.appendChild(h5);
+                    div1.appendChild(small2);
                     item.appendChild(div1);
-                    item.appendChild(small2);
+
+                    if (localStorage.getItem("isSuperAdmin") && default_data[i]["ph_no"] != localStorage.getItem("mobileNumber")) {
+                        var deleteButton = document.createElement("button");
+                        deleteButton.setAttribute("type", "button");
+                        deleteButton.setAttribute("class", "btn btn-outline-danger");
+                        deleteButton.innerHTML = "Delete";
+
+                        deleteButton.addEventListener('click', function(data) {
+                            return function() {
+                                if (confirm("Are you sure you want to delete " + data["name"] + "'s account?")) {
+                                    axios.get("/api/deleteAdminById?admin_id=" + data['adminId'])
+                                        .then(function(response) {
+                                            if (response.data.success) {
+                                                alert("Admin deleted successfully");
+                                                location.reload();
+                                            }
+                                        })
+                                        .catch(function(error) {
+                                            alert(error.response.data.message);
+                                            console.log(error);
+                                        });
+                                }
+                            }
+                        }(default_data[i]));
+
+                        item.appendChild(deleteButton);
+                    }
 
                     list.appendChild(item);
                 }
             }
+
 
             document.getElementById("phone-number").addEventListener("input", function(event) {
                 search_by_phone_number(event.target.value);
