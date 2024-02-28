@@ -122,6 +122,7 @@ export async function signUp(req, res) {
             .json({
                 success: true,
                 role: role,
+                mobileNumber: mobileNumber,
                 name: newUser.name,
                 message: 'Owner successfully registered',
             });
@@ -305,6 +306,7 @@ export async function login(req, res) {
             success: true,
             role: role,
             name: user.name,
+            mobileNumber: mobileNumber,
             isSuperAdmin: isSuperAdmin,
             message: 'Login successful'
         });
@@ -337,6 +339,7 @@ export async function checkAuth(req, res) {
         success: true,
         name: req.user.name,
         role: req.user.role,
+        mobileNumber: req.user.mobileNumber,
         isSuperAdmin: isSuperAdmin,
         message: 'User is authenticated'
     });

@@ -112,6 +112,7 @@
                 if (response.data.success) {
                     localStorage.setItem("name", response.data.name);
                     localStorage.setItem("role", response.data.role);
+                    localStorage.setItem("mobileNumber", response.data.mobileNumber)
                     if (response.data.isSuperAdmin) {
                         localStorage.setItem("isSuperAdmin", response.data.isSuperAdmin);
                     }
