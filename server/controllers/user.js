@@ -310,6 +310,16 @@ export async function deleteAdminById(req, res) {
                     message: 'Owner not found'
                 });
             }
+
+            if (mobileNumber === oneUser.mobileNumber) {
+                if (!oneUser) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'You cannot delete yourself'
+                    });
+                }
+            }
+
             return res.status(200).json({
                 success: true,
                 message: 'Deleted admin',
