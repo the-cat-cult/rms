@@ -1,6 +1,4 @@
 import express from 'express';
-import fs from "fs";
-import util from "util";
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
@@ -10,14 +8,6 @@ import cookieParser from "cookie-parser";
 import "express-async-errors"
 
 const __dirname = path.resolve();
-
-const log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
-const log_stdout = process.stdout;
-
-console.log = function(d) {
-    log_file.write(util.format(d) + '\n');
-    log_stdout.write(util.format(d) + '\n');
-};
 
 dotenv.config();
 const app = express();
