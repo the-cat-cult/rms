@@ -1,15 +1,23 @@
 import express from 'express';
-import bodyParser from 'body-parser';
+import fs from "fs";
+import util from "util";
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import bodyParser from 'body-parser';
+import router from './server/routes/main.js';
+import path from "path";
 import cookieParser from "cookie-parser";
 import "express-async-errors"
 
-import router from './server/routes/main.js';
-import path from "path";
+const log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
+const log_stdout = process.stdout;
+
+console.log = function(d) {
+    log_file.write(util.format(d) + '\n');
+    log_stdout.write(util.format(d) + '\n');
+};
 
 dotenv.config();
-
 const app = express();
 
 app.use(bodyParser.json());
