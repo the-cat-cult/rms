@@ -51,8 +51,7 @@ app.use((err, req, res, next) => {
 });
 
 const port = process.env.PORT || 3000;
-const hostname = '127.0.0.1';
 
-app.listen(port, hostname, () => {
+app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
