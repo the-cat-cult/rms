@@ -25,7 +25,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use("/", express.static('public'))
+app.use("/", express.static('frontend'))
 // set up mongoose
 let connectionString = process.env.NODE_ENV === 'development' ? process.env.CONNECTION_STRING_DEV : process.env.CONNECTION_STRING_PROD;
 mongoose.connect(connectionString)
@@ -54,7 +54,7 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
 
     if (!res.headersSent) {
-        res.status(500).sendFile(path.join(__dirname, '/public/pages/page_500.html'));
+        res.status(500).sendFile(path.join(__dirname, '/frontend/pages/page_500.html'));
     }
 });
 
