@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>START : Seller List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" type="image/gif" sizes="16x16">
+</head>
+
+<body data-bs-theme="dark">
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-md-2 mx-lg-5 mx-sm-0" href="../admin/admin_panel.html">
+                    <img src="/assets/icons/START Logo-01.svg" alt="START Home" height="40">
+                </a>
+
+                <div class="d-flex mx-sm-0 mx-lg-5 mx-md-2">
+                    <button type="button" class="btn btn-outline-danger" onclick="sign_out()">Sign Out</button>
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="filter-section mb-3 mt-5">
+            <div class="row">
+                <div class="col-sm-12 col-md-5 col-lg-4">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="../admin/admin_panel.html">Admin Panel</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Sellers</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-sm-12 col-md-2 col-lg-2">
+                    <button type="button" class="btn btn-success" onclick="window.location.href='/pages/admin/add_owner.html'" id="add-tenant">Add Owner</button>
+                </div>
+                <div class="col-sm-12 col-md-3 col-lg-3 mb-sm-2 mb-md-0 mb-lg-0 mb-2">
+                    <input type="number" class="form-control" id="search_num" placeholder="Phone Number">
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-3">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="search">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Verification Status</button>
+
+                        <ul class="dropdown-menu dropdown-menu-end" id="dropdown">
+                            <li><a class="dropdown-item" href="javascript:showAll();">All</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-success" href="javascript:showVerified();">Verified</a></li>
+                            <li><a class="dropdown-item text-danger" href="javascript:showUnverified();">Unverified</a></li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: row; align-items: center;" class="pt-3">
+                <h6 style="padding: 0; margin: 0">
+                    Total number of owner:
+                </h6>
+                <span style="margin-left: 5px;" id="total-owner"></span>
+            </div>
+        </div>
+
+        <!-- List of sellers -->
+        <ul class="list-group" id="seller-list">
+
+        </ul>
+    </div>
+
+</body>
+
+<style>
+    .list-group {
+        max-height: 700px;
+        margin-bottom: 10px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    h1,
+    h2,
+    h5 {
+        font-weight: 600;
+    }
+    
+    #theme-icon:hover {
+        cursor: pointer;
+        animation: rotation 2s infinite linear;
+    }
+    
+    @keyframes rotation {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(359deg);
+        }
+    }
+    /* Spinner */
+    
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+    }
+</style>
+
+<script>
+    function sign_out() {
+        if (confirm("Are you sure you want to sign out?")) {
+            axios.post('/api/signOut')
+                .then(function(response) {
+                    console.log(response);
+                    localStorage.clear();
+                    window.location.href = "/";
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+        }
+    }
+
+    function toggleTheme() {
+
+        var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+        if (theme == "dark") {
+            document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+            document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+        } else {
+            document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+            document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+        }
+    }
+
+    function generate_list(data) {
+        document.getElementById('total-owner').innerText = data.length
+
+        let seller_list = document.getElementById("seller-list");
+
+        for (let i = 0; i < data.length; i++) {
+            // Create list item, containing Name, phone number, and two radio buttons
+            let list_item = document.createElement("li");
+            list_item.setAttribute("class", "list-group-item list-group-item-action");
+            list_item.classList.add("p-3");
+            let row = document.createElement("div");
+            row.classList.add("row");
+
+            let col1 = document.createElement("div");
+            col1.classList.add("col-12", "col-md-6", "col-lg-6");
+
+            let col2 = document.createElement("div");
+            col2.classList.add("col-12", "col-md-5", "col-lg-5", "align-self-center");
+
+            let col3 = document.createElement("div");
+            col3.classList.add("col-12", "col-md-1", "col-lg-1", "align-self-center");
+
+            let name = document.createElement("h5");
+            name.classList.add("mb-0");
+            name.innerHTML = data[i].name;
+
+            let phone = document.createElement("p");
+            phone.classList.add("mb-0");
+            phone.classList.add("text-primary");
+            phone.innerHTML = data[i].mobileNumber;
+
+            let verified = document.createElement("p");
+            verified.id = "verified-" + data[i]._id;
+            verified.classList.add("mb-0");
+            verified.classList.add(data[i].verified ? "text-success" : "text-danger");
+            verified.innerHTML = data[i].verified ? "Verified" : "Not Verified";
+
+
+            let switcher = document.createElement("div");
+            switcher.classList.add("form-check", "form-switch");
+
+            let inp_switch = document.createElement("input");
+            inp_switch.classList.add("form-check-input");
+            inp_switch.setAttribute("type", "checkbox");
+            inp_switch.setAttribute("role", "switch");
+            inp_switch.setAttribute("id", "inp_switch-" + data[i]._id);
+            if (data[i].verified) {
+                inp_switch.setAttribute("checked", "");
+            }
+
+            // Event listener for switch
+            inp_switch.addEventListener("change", function() {
+                if (this.checked) {
+                    axios.post('/api/verifyUser', {
+                            verified: true,
+                            mobileNumber: data[i].mobileNumber
+                        })
+                        .then(function(response) {
+                            document.getElementById("verified-" + data[i]._id).innerHTML = "Verified";
+                            document.getElementById("verified-" + data[i]._id).classList.remove("text-danger");
+                            document.getElementById("verified-" + data[i]._id).classList.add("text-success");
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                            alert("Error verifying user")
+                        });
+                } else {
+                    axios.post('/api/verifyUser', {
+                            verified: false,
+                            mobileNumber: data[i].mobileNumber
+                        })
+                        .then(function(response) {
+                            document.getElementById("verified-" + data[i]._id).innerHTML = "Not Verified";
+                            document.getElementById("verified-" + data[i]._id).classList.remove("text-success");
+                            document.getElementById("verified-" + data[i]._id).classList.add("text-danger");
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                            alert("Error verifying user")
+                        });
+
+                }
+            });
+
+
+            switcher.appendChild(inp_switch);
+            // Append elements to list item
+            col1.appendChild(name);
+            col1.appendChild(phone);
+            col2.appendChild(verified);
+            col3.appendChild(switcher);
+
+            row.appendChild(col1);
+            row.appendChild(col2);
+            row.appendChild(col3);
+
+            list_item.appendChild(row);
+
+            col1.addEventListener("click", function(event) {
+                window.location.href = "/pages/admin/owner_page.html?owner_id=" + data[i]._id;
+            })
+
+            col2.addEventListener("click", function(event) {
+                window.location.href = "/pages/admin/owner_page.html?owner_id=" + data[i]._id;
+            })
+
+            seller_list.appendChild(list_item);
+        }
+    }
+
+    showVerified = function() {
+        let list = document.getElementById("seller-list");
+        let items = list.getElementsByTagName("li");
+        for (let i = 0; i < items.length; i++) {
+            let verified = items[i].getElementsByTagName("p")[1];
+            if (verified.innerHTML == "Verified") {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+    }
+
+    showUnverified = function() {
+        let list = document.getElementById("seller-list");
+        let items = list.getElementsByTagName("li");
+        for (let i = 0; i < items.length; i++) {
+            let verified = items[i].getElementsByTagName("p")[1];
+            if (verified.innerHTML == "Not Verified") {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+    }
+
+    showAll = function() {
+        let list = document.getElementById("seller-list");
+        let items = list.getElementsByTagName("li");
+        for (let i = 0; i < items.length; i++) {
+            items[i].style.display = "";
+        }
+    }
+
+    document.getElementById("dropdown").addEventListener("click", function(event) {
+        event.stopPropagation();
+    });
+
+    document.getElementById("search").addEventListener("keyup", function() {
+        let input = document.getElementById("search").value.toUpperCase();
+        let list = document.getElementById("seller-list");
+        let items = list.getElementsByTagName("li");
+
+        for (let i = 0; i < items.length; i++) {
+            let name = items[i].getElementsByTagName("h5")[0].innerHTML.toUpperCase();
+            if (name.indexOf(input) > -1) {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+    });
+
+    document.getElementById("search_num").addEventListener("keyup", function() {
+        let input = document.getElementById("search_num").value;
+        let list = document.getElementById("seller-list");
+        let items = list.getElementsByTagName("li");
+
+        for (let i = 0; i < items.length; i++) {
+            let phone = items[i].getElementsByTagName("p")[0].innerHTML;
+            if (phone.indexOf(input) > -1) {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+    });
+
+    onload = function() {
+        axios.get('/api/listAllSellers')
+            .then(function(response) {
+                console.log(response);
+                generate_list(response.data.User || []);
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    }
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+</html>

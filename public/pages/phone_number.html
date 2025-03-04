@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rms</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Import css -->
+    <link rel="stylesheet" href="">
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" sizes="any" type="image/x-icon">
+
+
+</head>
+
+<body data-bs-theme="dark">
+
+    <header>
+
+        <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm p-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="/assets/icons/START Logo-01.svg" alt="Bootstrap" height="40">
+                </a>
+                <div class="d-flex">
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5 centered">
+        <h1>Hi!</h1>
+        <h2>Let's get you logged in &#128512;</h2>
+        <form id="loginForm">
+            <!-- Phone number -->
+            <input type="tel" class="form-control mt-5" id="phoneNumber" placeholder="Phone number" pattern="[0-9]{5}-[0-9]{5}">
+
+            <div class="buttons mt-3">
+                <button type="submit" class="btn btn-primary mt-3 btn-lg" id="sendOTP" onclick="redirect()">Send OTP</button>
+            </div>
+            <div class="no-acc mt-3">
+                Don't have an account? <a href="mailto:shaikrafi66@gmail.com" class="hyperlink" style="text-decoration: none;">Contact the admin</a>
+            </div>
+        </form>
+    </div>
+</body>
+
+
+<script>
+    function toggleTheme() {
+        var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+        if (theme == "dark") {
+            document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+            document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+
+            // Change from text-primary to text-white
+            document.getElementById("subtext").classList.remove("text-white");
+            document.getElementById("subtext").classList.add("text-primary");
+
+
+        } else {
+            document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+            document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+
+            // Change from text-white to text-primary
+            document.getElementById("subtext").classList.remove("text-primary");
+            document.getElementById("subtext").classList.add("text-white");
+        }
+
+
+    }
+
+    submit_button = document.getElementById("sendOTP");
+    field = document.getElementById("phoneNumber");
+
+    window.onload = function() {
+        if (window.innerWidth < 576) {
+            submit_button.setAttribute("style", "width: 100% !important;")
+            field.setAttribute("font-size", "1.5rem !important;")
+        } else {
+            submit_button.setAttribute("style", "width: 25% !important;")
+            field.setAttribute("font-size", "3rem !important;")
+        }
+    };
+
+
+    // Responsive button
+    window.onresize = function() {
+        if (window.innerWidth < 576) {
+            submit_button.setAttribute("style", "width: 100% !important;")
+            field.setAttribute("font-size", "1.5rem !important;")
+        } else {
+            submit_button.setAttribute("style", "width: 50% !important;")
+            field.setAttribute("font-size", "3rem !important;")
+        }
+    };
+
+
+
+
+    function redirect() {
+        // Receive the phone number from the form
+        const phoneNumber = document.getElementById("phoneNumber").value;
+
+        // Check if it is all numbers
+        if (isNaN(phoneNumber)) {
+            alert("Please enter only numbers.");
+            return false;
+        }
+
+        if (phoneNumber == "") {
+            alert("Please enter your phone number. Don't leave the field empty.");
+            return false;
+        }
+
+        if (phoneNumber.length != 10) {
+            alert("Please enter a valid 10 digit mobile number.");
+            return false;
+        }
+
+        window.location.href = "otp.html" + "?phoneNumber=" + phoneNumber;
+        return false;
+    }
+
+    // Only allow numbers to be entered
+
+    element = document.getElementById('phoneNumber');
+    element.onkeypress = function(e) {
+        if (isNaN(this.value + String.fromCharCode(e.charCode)))
+            return false;
+
+        if ((this.value + String.fromCharCode(e.charCode)).length > 10)
+            return false;
+
+    }
+</script>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 400;
+        font-size: 1.1rem;
+    }
+    
+    input[type=tel] {
+        /* In mobile devices, it fills 100% width, otherwise 50% width*/
+        width: 100%;
+        font-size: 3rem;
+    }
+    
+    #theme-icon:hover {
+        cursor: pointer;
+        animation: rotation 2s infinite linear;
+    }
+    
+    @keyframes rotation {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(359deg);
+        }
+    }
+    
+    #phoneNumber {
+        /* In mobile devices, it fills 100% width, otherwise 50% width*/
+        width: 100%;
+        /* Center the input field */
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    h1 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 3rem;
+    }
+    
+    .centered {
+        /* Vertically centered */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+
+<!-- Include Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

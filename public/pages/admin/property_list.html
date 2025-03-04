@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>START</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap"
+          rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" type="image/gif" sizes="16x16">
+
+</head>
+
+<body onload="getAllData()" data-bs-theme="dark">
+<!-- Header -->
+<header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand mx-4" href="../admin/admin_panel.html">
+                <img src="/assets/icons/START Logo-01.svg" alt="START Home" height="40">
+            </a>
+            <div class="d-flex">
+                <button type="button" class="btn btn-outline-danger" onclick="sign_out()">Sign Out</button>
+                <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()"
+                     class="p-0 mx-3" id="theme-icon">
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+<!-- Body -->
+<div class="container">
+
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mt-3">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="../admin/admin_panel.html">Admin Panel</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Properties</li>
+        </ol>
+    </nav>
+    <div class="filter-section mb-3">
+        <!-- BHK Dropdown -->
+        <div class="row">
+            <div class="col-md-2">
+                <label for="BHK" class="form-label">House</label>
+                <select class="form-select" aria-label="BHK Selection" id="BHK">
+                    <option></option>
+                    <option value="All" selected>All</option>
+                    <option value="1 BHK">1 BHK</option>
+                    <option value="1.5 BHK">1.5 BHK</option>
+                    <option value="2 BHK">2 BHK</option>
+                    <option value="2.5 BHK">2.5 BHK</option>
+                    <option value="3 BHK">3 BHK</option>
+                    <option value="3.5 BHK">3.5 BHK</option>
+                    <option value="4">4 BHK</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <!-- Rent Range in a double slider-->
+            <div class="col-md-4">
+                <label class="form-label" for="rent">Rent</label>
+                <div class="row" id="rent">
+                    <div class="col-md-6 mt-lg-0 mt-md-0 mb-md-0 mb-lg-0">
+                        <input type="text" class="form-control" placeholder="Min" id="min">
+                    </div>
+                    <div class="col-md-6 mt-lg-0 mt-md-0 mt-3 mb-md-0 mb-lg-0 mb-3">
+                        <input type="text" class="form-control" placeholder="Max" id="max">
+                    </div>
+                </div>
+            </div>
+            <!-- ID Search Field -->
+            <div class="col-md-3">
+                <label for="id-search" class="form-label">Search ID</label>
+                <input type="text" class="form-control" placeholder="ID" id="id-search">
+            </div>
+
+        </div>
+        <div style="display: flex; flex-direction: row; align-items: end; gap: 20px" class="pt-3">
+            <div class="col-md-2">
+                <label for="house-occupied" class="form-label">House occupied status</label>
+                <select class="form-select" aria-label="House occupied" id="house-occupied">
+                    <option></option>
+                    <option value="All" selected>All</option>
+                    <option value="Occupied">Occupied</option>
+                    <option value="Unoccupied">Unoccupied</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="mou" class="form-label">Is MoU available</label>
+                <select class="form-select" aria-label="House occupied" id="mou">
+                    <option></option>
+                    <option value="All" selected>All</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="areaDropdown" class="form-label">Areas</label>
+                <select class="form-select" aria-label="House occupied" id="areaDropdown">
+                    <option></option>
+                </select>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: row; align-items: center;" class="pt-3">
+            <h6 style="padding: 0; margin: 0">
+                Total number of properties:
+            </h6>
+            <span style="margin-left: 5px;" id="total-houses"></span>
+        </div>
+    </div>
+
+
+    <!-- Property List -->
+    <div class="property-list">
+        <div class="list-group" id="prop-list">
+        </div>
+    </div>
+
+    <div id="pagination">
+    </div>
+
+    <style>
+        .filter-section {
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .list-group {
+            max-height: 700px;
+            margin-bottom: 10px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+
+
+    <script>
+        let default_data = []
+
+        document.getElementById("BHK").addEventListener("change", function (event) {
+            event.preventDefault();
+            getProperties();
+        });
+
+        document.getElementById("min").addEventListener("input", function (event) {
+            event.preventDefault();
+            getProperties();
+        });
+
+        document.getElementById("max").addEventListener("input", function (event) {
+            event.preventDefault();
+            getProperties();
+        });
+
+        document.getElementById("areaDropdown").addEventListener("input", function (event) {
+            event.preventDefault();
+            getProperties();
+        });
+
+        document.getElementById("mou").addEventListener("input", function (event) {
+            event.preventDefault();
+            getProperties();
+        });
+
+        document.getElementById("house-occupied").addEventListener("input", function (event) {
+            event.preventDefault();
+            getProperties();
+        });
+
+        document.getElementById("id-search").addEventListener("input", function (event) {
+            event.preventDefault();
+            getProperties();
+        });
+
+        async function fetchAreas() {
+            try {
+                const response = await axios.get('/api/listAllAreas');
+                const areas = response.data.Property;
+
+                // Get the dropdown element
+                const dropdown = document.getElementById('areaDropdown');
+
+                // Clear existing options
+                dropdown.innerHTML = '';
+
+                // Populate the dropdown with areas
+                let option = document.createElement('option');
+                dropdown.append(option)
+                areas.forEach((area) => {
+                    option = document.createElement('option');
+                    option.value = area;
+                    option.text = area;
+                    dropdown.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching areas:', error.message);
+            }
+        }
+
+        function getProperties() {
+            let bhk = document.getElementById("BHK").value;
+            let minRent = document.getElementById("min").value;
+            let maxRent = document.getElementById("max").value;
+            let area = document.getElementById("areaDropdown").value;
+            let mou = document.getElementById("mou").value;
+            let houseOccupied = document.getElementById("house-occupied").value;
+            let searchId = document.getElementById("id-search").value;
+
+            let query = {}
+
+            if (bhk) {
+                if (bhk == "All") {
+                    bhk = ""
+                }
+                query.bhk = bhk;
+            }
+
+            if (minRent) {
+                query.minRent = parseInt(minRent)
+            }
+
+            if (maxRent) {
+                query.maxRent = parseInt(maxRent);
+            }
+
+            if (area) {
+                query.area = area;
+            }
+
+            if (mou) {
+                query.mou = mou;
+            }
+
+            if (houseOccupied) {
+                query.houseOccupied = houseOccupied
+            }
+
+            if (searchId) {
+                query.searchId = searchId
+            }
+
+            axios.post("/api/listAllPropertiesByFilter", query)
+                .then(function (response) {
+                    if (response.data.success) {
+                        default_data = []
+
+                        received_data = response.data.Property;
+
+                        if(received_data !== undefined) {
+                            document.getElementById('total-houses').innerText = received_data.length
+                            for (let i = 0; i < received_data.length; i++) {
+                                default_data.push({
+                                    "name": received_data[i].name,
+                                    "address": received_data[i].address,
+                                    "rent": received_data[i].rent,
+                                    "propertyType": received_data[i].propertyType,
+                                    "location": received_data[i].location,
+                                    "securityDeposit": received_data[i].securityDeposit,
+                                    "bhk": received_data[i].bhk,
+                                    "mou": received_data[i].mou,
+                                    "id": received_data[i]._id,
+                                    "link": "/pages/owner/property_view.html?propertyId=" + received_data[i]._id,
+                                })
+                            }
+                            generatePaginatedList(default_data);
+                        } else {
+                            document.getElementById('total-houses').innerText = 0
+                            generatePaginatedList([])
+                        }
+
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert("Error in fetching data")
+                });
+
+        }
+
+        let paginatedData = {};
+
+        function generatePaginatedList(default_data) {
+            const itemsPerPage = 10;
+            const totalItems = default_data.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+            paginatedData = {};
+
+            for (let i = 0; i < totalPages; i++) {
+                const startIndex = i * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                paginatedData[i + 1] = default_data.slice(startIndex, endIndex);
+            }
+
+            // Display the first page by default
+            displayPage(1);
+            generatePagination(1, totalPages);
+        }
+
+        function displayPage(pageNumber) {
+            const pageData = paginatedData[pageNumber];
+            generate_list(pageData);
+        }
+
+        function generatePagination(currentPage, totalPages) {
+            currentPage = parseInt(currentPage);
+            totalPages = parseInt(totalPages);
+
+            const paginationContainer = document.getElementById('pagination');
+            paginationContainer.innerHTML = ''; // Clear previous pagination
+
+            const paginationList = document.createElement('ul');
+            paginationList.className = 'pagination justify-content-center'; // Add justify-content-center to center pagination
+
+            // Render Previous button if not at lower limit
+            if (currentPage > 1) {
+                const firstPage = createPaginationItem(1, 'First', 1);
+                firstPage.classList.add('page-item'); // Add Bootstrap class
+                paginationList.appendChild(firstPage);
+
+                const prevItem = createPaginationItem(currentPage - 1, 'Previous', '&laquo;');
+                prevItem.classList.add('page-item'); // Add Bootstrap class
+                paginationList.appendChild(prevItem);
+            }
+
+            // Render current page number
+            const currentItem = createPaginationItem(currentPage, null, currentPage);
+            currentItem.classList.add('page-item', 'active'); // Add Bootstrap classes
+            paginationList.appendChild(currentItem);
+
+            // Render Next button if not at upper limit
+            if (currentPage < totalPages) {
+                const nextItem = createPaginationItem(currentPage + 1, 'Next', '&raquo;');
+                nextItem.classList.add('page-item'); // Add Bootstrap class
+                paginationList.appendChild(nextItem);
+
+                const lastPageNumber = totalPages > 0 ? totalPages : 1;
+                const lastPage = createPaginationItem(lastPageNumber, 'Last', lastPageNumber);
+                lastPage.classList.add('page-item'); // Add Bootstrap class
+                paginationList.appendChild(lastPage);
+            }
+
+            paginationContainer.appendChild(paginationList);
+        }
+
+        function createPaginationItem(pageNumber, label, innerHTML) {
+            const pageLink = document.createElement('button');
+            pageLink.className = 'page-link';
+            if (label) {
+                pageLink.href = '#';
+                pageLink.setAttribute('aria-label', label);
+                pageLink.innerHTML = innerHTML;
+            } else {
+                const linkText = document.createTextNode(innerHTML);
+                pageLink.appendChild(linkText);
+            }
+
+            pageLink.addEventListener('click', () => {
+                if (pageNumber > 0) {
+                    displayPage(pageNumber);
+                    generatePagination(pageNumber, Object.keys(paginatedData).length);
+                }
+            });
+
+            const pageItem = document.createElement('li');
+            pageItem.appendChild(pageLink);
+
+            return pageItem;
+        }
+
+        function generate_list(default_data) {
+            list = document.getElementById("prop-list");
+            list.innerHTML = "";
+
+            if(default_data === undefined) return
+
+            for (var i = 0; i < default_data.length; i++) {
+                right = default_data[i]['bhk'] + " " + default_data[i]['propertyType'] + " for rent in " + default_data[i]['location']
+                secondary = "₹" + default_data[i]['rent'] + "/m + SD : ₹" + default_data[i]['securityDeposit']
+                primary = default_data[i]['address']
+
+                var item = document.createElement("a");
+                item.setAttribute("href", default_data[i]["link"]);
+                item.setAttribute("class", "list-group-item list-group-item-action");
+                item.setAttribute("aria-current", "true");
+
+                var div1 = document.createElement("div");
+                div1.setAttribute("class", "d-flex w-100 justify-content-between");
+
+                var h5 = document.createElement("h5");
+                h5.setAttribute("class", "mb-1");
+                h5.innerHTML = primary;
+
+                var small = document.createElement("small");
+                small.setAttribute("class", "text-primary");
+                // Monospace font
+                small.setAttribute("style", "font-family: 'Courier New', Courier, monospace;");
+
+                small.innerHTML = default_data[i]["id"];
+
+                div1.appendChild(h5);
+                div1.appendChild(small);
+
+                var p = document.createElement("p");
+                p.setAttribute("class", "mb-1 text-success");
+                p.innerHTML = secondary;
+
+                var small2 = document.createElement("small");
+                small2.innerHTML = right;
+
+                item.appendChild(div1);
+                item.appendChild(p);
+                item.appendChild(small2);
+                list.appendChild(item);
+            }
+        }
+
+        function sign_out() {
+            if (confirm("Are you sure you want to sign out?")) {
+                axios.post('/api/signOut')
+                    .then(function (response) {
+                        console.log(response);
+                        localStorage.clear();
+                        window.location.href = "/";
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        }
+
+        function toggleTheme() {
+            var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+            var theme_bg = document.getElementById("theme_bg");
+            var navbar = document.getElementById("navbar");
+            if (theme == "dark") {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+            } else {
+                document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+                document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+            }
+        }
+
+        function getAllData() {
+            fetchAreas()
+            getProperties()
+        }
+    </script>
+</div>
+
+
+</body>
+<style>
+    #theme-icon:hover {
+        cursor: pointer;
+        animation: rotation 2s infinite linear;
+        position: relative;
+    }
+
+    @keyframes rotation {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(359deg);
+        }
+    }
+</style>
+
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>START : Admins</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="icon" href="/assets/icons/START Logo-01.svg" type="image/x-icon">
+
+</head>
+
+<body onload="load_seq()" data-bs-theme="dark">
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand mx-md-2 mx-lg-5 mx-sm-0" href="../admin/admin_panel.html">
+                    <img src="/assets/icons/START Logo-01.svg" alt="START Home" height="40">
+                </a>
+
+                <!-- Profile Page navigation button on the right side -->
+                <div class="d-flex mx-sm-0 mx-lg-5 mx-md-2">
+                    <!-- Sign out button -->
+                    <button type="button" class="btn btn-outline-danger" onclick="sign_out()">Sign Out</button>
+                    <img src="/assets/icons/light-mode.svg" alt="Change to Light Mode" height="40" onclick="toggleTheme()" class="p-0 mx-3" id="theme-icon">
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Body -->
+    <div class="container">
+        <div class="filter-section mb-3">
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="../admin/admin_panel.html">Admin Panel</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Admins</li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <div class="col-sm-12 col-md-2 col-lg-2">
+                    <button type="button" class="btn btn-success" onclick="window.location.href='/pages/admin/add_admin.html'" id="add-admin">Add Admin</button>
+                </div>
+
+                <!-- Search by Phone Number -->
+                <div class="col-sm-12 col-md-2 col-lg-2">
+                    <input type="text" class="form-control" id="phone-number" placeholder="Phone Number">
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: row; align-items: center;" class="pt-3">
+                <h6 style="padding: 0; margin: 0">
+                    Total number of admins:
+                </h6>
+                <span style="margin-left: 5px;" id="total-admins"></span>
+            </div>
+        </div>
+
+
+        <!-- Property List -->
+        <div class="property-list">
+            <div class="list-group" id="prop-list">
+            </div>
+        </div>
+
+        <style>
+            .filter-section {
+                border-radius: 10px;
+                margin-top: 20px;
+            }
+
+            .list-group {
+                max-height: 700px;
+                margin-bottom: 10px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            #theme-icon:hover {
+                cursor: pointer;
+                animation: rotation 2s infinite linear;
+            }
+
+            @keyframes rotation {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(359deg);
+                }
+            }
+        </style>
+
+
+        <script>
+            let original_list = []
+
+            function getAdmins() {
+                axios.get('/api/listAllAdmins')
+                    .then(function(response) {
+                        if (response.data.success) {
+                            let default_data = []
+                            let admins = response.data.Admins;
+                            for (let i = 0; i < admins.length; i++) {
+                                let admin = admins[i];
+                                let admin_data = {
+                                    "name": admin.name,
+                                    "ph_no": admin.mobileNumber,
+                                    "adminId": admin._id
+                                }
+                                default_data.push(admin_data);
+                            }
+                            document.getElementById('total-admins').innerText = default_data.length
+                            build_list(default_data);
+                            original_list = default_data;
+                        } else {
+                            alert("Error fetching admins");
+                        }
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                        alert("Error fetching admins");
+                    })
+            }
+
+            function build_list(default_data) {
+                let list = document.getElementById("prop-list");
+                list.innerHTML = "";
+
+                for (var i = 0; i < default_data.length; i++) {
+                    var item = document.createElement("div");
+                    item.setAttribute("class", "list-group-item d-flex justify-content-between align-items-center");
+                    item.setAttribute("aria-current", "true");
+
+                    var div1 = document.createElement("div");
+
+                    var h5 = document.createElement("h5");
+                    h5.setAttribute("class", "mb-1");
+                    h5.innerHTML = default_data[i]["name"];
+
+                    var small2 = document.createElement("small");
+                    small2.setAttribute("class", "text-primary");
+                    small2.innerHTML = default_data[i]["ph_no"];
+
+                    div1.appendChild(h5);
+                    div1.appendChild(small2);
+                    item.appendChild(div1);
+
+                    if (localStorage.getItem("isSuperAdmin") && default_data[i]["ph_no"] != localStorage.getItem("mobileNumber")) {
+                        var deleteButton = document.createElement("button");
+                        deleteButton.setAttribute("type", "button");
+                        deleteButton.setAttribute("class", "btn btn-outline-danger");
+                        deleteButton.innerHTML = "Delete";
+
+                        deleteButton.addEventListener('click', function(data) {
+                            return function() {
+                                if (confirm("Are you sure you want to delete " + data["name"] + "'s account?")) {
+                                    axios.get("/api/deleteAdminById?admin_id=" + data['adminId'])
+                                        .then(function(response) {
+                                            if (response.data.success) {
+                                                alert("Admin deleted successfully");
+                                                location.reload();
+                                            }
+                                        })
+                                        .catch(function(error) {
+                                            alert(error.response.data.message);
+                                            console.log(error);
+                                        });
+                                }
+                            }
+                        }(default_data[i]));
+
+                        item.appendChild(deleteButton);
+                    }
+
+                    list.appendChild(item);
+                }
+            }
+
+
+            document.getElementById("phone-number").addEventListener("input", function(event) {
+                search_by_phone_number(event.target.value);
+            });
+
+
+            function search_by_phone_number(phone_number) {
+                let filtered_list = original_list.filter(function(item) {
+                    if (item["ph_no"] !== undefined) {
+                        return item["ph_no"].toString().includes(phone_number);
+                    }
+                });
+
+                if (phone_number == "") {
+                    filtered_list = original_list;
+                }
+
+                build_list(filtered_list);
+            }
+
+            function sign_out() {
+                if (confirm("Are you sure you want to sign out?")) {
+                    axios.post('/api/signOut')
+                        .then(function(response) {
+                            console.log(response);
+                            localStorage.clear();
+                            // alert("Signed Out")
+                            window.location.href = "/";
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        });
+                }
+            }
+
+
+            function toggleTheme() {
+
+                var theme = document.getElementsByTagName("body")[0].getAttribute("data-bs-theme");
+                if (theme == "dark") {
+                    document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "light");
+                    document.getElementById("theme-icon").setAttribute("src", "/assets/icons/dark-mode.svg");
+                } else {
+                    document.getElementsByTagName("body")[0].setAttribute("data-bs-theme", "dark");
+                    document.getElementById("theme-icon").setAttribute("src", "/assets/icons/light-mode.svg");
+                }
+            }
+
+            function resize_button() {
+                add_button = document.getElementById("add-admin");
+                if (window.innerWidth < 768) {
+                    // Bring button to bottom of the page
+                    add_button.setAttribute("class", "btn btn-success w-100 mb-3");
+                } else {
+                    add_button.setAttribute("class", "btn btn-success w-auto mb-0");
+                }
+            }
+
+            function load_seq() {
+                getAdmins();
+                resize_button();
+            }
+
+            window.onresize = resize_button;
+        </script>
+    </div>
+
+
+</body>
