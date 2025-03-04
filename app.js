@@ -9,6 +9,8 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import "express-async-errors"
 
+const __dirname = path.resolve();
+
 const log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
 const log_stdout = process.stdout;
 
@@ -33,8 +35,6 @@ mongoose.connect(connectionString)
     .catch((error) => {
         console.log('Error connecting to database', error);
     });
-
-const __dirname = path.resolve();
 
 // Route definitions
 app.get('/', (req, res) => {
