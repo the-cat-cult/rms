@@ -1,21 +1,21 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import bodyParser from 'body-parser';
-import router from './server/routes/main.js';
-import path from "path";
 import cookieParser from "cookie-parser";
 import "express-async-errors"
 
-const __dirname = path.resolve();
+import router from './server/routes/main.js';
+import path from "path";
 
 dotenv.config();
+
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use("/", express.static('frontend'))
+app.use("/", express.static('public'))
 // set up mongoose
 let connectionString = process.env.NODE_ENV === 'development' ? process.env.CONNECTION_STRING_DEV : process.env.CONNECTION_STRING_PROD;
 mongoose.connect(connectionString)
@@ -25,6 +25,8 @@ mongoose.connect(connectionString)
     .catch((error) => {
         console.log('Error connecting to database', error);
     });
+
+const __dirname = path.resolve();
 
 // Route definitions
 app.get('/', (req, res) => {
@@ -44,7 +46,7 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
 
     if (!res.headersSent) {
-        res.status(500).sendFile(path.join(__dirname, '/frontend/pages/page_500.html'));
+        res.status(500).sendFile(path.join(__dirname, '/public/pages/page_500.html'));
     }
 });
 

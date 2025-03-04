@@ -13,23 +13,23 @@ export async function createBooking(req, res) {
 
     //if propertyId is unverified
     if(tenantId === undefined || propertyId === undefined) {
-        return res.sendFile(path.join(__dirname + '/frontend/pages/page_500.html'));
+        return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
     }
 
     console.log(req.user)
 
     if(req.user.allocationStatus === 'yes') {
-        return res.sendFile(path.join(__dirname + '/frontend/pages/allocated.html'));
+        return res.sendFile(path.join(__dirname + '/public/pages/allocated.html'));
     }
 
     //if property is unverified, return 500
     let property = await Properties.findOne({_id: propertyId})
     if(property.verified === false) {
-        return res.sendFile(path.join(__dirname + '/frontend/pages/page_500.html'));
+        return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
     }
 
     if (property.vacancyStatus === false) {
-        return res.sendFile(path.join(__dirname + '/frontend/pages/not_vacant.html'));
+        return res.sendFile(path.join(__dirname + '/public/pages/not_vacant.html'));
     }
 
     //check if there are existing bookings for propertyId
@@ -37,10 +37,10 @@ export async function createBooking(req, res) {
         const existingBookings = await Booking.find({propertyId: propertyId, tenantId: tenantId})
 
         if(existingBookings.length !== 0) {
-            return res.sendFile(path.join(__dirname + '/frontend/pages/tenant/existing_booking.html'));
+            return res.sendFile(path.join(__dirname + '/public/pages/tenant/existing_booking.html'));
         }
     } catch (e) {
-        return res.sendFile(path.join(__dirname + '/frontend/pages/page_500.html'));
+        return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
     }
 
     const booking = new Booking({
@@ -52,17 +52,17 @@ export async function createBooking(req, res) {
 
     let bookings = await Booking.find({tenantId: req.user._id})
     if (bookings.length === 3) {
-        return res.sendFile(path.join(__dirname + '/frontend/pages/tenant/booking_failed.html'));
+        return res.sendFile(path.join(__dirname + '/public/pages/tenant/booking_failed.html'));
     }
 
     return booking
         .save()
         .then((newBooking) => {
-            return res.sendFile(path.join(__dirname + '/frontend/pages/tenant/booking_success.html'));
+            return res.sendFile(path.join(__dirname + '/public/pages/tenant/booking_success.html'));
 
         })
         .catch((error) => {
-            return res.sendFile(path.join(__dirname + '/frontend/pages/page_500.html'));
+            return res.sendFile(path.join(__dirname + '/public/pages/page_500.html'));
         });
 }
 
