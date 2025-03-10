@@ -33,6 +33,15 @@ import {
 import {signUp, generateOTP, login, singOut, checkAuth} from '../controllers/authenitcation.js'
 import authentication from '../middleware/authentication.js'
 import multerImages from '../middleware/multer-images.js'
+import { rateLimit } from 'express-rate-limit'
+
+const otpLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000, // 10 minutes
+    limit: 3, // limit each IP to 3 OTP per windowMs
+    standardHeaders: 'draft-8', // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+    message: "Too many OTP requests, please try again after 10 minutes",
+})
 
 const router = express.Router();
 
@@ -44,7 +53,7 @@ router.get('/image/:id', authentication(['owner', 'tenant', 'admin']), getFile)
 //authentication
 router.post('/login', login)
 router.post('/signUp', signUp)
-router.post('/generateOTP', generateOTP)
+router.post('/generateOTP', otpLimiter, generateOTP)
 router.post('/signOut', singOut)
 router.get('/isAuthenticated', authentication(["admin", "owner", "tenant"]), checkAuth)
 
