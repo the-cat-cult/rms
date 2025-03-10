@@ -144,9 +144,9 @@ async function sendSMS(code, phone) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                variables_values: code,
-                route: 'otp',
+                route: 'q',
                 numbers: phone,
+                message : "Your OTP for logging into START is: " + code + ". ",
             }),
         });
 
